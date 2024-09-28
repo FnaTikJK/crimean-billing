@@ -6,11 +6,11 @@ namespace API.DAL;
 
 public class DataContext : DbContext
 {
-    private readonly IConfiguration config;
+    private readonly IConfiguration configuration;
 
-    public DataContext(DbContextOptions options, IConfiguration config) : base(options)
+    public DataContext(DbContextOptions options, IConfiguration configuration) : base(options)
     {
-        this.config = config;
+        this.configuration = configuration;
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder options)
