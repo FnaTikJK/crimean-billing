@@ -1,6 +1,7 @@
 using System.Reflection;
 using API.DAL;
 using API.Infrastructure;
+using API.Infrastructure.Config;
 using API.Infrastructure.Middlewares;
 using API.Modules;
 
@@ -29,6 +30,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+ConfigReader.Init(app.Environment.IsDevelopment());
 
 // if (app.Environment.IsDevelopment())
 {

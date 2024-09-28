@@ -1,4 +1,5 @@
 using API.Infrastructure;
+using API.Infrastructure.Config;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.DAL;
@@ -15,7 +16,8 @@ public class DataContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-        options.UseNpgsql(Config.Database.ConnectionString,
+        options.UseNpgsql(
+            Config.DatabaseConnectionString,
             builder => { builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); });
     }
 
