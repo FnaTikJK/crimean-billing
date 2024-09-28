@@ -14,6 +14,9 @@ public class DatabaseController : ControllerBase
         this.databaseService = databaseService;
     }
 
+    /// <summary>
+    /// Пересоздаёт БД
+    /// </summary>
     [HttpPost]
     public ActionResult RecreateDatabase()
     {
