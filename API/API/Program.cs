@@ -4,6 +4,7 @@ using API.Infrastructure;
 using API.Infrastructure.Config;
 using API.Infrastructure.Middlewares;
 using API.Modules;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,30 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonConfig.DateOnlyJsonConverter());
     options.JsonSerializerOptions.Converters.Add(new JsonConfig.DateTimeConverter());
 });
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie(opt =>
+    {
+        opt.Events = new CookieAuthenticationEvents
+        {
+            OnRedirectToLogin = (context) =>
+            {
+                context.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            },
+            OnRedirectToAccessDenied = (context) =>
+            {
+                context.Response.StatusCode = 403;
+                return Task.CompletedTask;
+            },
+        };
+        opt.LoginPath = "/api/Accounts/Login";
+    });
 
 builder.Services.AddAutoMapper(typeof(BaseMappingProfile));
 
