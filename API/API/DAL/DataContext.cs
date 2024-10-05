@@ -1,5 +1,7 @@
 using API.Infrastructure;
 using API.Infrastructure.Config;
+using API.Modules.AccountsModule.Manager;
+using API.Modules.AccountsModule.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.DAL;
@@ -26,4 +28,8 @@ public class DataContext : DbContext
         this.Database.EnsureDeleted();
         this.Database.EnsureCreated();
     }
+
+    public DbSet<ManagerEntity> Managers => Set<ManagerEntity>();
+    public DbSet<UserEntity> Users => Set<UserEntity>();
+    public DbSet<AccountEntity> Accounts => Set<AccountEntity>();
 }
