@@ -21,6 +21,9 @@ public class AuthController : ControllerBase
         this.authService = authService;
     }
     
+    /// <summary>
+    /// Инфа об аккаунте. Роли: 0 - user, 1 - manager
+    /// </summary>
     [Authorize]
     [HttpGet("My")]
     public ActionResult GetMyAcc()
@@ -32,6 +35,9 @@ public class AuthController : ControllerBase
         });
     }    
     
+    /// <summary>
+    /// Тестовая ручка для реги менеджера 
+    /// </summary>
     [HttpPost("Managers/Register")]
     public async Task<ActionResult> RegisterManager([FromBody] RegisterManagerRequest request)
     {
@@ -39,6 +45,9 @@ public class AuthController : ControllerBase
         return response.ActionResult;
     }
     
+    /// <summary>
+    /// Логин для менеджера 
+    /// </summary>
     [HttpPost("Managers/Login")]
     public async Task<ActionResult> LoginManager([FromBody] LoginManagerRequest request)
     {
@@ -53,17 +62,16 @@ public class AuthController : ControllerBase
     }
     
     /// <summary>
-    /// Смена пароля для менеджера. Должен быть залогинен. После смены автоматически разлогинивает.
+    /// Authorized.
+    /// Смена пароля для менеджера. После смены автоматически разлогинивает.
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
     [Authorize(Roles = nameof(AccountRole.Manager))]
     [HttpPost("Managers/ChangePassword")]
     public async Task<ActionResult> ChangeManagerPassword([FromBody] ChangeManagerPasswordRequest request)
     {
         var managerId = User.GetId();
         var response = await authService.ChangeManagerPassword(managerId, request);
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await Logout();
 
         return response.ActionResult;
     }
@@ -80,7 +88,7 @@ public class AuthController : ControllerBase
     }
     
     /// <summary>
-    /// Вход для обычных юзеров. Необходимо ещё подтвердить вход
+    /// Вход для обычных юзеров. Необходимо ещё подтвердить вход через /Verify
     /// </summary>
     [HttpPost("Login")]
     public async Task<ActionResult> Login([FromBody] LoginUserRequest request)
