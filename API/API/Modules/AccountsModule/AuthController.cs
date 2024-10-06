@@ -33,25 +33,41 @@ public class AuthController : ControllerBase
     }    
     
     [HttpPost("Managers/Register")]
-    public async Task<ActionResult> Register([FromBody] RegisterManagerRequest request)
+    public async Task<ActionResult> RegisterManager([FromBody] RegisterManagerRequest request)
     {
-        throw new NotImplementedException();
-
+        var response = await authService.RegisterManager(request);
+        return response.ActionResult;
     }
     
     [HttpPost("Managers/Login")]
-    public async Task<ActionResult> Register([FromBody] LoginManagerRequest request)
+    public async Task<ActionResult> LoginManager([FromBody] LoginManagerRequest request)
     {
-        throw new NotImplementedException();
+        var response = await authService.LoginManager(request);
+        if (!response.IsSuccess)
+            return response.ActionResult;
+        
+        var (loginResponse, credentials) = response.Value;
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(credentials));
+
+        return Ok(loginResponse);
     }
     
+    /// <summary>
+    /// Смена пароля для менеджера. Должен быть залогинен. После смены автоматически разлогинивает.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [Authorize(Roles = nameof(AccountRole.Manager))]
     [HttpPost("Managers/ChangePassword")]
-    public async Task<ActionResult> ChangePassword([FromBody] string request)
+    public async Task<ActionResult> ChangeManagerPassword([FromBody] ChangeManagerPasswordRequest request)
     {
-        throw new NotImplementedException();
+        var managerId = User.GetId();
+        var response = await authService.ChangeManagerPassword(managerId, request);
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        return response.ActionResult;
     }
     
-   
     
     /// <summary>
     /// Регистрация для обычных юзеров

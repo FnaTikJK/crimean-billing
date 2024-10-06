@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using API.DAL;
 using API.Infrastructure;
 using API.Modules.AccountsModule.Manager;
+using API.Modules.AccountsModule.Manager.DTO;
 using API.Modules.AccountsModule.Share;
 using API.Modules.AccountsModule.User;
 using API.Modules.AccountsModule.User.DTO;
@@ -14,8 +15,9 @@ namespace API.Modules.AccountsModule;
 
 public interface IAuthService
 {
-    Task RegisterManager();
-    Task LoginManager();
+    Task<Result<RegisterManagerResponse>> RegisterManager(RegisterManagerRequest request);
+    Task<Result<(LoginManagerResponse, ClaimsIdentity)>> LoginManager(LoginManagerRequest request);
+    Task<Result<bool>> ChangeManagerPassword(Guid managerId, ChangeManagerPasswordRequest request);
     Task<Result<RegisterUserResponse>> Register(RegisterUserRequest request);
     Task<Result<bool>> Login(LoginUserRequest request);
     Task<Result<(VerifyUserResponse, ClaimsIdentity)>> Verify(VerifyUserRequest request);
@@ -25,29 +27,71 @@ public class AuthService : IAuthService
 {
     private readonly ICache cache;
     private readonly DataContext db;
+    private readonly IPasswordHasher passwordHasher;
+    
     private readonly DbSet<UserEntity> users;
     private readonly DbSet<AccountEntity> accounts;
     private readonly DbSet<ManagerEntity> managers;
     private static Random rnd = new Random();
     private static Regex cacheRegex = new(@"[0-9]{6}");
 
-    public AuthService(DataContext db, ICache cache)
+    public AuthService(ICache cache, DataContext db, IPasswordHasher passwordHasher)
     {
         this.cache = cache;
         this.db = db;
+        this.passwordHasher = passwordHasher;
         users = db.Users;
         accounts = db.Accounts;
         managers = db.Managers;
     }
 
-    public Task RegisterManager()
+    public async Task<Result<RegisterManagerResponse>> RegisterManager(RegisterManagerRequest request)
     {
-        throw new NotImplementedException();
+        var existed = await managers.AsNoTracking().FirstOrDefaultAsync(e => e.Login == request.Login);
+        if (existed != null)
+            return Result.BadRequest<RegisterManagerResponse>("Такой логин занят");
+
+        var newManager = new ManagerEntity
+        {
+            Login = request.Login,
+            PasswordHash = passwordHasher.Hash(request.Password)
+        };
+        await managers.AddAsync(newManager);
+        await db.SaveChangesAsync();
+        
+        return Result.Ok(new RegisterManagerResponse
+        {
+            UserId = newManager.Id,
+        });
     }
 
-    public Task LoginManager()
+    public async Task<Result<(LoginManagerResponse, ClaimsIdentity)>> LoginManager(LoginManagerRequest request)
     {
-        throw new NotImplementedException();
+        var hashed = passwordHasher.Hash(request.Password);
+        var manager = await managers.AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Login == request.Login
+                                      && e.PasswordHash == hashed);
+        if (manager == null)
+            return Result.BadRequest<(LoginManagerResponse, ClaimsIdentity)>("Неправильный логин или пароль");
+
+        return Result.Ok((
+            new LoginManagerResponse {UserId = manager.Id},
+            GetCredentials(manager)));
+    }
+
+    public async Task<Result<bool>> ChangeManagerPassword(Guid managerId, ChangeManagerPasswordRequest request)
+    {
+        var manager = await managers.FirstOrDefaultAsync(e => e.Id == managerId);
+        if (manager == null)
+            return Result.BadRequest<bool>("Такого менеджера не существует");
+
+        var hashed = passwordHasher.Hash(request.OldPassword);
+        if (manager.PasswordHash != hashed)
+            return Result.BadRequest<bool>("Старый пароль не совпадает");
+
+        manager.PasswordHash = passwordHasher.Hash(request.NewPassword);
+        await db.SaveChangesAsync();
+        return Result.NoContent<bool>();
     }
 
     public async Task<Result<RegisterUserResponse>> Register(RegisterUserRequest request)
