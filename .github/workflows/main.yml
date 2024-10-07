@@ -1,0 +1,29 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  CR_REGISTRY: crpurgn9rui23mqmfigp
+  BACKEND_IMAGE: cr.yandex/${{ CR_REGISTRY }}/backend:${{ github.sha }}
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Yandex Cloud Login
+      uses: yc-actions/yc-cr-login@v1
+      with:
+        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+    - name: Build and push images
+      env:
+        BACKEND_IMAGE_TAG: ${{ BACKEND_IMAGE }}
+      run: |
+        docker build -f ./API/API/Dockerfile --force-rm -t $BACKEND_IMAGE_TAG .
+        docker push $BACKEND_IMAGE_TAG
