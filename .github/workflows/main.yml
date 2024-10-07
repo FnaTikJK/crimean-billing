@@ -6,7 +6,7 @@ on:
 
 env:
   CR_REGISTRY: crpurgn9rui23mqmfigp
-  BACKEND_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/backend:${{ github.sha }}
+  BACKEND_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/backend:last
 
 jobs:
   build-backend:
