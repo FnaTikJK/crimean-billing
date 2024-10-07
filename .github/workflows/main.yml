@@ -25,5 +25,6 @@ jobs:
       env:
         BACKEND_IMAGE_TAG: ${{ env.BACKEND_IMAGE }}
       run: |
-        docker build -f ./API/API/Dockerfile --force-rm -t $BACKEND_IMAGE_TAG .
+        cd ./API
+        docker build -f API/Dockerfile --force-rm -t $BACKEND_IMAGE_TAG .
         docker push $BACKEND_IMAGE_TAG
