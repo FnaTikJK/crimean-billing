@@ -31,9 +31,23 @@ jobs:
         docker push $BACKEND_IMAGE_TAG
         cd ./
 
-    - name: Build and push back
+jobs:
+  build-front:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Yandex Cloud Login
+      uses: yc-actions/yc-cr-login@v1
+      with:
+        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+    - name: Build and push front
       env:
         FRONT_IMAGE_TAG: ${{ env.FRONT_IMAGE }}
       run: |
-        docker build -f Client/client/Dockerfile -t $FRONT_IMAGE_TAG .
+        cd /Client/client
+        docker build -f Dockerfile -t $FRONT_IMAGE_TAG .
         docker push $FRONT_IMAGE_TAG
