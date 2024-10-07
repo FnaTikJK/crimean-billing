@@ -48,6 +48,6 @@ jobs:
       env:
         FRONT_IMAGE_TAG: ${{ env.FRONT_IMAGE }}
       run: |
-        cd /Client/client
+        cd ./Client/client
         docker build -f Dockerfile -t $FRONT_IMAGE_TAG .
         docker push $FRONT_IMAGE_TAG
