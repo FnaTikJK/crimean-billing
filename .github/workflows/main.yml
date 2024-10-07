@@ -7,6 +7,7 @@ on:
 env:
   CR_REGISTRY: crpurgn9rui23mqmfigp
   BACKEND_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/backend:last
+  FRONT_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/front:last
 
 jobs:
   build-backend:
@@ -21,10 +22,18 @@ jobs:
       with:
         yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
-    - name: Build and push images
+    - name: Build and push back
       env:
         BACKEND_IMAGE_TAG: ${{ env.BACKEND_IMAGE }}
       run: |
         cd ./API
         docker build -f API/Dockerfile --force-rm -t $BACKEND_IMAGE_TAG .
         docker push $BACKEND_IMAGE_TAG
+        cd ./
+
+    - name: Build and push back
+      env:
+        FRONT_IMAGE_TAG: ${{ env.FRONT_IMAGE }}
+      run: |
+        docker build -f Client/client/Dockerfile -t $FRONT_IMAGE_TAG .
+        docker push $FRONT_IMAGE_TAG
