@@ -6,7 +6,6 @@ on:
 
 env:
   CR_REGISTRY: crpurgn9rui23mqmfigp
-  BACKEND_IMAGE: cr.yandex/${{ CR_REGISTRY }}/backend:${{ github.sha }}
 
 jobs:
   build-backend:
