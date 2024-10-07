@@ -31,7 +31,7 @@ jobs:
         docker push $BACKEND_IMAGE_TAG
         cd ./
 
-jobs:
+
   build-front:
     runs-on: ubuntu-latest
 
