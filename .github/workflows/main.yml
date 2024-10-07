@@ -6,7 +6,7 @@ on:
 
 env:
   CR_REGISTRY: crpurgn9rui23mqmfigp
-  BACKEND_IMAGE: cr.yandex/${{ env.CR_REGISTRY }}/backend:${{ github.sha }}
+  BACKEND_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/backend:${{ github.sha }}
 
 jobs:
   build-backend:
@@ -23,7 +23,7 @@ jobs:
 
     - name: Build and push images
       env:
-        BACKEND_IMAGE_TAG: ${{ BACKEND_IMAGE }}
+        BACKEND_IMAGE_TAG: ${{ env.BACKEND_IMAGE }}
       run: |
         docker build -f ./API/API/Dockerfile --force-rm -t $BACKEND_IMAGE_TAG .
         docker push $BACKEND_IMAGE_TAG
