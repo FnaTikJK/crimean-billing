@@ -74,5 +74,5 @@ jobs:
         vm-memory: 2Gb
         vm-core-fraction: 50
         vm-subnet-id: fl88mvrmcl779251ivq2
-        user-data-path: './user-data.yaml'
-        docker-compose-path: './docker-compose.yaml'
+        user-data-path: 'user-data.yaml'
+        docker-compose-path: 'docker-compose.yaml'
