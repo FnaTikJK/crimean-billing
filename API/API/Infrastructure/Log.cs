@@ -9,6 +9,6 @@ public class Log : ILog
 {
     public void Error(string message)
     {
-        throw new NotImplementedException();
+        Console.WriteLine(message);
     }
 }
