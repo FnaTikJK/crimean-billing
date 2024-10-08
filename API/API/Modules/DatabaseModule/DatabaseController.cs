@@ -1,4 +1,5 @@
 using API.DAL;
+using API.Infrastructure.Config;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Modules.DatabaseModule;
@@ -21,5 +22,14 @@ public class DatabaseController : ControllerBase
     public ActionResult RecreateDatabase()
     {
         return databaseService.RecreateDatabase().ActionResult;
+    }
+
+    [HttpGet]
+    public ActionResult GetConnectionstring()
+    {
+        return Ok(new {
+            Connection = Config.DatabaseConnectionString,
+            IsDebug = Config.IsDebug,
+        });
     }
 }
