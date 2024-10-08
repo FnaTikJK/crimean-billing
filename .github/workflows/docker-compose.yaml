@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  app:
+    image: {{ env.BACKEND_IMAGE }}
+    container_name: app
+    environment:
+      - ASPNETCORE_ENVIRONMENT = Release 
+      - "DATABASE_CONNECTION_STRING = host=postgres;Port=5432;Database=crimeanBilling;User Id=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};"
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - my-network
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: "crimeanBilling"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - stackup_postgres_data:/var/lib/postgresql/data/
+
+  front:
+    image: cr.yandex/crpf4id8lbgetpgvvgss/devops-front
+    container_name: front
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    networks:
+      - my-network
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+    networks:
+      - my-network
+
+
+volumes:
+  stackup_postgres_data:
+
+networks:
+  my-network:
+    driver: bridge
