@@ -25,7 +25,7 @@ services:
       - stackup_postgres_data:/var/lib/postgresql/data/
 
   front:
-    image: cr.yandex/crpf4id8lbgetpgvvgss/devops-front
+    image: {{ env.FRONT_IMAGE }}
     container_name: front
     depends_on:
       - app
