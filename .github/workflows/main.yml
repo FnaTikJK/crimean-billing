@@ -54,7 +54,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [ "build-backend", "build-front" ]
+    #needs: [ "build-backend", "build-front" ]
 
     steps:
     - name: Deploy
@@ -68,6 +68,7 @@ jobs:
       with:
         yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
         folder-id: ${{ env.YC_FOLDER_ID }}
-        vm-name: yc-action-demo
+        vm-name: git-actions
+        vm-service-account-id: ajeoqia1ae0o837srf5p
         user-data-path: './user-data.yaml'
         docker-compose-path: './docker-compose.yaml'
