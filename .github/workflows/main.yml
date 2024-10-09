@@ -7,7 +7,8 @@ on:
 env:
   CR_REGISTRY: crpurgn9rui23mqmfigp
   BACKEND_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/backend:last
-  FRONT_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/front:last
+  FRONT_MANAGER_PAGE_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/front:last
+  FRONT_USER_PAGE_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/front:last
   YC_FOLDER_ID: b1g2bgj4m7cqfi0s16bp
 
 jobs:
@@ -32,7 +33,7 @@ jobs:
         docker push $BACKEND_IMAGE_TAG
 
 
-  build-front:
+  build-front-manager-page:
     runs-on: ubuntu-latest
 
     steps:
@@ -46,15 +47,36 @@ jobs:
 
     - name: Build and push front
       env:
-        FRONT_IMAGE_TAG: ${{ env.FRONT_IMAGE }}
+        FRONT_MANAGER_TAG: ${{ env.FRONT_MANAGER_PAGE_IMAGE }}
       run: |
-        cd ./Client/client
-        docker build -f Dockerfile -t $FRONT_IMAGE_TAG .
-        docker push $FRONT_IMAGE_TAG
+        cd ./Client/angular-monorepo
+        docker build -f ./apps/manager-app/Dockerfile -t $FRONT_MANAGER_TAG .
+        docker push $FRONT_MANAGER_TAG
+
+  build-front-user-page:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Yandex Cloud Login
+      uses: yc-actions/yc-cr-login@v1
+      with:
+        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+    - name: Build and push front
+      env:
+        FRONT_USER_TAG: ${{ env.FRONT_USER_PAGE_IMAGE }}
+      run: |
+        cd ./Client/angular-monorepo
+        docker build -f ./apps/user-app/Dockerfile -t $FRONT_USER_TAG .
+        docker push $FRONT_USER_TAG
+
 
   deploy:
     runs-on: ubuntu-latest
-    #needs: [ "build-backend", "build-front" ]
+    #needs: [ "build-backend", "build-front-manager-page", "build-front-user-page" ]
 
     steps:
     - name: Checkout
@@ -64,7 +86,8 @@ jobs:
       uses: yc-actions/yc-coi-deploy@v1
       env:
         BACKEND_IMAGE: ${{ env.BACKEND_IMAGE }}
-        FRONT_IMAGE: ${{ env.FRONT_IMAGE }}
+        FRONT_MANAGER_IMAGE: ${{ env.FRONT_MANAGER_IMAGE }}
+        FRONT_USER_IMAGE: ${{ env.FRONT_USER_IMAGE }}
         POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         SSH_KEY: ${{ secrets.SSH_KEY }}
