@@ -3,5 +3,8 @@ POSTGRES_PASSWORD = password
 
 BACKEND_IMAGE = cr.yandex/crpurgn9rui23mqmfigp/backend:last
 
+MAIL_BOX_LOGIN = chernorusy@mail.ru
+MAIL_BOX_PASSWORD = n2UwqhFqjj7W7jz5t5cR
+
 FRONT_MANAGER_IMAGE = cr.yandex/crpurgn9rui23mqmfigp/front_manager_page:last
 FRONT_USER_IMAGE = cr.yandex/crpurgn9rui23mqmfigp/front_user_page:last

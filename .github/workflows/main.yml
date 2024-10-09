@@ -7,6 +7,7 @@ on:
 env:
   CR_REGISTRY: crpurgn9rui23mqmfigp
   BACKEND_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/backend:last
+  MAIL_BOX_LOGIN: chernorusy@mail.ru
   FRONT_MANAGER_PAGE_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/front_manager_page:last
   FRONT_USER_PAGE_IMAGE: cr.yandex/crpurgn9rui23mqmfigp/front_user_page:last
   YC_FOLDER_ID: b1g2bgj4m7cqfi0s16bp
@@ -86,6 +87,8 @@ jobs:
       uses: yc-actions/yc-coi-deploy@v1
       env:
         BACKEND_IMAGE: ${{ env.BACKEND_IMAGE }}
+        MAIL_BOX_LOGIN: ${{ env.MAIL_BOX_LOGIN }}
+        MAIL_BOX_PASSWORD: ${{ secrets.MAIL_BOX_PASSWORD }}
         FRONT_MANAGER_IMAGE: ${{ env.FRONT_MANAGER_PAGE_IMAGE }}
         FRONT_USER_IMAGE: ${{ env.FRONT_USER_PAGE_IMAGE }}
         POSTGRES_USER: ${{ secrets.POSTGRES_USER }}

@@ -8,6 +8,7 @@ using API.Modules.AccountsModule.Share;
 using API.Modules.AccountsModule.User;
 using API.Modules.AccountsModule.User.DTO;
 using API.Modules.CacheModule;
+using API.Modules.NotificationModule;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +30,7 @@ public class AuthService : IAuthService
     private readonly DataContext db;
     private readonly IPasswordHasher passwordHasher;
     private readonly ILog log;
+    private readonly INotificationService notificationService;
 
     private readonly DbSet<UserEntity> users;
     private readonly DbSet<AccountEntity> accounts;
@@ -36,12 +38,19 @@ public class AuthService : IAuthService
     private static Random rnd = new();
     private static Regex cacheRegex = new(@"[0-9]{6}");
 
-    public AuthService(ICache cache, DataContext db, IPasswordHasher passwordHasher, ILog log)
+    public AuthService(
+        ICache cache,
+        DataContext db, 
+        IPasswordHasher passwordHasher, 
+        ILog log,
+        INotificationService notificationService)
     {
         this.cache = cache;
         this.db = db;
         this.passwordHasher = passwordHasher;
         this.log = log;
+        this.notificationService = notificationService;
+        
         users = db.Users;
         accounts = db.Accounts;
         managers = db.Managers;
@@ -107,12 +116,19 @@ public class AuthService : IAuthService
         if (existedAccount != null)
         {
             user = existedAccount.User;
+            if (!string.IsNullOrEmpty(request.Email) && user.Email != request.Email)
+                return Result.BadRequest<RegisterUserResponse>("У пользователя привязана другая почта");
             log.Info($"Found user for registration. PhoneNumber: {request.PhoneNumber}, UserId: {user.Id}");
         }
         else
         {
+            if (string.IsNullOrEmpty(request.Email))
+                return Result.BadRequest<RegisterUserResponse>("Невозможно создать пользователя без почты");
             log.Info($"Not found user for registration. PhoneNumber: {request.PhoneNumber}. Create new");
-            user = new UserEntity();
+            user = new UserEntity
+            {
+                Email = request.Email,
+            };
             await users.AddAsync(user);
             user.Accounts = new HashSet<AccountEntity>();
         }
@@ -144,6 +160,7 @@ public class AuthService : IAuthService
         var userId = account.User.Id.ToString();
         log.Info($"Set verification code for User: {userId}, PhoneNumber: {request.PhoneNumber}, VerificationCode: {verificationCode}");
         cache.Add(verificationCode, userId);
+        notificationService.SendEmail("Код подтверждения", verificationCode, account.User.Email);
         return Result.NoContent<bool>();
     }
 

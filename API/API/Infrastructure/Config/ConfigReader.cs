@@ -8,10 +8,19 @@ public static class ConfigReader
         Config.DatabaseConnectionString = isDebug
             ? GetStringIfExists(DatabaseConnectionStringKey)
             : Environment.GetEnvironmentVariable(DatabaseConnectionStringKey)!;
+        Config.MailBoxLogin = isDebug
+            ? GetStringIfExists(MailBoxLoginKey)
+            : Environment.GetEnvironmentVariable(MailBoxLoginKey)!;
+        Config.MailBoxPassword = isDebug
+            ? GetStringIfExists(MailBoxPasswordKey)
+            : Environment.GetEnvironmentVariable(MailBoxPasswordKey)!;
     }
 
     private static readonly string DatabaseConnectionStringKey = "DATABASE_CONNECTION_STRING";
-    
+
+    private static readonly string MailBoxLoginKey = "MAIL_BOX_LOGIN";
+    private static readonly string MailBoxPasswordKey = "MAIL_BOX_PASSWORD";
+
     private static string PathToConfig => Environment.GetEnvironmentVariable("CONFIG_PATH") 
                                           ?? @"../Config";
 

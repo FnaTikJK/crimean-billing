@@ -8,4 +8,5 @@ public class UserEntity : IEntity
     [Key]
     public Guid Id { get; set; }
     public HashSet<AccountEntity> Accounts { get; set; }
+    public string Email { get; set; }
 }

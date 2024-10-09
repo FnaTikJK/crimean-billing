@@ -82,7 +82,8 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <remarks>
     /// Пользователь определяется по PhoneNumber.
-    /// Есои такой уже есть, то ему добавляется новый Account, иначе создаётся новый User
+    /// Есои такой уже есть, то ему добавляется новый Account, иначе создаётся новый User.
+    /// Почта проверяется на соответсвие, если она указана в запросе И такой User уже существует.
     /// </remarks>
     [HttpPost("Register")]
     public async Task<ActionResult<RegisterUserResponse>> Register([FromBody] RegisterUserRequest request)
