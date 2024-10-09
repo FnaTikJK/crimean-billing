@@ -8,5 +8,6 @@ public class LogsModule : IModule
     {
         services.AddSingleton<ILog, Log>();
         services.AddScoped<ILogsService, LogsService>();
+        services.AddSingleton<ILog, Log>();
     }
 }

@@ -15,12 +15,10 @@ public interface ILogsService
 
 public class LogsService : ILogsService
 {
-    private readonly string path = "API/Logs";
     private readonly ILog logger;
 
-    public LogsService(string path, ILog logger)
+    public LogsService(ILog logger)
     {
-        this.path = path;
         this.logger = logger;
     }
     public void WriteLog(string message, LogLevel level)
@@ -41,7 +39,7 @@ public class LogsService : ILogsService
     {
         var filterDate = date.ToString(CultureInfo.InvariantCulture);
         var sb = new StringBuilder();
-        var logFilePath = $"{path}/log-{filterDate}.txt";
+        var logFilePath = $"API/Logs/log-{filterDate}.txt";
         
         if(File.Exists(logFilePath))
             foreach (var line in File.ReadLines(logFilePath))
