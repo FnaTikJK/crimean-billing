@@ -1,3 +1,6 @@
+using API.Modules.LogsModule;
+using Serilog;
+
 namespace API.Infrastructure;
 
 public interface ILog
@@ -8,13 +11,17 @@ public interface ILog
 
 public class Log : ILog
 {
+    private readonly Serilog.ILogger logger = new LoggerConfiguration()
+        .WriteTo.File($"logs/log-{DateOnly.FromDateTime(DateTime.Now)}.txt", rollingInterval: RollingInterval.Day)
+        .CreateLogger();
+
     public void Error(string message)
     {
-        Console.WriteLine(message);
+        logger.Error($"{DateTime.UtcNow}: {message}", LogLevel.Error);
     }
-
+    
     public void Info(string message)
     {
-        Console.WriteLine(message);
+       logger.Information($"{DateTime.UtcNow}: {message}", LogLevel.Information);
     }
 }

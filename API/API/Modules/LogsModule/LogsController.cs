@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Modules.LogsModule;
 
@@ -6,11 +7,13 @@ namespace API.Modules.LogsModule;
 [ApiController]
 public class LogsController : ControllerBase
 {
-    private readonly ILogsService _logsService;
+    private readonly ILogsService logsService;
+    private readonly ILog logger;
 
-    public LogsController(ILogsService logsService)
+    public LogsController(ILogsService logsService, ILog logger)
     {
-        this._logsService = logsService;
+        this.logsService = logsService;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -30,6 +33,20 @@ public class LogsController : ControllerBase
         if (!DateOnly.TryParse(date, out var dateOnly))
             return BadRequest("Неправильный формат в Route. Должен быть yyyy-MM-dd");
 
-        return _logsService.ReadLog(dateOnly);
+        return logsService.ReadLog(dateOnly);
+    }
+    
+    [HttpGet("throw")]
+    public ActionResult Throw()
+    {
+        try
+        {
+            throw new Exception("Тестовое исключение");
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex.Message);
+            return StatusCode(500, "Произошла ошибка");
+        }
     }
 }
