@@ -5,8 +5,9 @@ public static class ConfigReader
     public static void Init(bool isDebug)
     {
         Config.IsDebug = isDebug;
-        Config.DatabaseConnectionString = Environment.GetEnvironmentVariable(DatabaseConnectionStringKey)
-                                          ?? GetStringIfExists(DatabaseConnectionStringKey);
+        Config.DatabaseConnectionString = isDebug
+            ? GetStringIfExists(DatabaseConnectionStringKey)
+            : Environment.GetEnvironmentVariable(DatabaseConnectionStringKey)!;
     }
 
     private static readonly string DatabaseConnectionStringKey = "DATABASE_CONNECTION_STRING";

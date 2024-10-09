@@ -1,0 +1,4 @@
+BACKEND_IMAGE = cr.yandex/crpurgn9rui23mqmfigp/backend:last
+FRONT_IMAGE = cr.yandex/crpurgn9rui23mqmfigp/front:last
+POSTGRES_USER = postgres
+POSTGRES_PASSWORD = password
