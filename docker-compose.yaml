@@ -28,13 +28,23 @@ services:
     networks:
       - my-network
 
-  front:
-    image: ${FRONT_IMAGE}
-    container_name: front
+  front-manager-page:
+    image: ${FRONT_MANAGER_IMAGE}
+    container_name: front-manager-page
     depends_on:
       - app
     ports:
       - 1337:80
+    networks:
+      - my-network
+
+  front-user-page:
+    image: ${FRONT_USER_IMAGE}
+    container_name: front-user-page
+    depends_on:
+      - app
+    ports:
+      - 1338:80
     networks:
       - my-network
 
@@ -47,7 +57,8 @@ services:
       - 80:80
     depends_on:
       - app
-      - front
+      - front-manager-page
+      - front-user-page
     networks:
       - my-network
 

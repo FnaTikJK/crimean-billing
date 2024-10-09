@@ -86,8 +86,8 @@ jobs:
       uses: yc-actions/yc-coi-deploy@v1
       env:
         BACKEND_IMAGE: ${{ env.BACKEND_IMAGE }}
-        FRONT_MANAGER_IMAGE: ${{ env.FRONT_MANAGER_IMAGE }}
-        FRONT_USER_IMAGE: ${{ env.FRONT_USER_IMAGE }}
+        FRONT_MANAGER_IMAGE: ${{ env.FRONT_MANAGER_PAGE_IMAGE }}
+        FRONT_USER_IMAGE: ${{ env.FRONT_USER_PAGE_IMAGE }}
         POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         SSH_KEY: ${{ secrets.SSH_KEY }}
