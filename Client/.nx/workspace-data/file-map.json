@@ -1,0 +1,162 @@
+{
+  "version": "6.0",
+  "nxVersion": "20.0.0",
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "manager-app": [
+        {
+          "file": "angular-monorepo/apps/manager-app/eslint.config.js",
+          "hash": "12883900717377691005"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/jest.config.ts",
+          "hash": "7282136743310008646"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/project.json",
+          "hash": "7355411820901144859"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/public/favicon.ico",
+          "hash": "9303420814833116677"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/app/app.component.html",
+          "hash": "5654460193981998828"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/app/app.component.scss",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/app/app.component.spec.ts",
+          "hash": "15084030758318441337"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/app/app.component.ts",
+          "hash": "8699497790999202085"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/app/app.config.ts",
+          "hash": "6137170128205633588"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/app/app.routes.ts",
+          "hash": "6185150965714414910"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/app/nx-welcome.component.ts",
+          "hash": "15219631480379437786"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/index.html",
+          "hash": "17912666044671539607"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/main.ts",
+          "hash": "16635586463787978962"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/styles.scss",
+          "hash": "5195668842064076916"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/src/test-setup.ts",
+          "hash": "12935735732682149507"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/tsconfig.app.json",
+          "hash": "8365644956319658761"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/tsconfig.editor.json",
+          "hash": "1055794200401717100"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/tsconfig.json",
+          "hash": "6424220500541951295"
+        },
+        {
+          "file": "angular-monorepo/apps/manager-app/tsconfig.spec.json",
+          "hash": "2927375835638640771"
+        }
+      ]
+    },
+    "nonProjectFiles": [
+      {
+        "file": ".idea/.gitignore",
+        "hash": "5255412931663222636"
+      },
+      {
+        "file": ".idea/Client.iml",
+        "hash": "17628044544001142833"
+      },
+      {
+        "file": ".idea/modules.xml",
+        "hash": "3527225285016541791"
+      },
+      {
+        "file": ".idea/vcs.xml",
+        "hash": "10114517005702041235"
+      },
+      {
+        "file": "angular-monorepo/.editorconfig",
+        "hash": "5443105041930014821"
+      },
+      {
+        "file": "angular-monorepo/.github/workflows/ci.yml",
+        "hash": "13317559401873483039"
+      },
+      {
+        "file": "angular-monorepo/.gitignore",
+        "hash": "16399683567307215337"
+      },
+      {
+        "file": "angular-monorepo/.prettierignore",
+        "hash": "5407418692668764289"
+      },
+      {
+        "file": "angular-monorepo/.prettierrc",
+        "hash": "16267754514737964994"
+      },
+      {
+        "file": "angular-monorepo/.vscode/extensions.json",
+        "hash": "4934098906304722861"
+      },
+      {
+        "file": "angular-monorepo/README.md",
+        "hash": "12119645656360600818"
+      },
+      {
+        "file": "angular-monorepo/eslint.config.js",
+        "hash": "2478217381773231556"
+      },
+      {
+        "file": "angular-monorepo/jest.config.ts",
+        "hash": "3494843969422251966"
+      },
+      {
+        "file": "angular-monorepo/jest.preset.js",
+        "hash": "9430166341120122740"
+      },
+      {
+        "file": "angular-monorepo/nx.json",
+        "hash": "8023915483898078426"
+      },
+      {
+        "file": "angular-monorepo/package-lock.json",
+        "hash": "8438910478363418880"
+      },
+      {
+        "file": "angular-monorepo/package.json",
+        "hash": "17658503608611659990"
+      },
+      {
+        "file": "angular-monorepo/tsconfig.base.json",
+        "hash": "16936441711144470533"
+      }
+    ]
+  }
+}
