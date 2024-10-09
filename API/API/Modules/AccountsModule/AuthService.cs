@@ -28,18 +28,20 @@ public class AuthService : IAuthService
     private readonly ICache cache;
     private readonly DataContext db;
     private readonly IPasswordHasher passwordHasher;
-    
+    private readonly ILog log;
+
     private readonly DbSet<UserEntity> users;
     private readonly DbSet<AccountEntity> accounts;
     private readonly DbSet<ManagerEntity> managers;
-    private static Random rnd = new Random();
+    private static Random rnd = new();
     private static Regex cacheRegex = new(@"[0-9]{6}");
 
-    public AuthService(ICache cache, DataContext db, IPasswordHasher passwordHasher)
+    public AuthService(ICache cache, DataContext db, IPasswordHasher passwordHasher, ILog log)
     {
         this.cache = cache;
         this.db = db;
         this.passwordHasher = passwordHasher;
+        this.log = log;
         users = db.Users;
         accounts = db.Accounts;
         managers = db.Managers;
@@ -59,6 +61,7 @@ public class AuthService : IAuthService
         await managers.AddAsync(newManager);
         await db.SaveChangesAsync();
         
+        log.Info($"Registered Manager: {newManager.Id}");
         return Result.Ok(new RegisterManagerResponse
         {
             UserId = newManager.Id,
@@ -91,20 +94,24 @@ public class AuthService : IAuthService
 
         manager.PasswordHash = passwordHasher.Hash(request.NewPassword);
         await db.SaveChangesAsync();
+        
+        log.Info($"Changed password for Manger: {managerId}");
         return Result.NoContent<bool>();
     }
 
     public async Task<Result<RegisterUserResponse>> Register(RegisterUserRequest request)
     {
+        var existedAccount = await accounts.Include(e => e.User)
+            .FirstOrDefaultAsync(e => e.PhoneNumber == request.PhoneNumber);
         UserEntity? user;
-        if (request.UserId != null)
+        if (existedAccount != null)
         {
-            user = await users.Include(e => e.Accounts).FirstOrDefaultAsync(e => e.Id == request.UserId);
-            if (user == null)
-                return Result.BadRequest<RegisterUserResponse>("Такого пользователя не сущесвтует");
+            user = existedAccount.User;
+            log.Info($"Found user for registration. PhoneNumber: {request.PhoneNumber}, UserId: {user.Id}");
         }
         else
         {
+            log.Info($"Not found user for registration. PhoneNumber: {request.PhoneNumber}. Create new");
             user = new UserEntity();
             await users.AddAsync(user);
             user.Accounts = new HashSet<AccountEntity>();
@@ -112,12 +119,12 @@ public class AuthService : IAuthService
 
         var account = new AccountEntity
         {
-            User = user, 
-            PhoneNumber = request.PhoneNumber
+            PhoneNumber = request.PhoneNumber,
+            Number = request.Number,
         };
         user.Accounts.Add(account);
         await db.SaveChangesAsync();
-        return Result.Ok(new RegisterUserResponse()
+        return Result.Ok(new RegisterUserResponse
         {
             UserId = user.Id,
             AccountId = account.Id,
@@ -134,7 +141,9 @@ public class AuthService : IAuthService
             return Result.BadRequest<bool>("Такого пользователя не существует");
 
         var verificationCode = string.Join("", Enumerable.Range(0, 6).Select(e => rnd.Next(10)));
-        cache.Add(verificationCode, account.User.Id.ToString());
+        var userId = account.User.Id.ToString();
+        log.Info($"Set verification code for User: {userId}, PhoneNumber: {request.PhoneNumber}, VerificationCode: {verificationCode}");
+        cache.Add(verificationCode, userId);
         return Result.NoContent<bool>();
     }
 
@@ -143,6 +152,7 @@ public class AuthService : IAuthService
         Guid userId;
         if (request.PhoneNumber != null)
         { // Скипаем верификацию (для тестирования)
+            log.Info($"Skip verification for PhoneNumber: {request.PhoneNumber}");
             userId = (await accounts
                 .AsNoTracking()
                 .Include(e => e.User)
@@ -170,6 +180,8 @@ public class AuthService : IAuthService
             UserId = userId,
             AccountIds = user.Accounts.Select(e => e.Id).ToArray(),
         };
+        
+        log.Info($"Verified User: {userId}");
         return Result.Ok((verifyResponse, GetCredentials(user)));
     }
 

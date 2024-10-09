@@ -80,6 +80,10 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Регистрация для обычных юзеров
     /// </summary>
+    /// <remarks>
+    /// Пользователь определяется по PhoneNumber.
+    /// Есои такой уже есть, то ему добавляется новый Account, иначе создаётся новый User
+    /// </remarks>
     [HttpPost("Register")]
     public async Task<ActionResult<RegisterUserResponse>> Register([FromBody] RegisterUserRequest request)
     {

@@ -2,6 +2,6 @@
 
 public class RegisterUserRequest
 {
-    public Guid? UserId { get; set; }
     public int PhoneNumber { get; set; }
+    public int Number { get; set; }
 }
