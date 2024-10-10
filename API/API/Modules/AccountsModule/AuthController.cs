@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
     }    
     
     /// <summary>
-    /// Тестовая ручка для реги менеджера 
+    /// Тестовая ручка для реги менеджера
     /// </summary>
     [HttpPost("Managers/Register")]
     public async Task<ActionResult> RegisterManager([FromBody] RegisterManagerRequest request)
@@ -81,9 +81,9 @@ public class AuthController : ControllerBase
     /// Регистрация для обычных юзеров
     /// </summary>
     /// <remarks>
-    /// Пользователь определяется по PhoneNumber.
-    /// Есои такой уже есть, то ему добавляется новый Account, иначе создаётся новый User.
-    /// Почта проверяется на соответсвие, если она указана в запросе И такой User уже существует.
+    /// Если указан UserId, то добавляем ему Account <br/>
+    /// Иначе создаём нового UserId, создаём и привязываем ему Account <br/>
+    /// AccountType - Какого типа акк создать (SIM, TV, Internet)
     /// </remarks>
     [HttpPost("Register")]
     public async Task<ActionResult<RegisterUserResponse>> Register([FromBody] RegisterUserRequest request)

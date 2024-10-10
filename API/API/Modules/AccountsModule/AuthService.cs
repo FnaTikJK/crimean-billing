@@ -110,34 +110,34 @@ public class AuthService : IAuthService
 
     public async Task<Result<RegisterUserResponse>> Register(RegisterUserRequest request)
     {
-        var existedAccount = await accounts.Include(e => e.User)
-            .FirstOrDefaultAsync(e => e.PhoneNumber == request.PhoneNumber);
+        var isNumberOccupied = await accounts.AsNoTracking().FirstOrDefaultAsync(e => e.Number == request.Number);
+        if (isNumberOccupied != null)
+            return Result.BadRequest<RegisterUserResponse>("Лицевой счёт с таким номером уже существует");
+        var userWithSamePhone = (await accounts.AsNoTracking().Include(e => e.User)
+            .FirstOrDefaultAsync(e => e.PhoneNumber == request.PhoneNumber))
+            ?.User.Id;
+        
         UserEntity? user;
-        if (existedAccount != null)
+        if (request.UserId != null)
         {
-            user = existedAccount.User;
-            if (!string.IsNullOrEmpty(request.Email) && user.Email != request.Email)
-                return Result.BadRequest<RegisterUserResponse>("У пользователя привязана другая почта");
-            log.Info($"Found user for registration. PhoneNumber: {request.PhoneNumber}, UserId: {user.Id}");
+            user = await users.Include(e => e.Accounts).FirstOrDefaultAsync(e => e.Id == request.UserId);
+            if (user == null)
+                return Result.BadRequest<RegisterUserResponse>("Такого пользователя не существует");
+            if (userWithSamePhone != null && userWithSamePhone != user.Id)
+                return Result.BadRequest<RegisterUserResponse>("Телефон уже привязан к другому пользователю");
         }
         else
         {
+            if (userWithSamePhone != null)
+                return Result.BadRequest<RegisterUserResponse>("Телефон уже привязан к другому пользователю");
             if (string.IsNullOrEmpty(request.Email))
                 return Result.BadRequest<RegisterUserResponse>("Невозможно создать пользователя без почты");
-            log.Info($"Not found user for registration. PhoneNumber: {request.PhoneNumber}. Create new");
-            user = new UserEntity
-            {
-                Email = request.Email,
-            };
+            log.Info($"Create new User with PhoneNumber: {request.PhoneNumber}.");
+            user = UserMapper.Map(request);
             await users.AddAsync(user);
-            user.Accounts = new HashSet<AccountEntity>();
         }
 
-        var account = new AccountEntity
-        {
-            PhoneNumber = request.PhoneNumber,
-            Number = request.Number,
-        };
+        var account = AccountMapper.Map(request);
         user.Accounts.Add(account);
         await db.SaveChangesAsync();
         return Result.Ok(new RegisterUserResponse
