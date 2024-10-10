@@ -18,10 +18,10 @@ services:
     image: ${BACKEND_IMAGE}
     container_name: app
     environment:
-      - ASPNETCORE_ENVIRONMENT = Release 
+      - "ASPNETCORE_ENVIRONMENT=Release" 
       - "DATABASE_CONNECTION_STRING=host=postgres;Port=5432;Database=crimeanBilling;User Id=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};"
-      - MAIL_BOX_LOGIN = ${MAIL_BOX_LOGIN}
-      - MAIL_BOX_PASSWORD = ${MAIL_BOX_PASSWORD}
+      - "MAIL_BOX_LOGIN=${MAIL_BOX_LOGIN}"
+      - "MAIL_BOX_PASSWORD=${MAIL_BOX_PASSWORD}"
     ports:
       - 8080:8080
       - 443:443
