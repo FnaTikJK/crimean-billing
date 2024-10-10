@@ -1,4 +1,5 @@
 ﻿using API.Infrastructure;
+using ILogger = Serilog.ILogger;
 
 namespace API.Modules.LogsModule;
 
@@ -8,6 +9,6 @@ public class LogsModule : IModule
     {
         services.AddSingleton<ILog, Log>();
         services.AddScoped<ILogsService, LogsService>();
-        services.AddSingleton<ILog, Log>();
+        services.AddScoped<ILog, Log>();
     }
 }

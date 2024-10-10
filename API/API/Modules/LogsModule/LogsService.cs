@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
 using API.Infrastructure;
-using Serilog;
-using LoggerExtensions = Microsoft.Extensions.Logging.LoggerExtensions;
 
 namespace API.Modules.LogsModule;
 
@@ -13,8 +11,13 @@ public interface ILogsService
     public string ReadLog(DateOnly date);
 }
 
-public class LogsService(ILog logger) : ILogsService
+public class LogsService : ILogsService
 {
+    private readonly ILog logger;
+    public LogsService(ILog logger)
+    {
+        this.logger = logger;
+    }
     public void WriteLog(string message, LogLevel level)
     {
         switch (level)
@@ -26,7 +29,6 @@ public class LogsService(ILog logger) : ILogsService
                 logger.Error(message);
                 break;
         }
-        
     }
 
     public string ReadLog(DateOnly date)
