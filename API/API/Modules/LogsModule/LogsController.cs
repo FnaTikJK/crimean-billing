@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Modules.LogsModule;
 
@@ -7,17 +8,19 @@ namespace API.Modules.LogsModule;
 public class LogsController : ControllerBase
 {
     private readonly ILogsService logsService;
+    private readonly ILog logger;
 
-    public LogsController(ILogsService logsService)
+    public LogsController(ILogsService logsService, ILog logger)
     {
         this.logsService = logsService;
+        this.logger = logger;
     }
 
     /// <summary>
     /// Логи по текущему дню
     /// </summary>
     [HttpGet]
-    public ActionResult GetTodayLogs() 
+    public ActionResult<string> GetTodayLogs() 
         => GetTodayLogs(DateOnly.FromDateTime(DateTime.UtcNow).ToString());
 
     /// <summary>
@@ -25,11 +28,25 @@ public class LogsController : ControllerBase
     /// </summary>
     /// <param name="date">Дата в формате yyyy-MM-dd</param>
     [HttpGet(@"{date:regex([[\d*]])}")]
-    public ActionResult GetTodayLogs([FromRoute] string date)
+    public ActionResult<string> GetTodayLogs([FromRoute] string date)
     {
         if (!DateOnly.TryParse(date, out var dateOnly))
             return BadRequest("Неправильный формат в Route. Должен быть yyyy-MM-dd");
-        
-        throw new NotImplementedException();
+
+        return logsService.ReadLog(dateOnly);
+    }
+    
+    [HttpGet("throw")]
+    public ActionResult<string> Throw()
+    {
+        try
+        {
+            throw new Exception("Тестовое исключение");
+        }
+        catch (Exception ex)
+        { 
+            logsService.WriteLog(ex.Message, LogLevel.Error);
+            return logsService.ReadLog(DateOnly.FromDateTime(DateTime.Now));
+        }
     }
 }
