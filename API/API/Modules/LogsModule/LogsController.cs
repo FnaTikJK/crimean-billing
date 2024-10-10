@@ -37,16 +37,16 @@ public class LogsController : ControllerBase
     }
     
     [HttpGet("throw")]
-    public ActionResult Throw()
+    public ActionResult<string> Throw()
     {
         try
         {
             throw new Exception("Тестовое исключение");
         }
         catch (Exception ex)
-        {
-            logger.Error(ex.Message);
-            return StatusCode(500, "Произошла ошибка");
+        { 
+            logsService.WriteLog(ex.Message, LogLevel.Error);
+            return logsService.ReadLog(DateOnly.FromDateTime(DateTime.Now));
         }
     }
 }

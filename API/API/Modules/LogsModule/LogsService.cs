@@ -13,14 +13,8 @@ public interface ILogsService
     public string ReadLog(DateOnly date);
 }
 
-public class LogsService : ILogsService
+public class LogsService(ILog logger) : ILogsService
 {
-    private readonly ILog logger;
-
-    public LogsService(ILog logger)
-    {
-        this.logger = logger;
-    }
     public void WriteLog(string message, LogLevel level)
     {
         switch (level)
@@ -39,7 +33,7 @@ public class LogsService : ILogsService
     {
         var filterDate = date.ToString(CultureInfo.InvariantCulture);
         var sb = new StringBuilder();
-        var logFilePath = $"API/Logs/log-{filterDate}.txt";
+        var logFilePath = $"Logs/log-{filterDate}.txt";
         
         if(File.Exists(logFilePath))
             foreach (var line in File.ReadLines(logFilePath))

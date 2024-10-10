@@ -11,17 +11,22 @@ public interface ILog
 
 public class Log : ILog
 {
-    private readonly Serilog.ILogger logger = new LoggerConfiguration()
-        .WriteTo.File($"logs/log-{DateOnly.FromDateTime(DateTime.Now)}.txt", rollingInterval: RollingInterval.Day)
-        .CreateLogger();
+    private readonly Serilog.ILogger serilog;
+    public Log()
+    {
+        var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", $"Log-{DateTime.UtcNow:yyyy-MM-dd}.txt");
+        serilog = new LoggerConfiguration()
+            .WriteTo.File(logFilePath)
+            .CreateLogger();
+    }
 
     public void Error(string message)
     {
-        logger.Error($"{DateTime.UtcNow}: {message}", LogLevel.Error);
+        serilog.Error($"{DateTime.UtcNow}: {message}", LogLevel.Error);
     }
     
     public void Info(string message)
     {
-       logger.Information($"{DateTime.UtcNow}: {message}", LogLevel.Information);
+        serilog.Information($"{DateTime.UtcNow}: {message}", LogLevel.Information);
     }
 }
