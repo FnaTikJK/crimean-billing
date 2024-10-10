@@ -80,28 +80,10 @@ jobs:
     #needs: [ "build-backend", "build-front-manager-page", "build-front-user-page" ]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    
-    - name: Deploy
-      uses: yc-actions/yc-coi-deploy@v1
-      env:
-        BACKEND_IMAGE: ${{ env.BACKEND_IMAGE }}
-        MAIL_BOX_LOGIN: ${{ env.MAIL_BOX_LOGIN }}
-        MAIL_BOX_PASSWORD: ${{ secrets.MAIL_BOX_PASSWORD }}
-        FRONT_MANAGER_IMAGE: ${{ env.FRONT_MANAGER_PAGE_IMAGE }}
-        FRONT_USER_IMAGE: ${{ env.FRONT_USER_PAGE_IMAGE }}
-        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        SSH_KEY: ${{ secrets.SSH_KEY }}
+    - name: Connect to VM via SSH
+      uses: appleboy/ssh-action@master
       with:
-        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-        folder-id: ${{ env.YC_FOLDER_ID }}
-        vm-name: git-actions
-        vm-service-account-id: ajeoqia1ae0o837srf5p
-        vm-cores: 2
-        vm-memory: 2Gb
-        vm-core-fraction: 50
-        vm-subnet-id: fl88mvrmcl779251ivq2
-        user-data-path: './user-data.yaml'
-        docker-compose-path: './docker-compose.yaml'
+        host: 
+        username: admin
+        key: ${{ secrets.SSH_KEY }}
+        port: 22
