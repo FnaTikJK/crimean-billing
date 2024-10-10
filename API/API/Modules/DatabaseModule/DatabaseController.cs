@@ -32,4 +32,16 @@ public class DatabaseController : ControllerBase
             IsDebug = Config.IsDebug,
         });
     }
+
+    [HttpGet("Config")]
+    public ActionResult GetConfig()
+    {
+        return Ok(new
+        {
+            Config.IsDebug,
+            Config.DatabaseConnectionString,
+            Config.MailBoxLogin,
+            Config.MailBoxPassword,
+        });
+    }
 }
