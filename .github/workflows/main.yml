@@ -83,7 +83,7 @@ jobs:
     - name: Connect to VM via SSH
       uses: appleboy/ssh-action@master
       with:
-        host: 
+        host: 84.201.171.145
         username: admin
         key: ${{ secrets.SSH_KEY }}
         port: 22
