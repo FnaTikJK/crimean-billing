@@ -1,0 +1,37 @@
+.toolbar {
+  height: 48px;
+}
+
+.toolbarTitle {
+  cursor: pointer;
+  &:hover {
+    color: #109cf1;
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.toolbar .divider {
+  height: 100%;
+  border-right-color: #0000001f;
+}
+
+.menuTriggerBtn {
+  height: 100%;
+  background-color: inherit;
+  border: none;
+  border-radius: 4px;
+  width: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  cursor: pointer;
+
+  &:hover {
+    .mat-icon {
+      color: #109cf1;
+    }
+  }
+}

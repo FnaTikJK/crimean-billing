@@ -1,0 +1,19 @@
+{
+  "name": "shared-separate-entities",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared-separate-entities/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/shared-separate-entities",
+        "main": "libs/shared-separate-entities/src/index.ts",
+        "tsConfig": "libs/shared-separate-entities/tsconfig.lib.json",
+        "assets": ["libs/shared-separate-entities/*.md"]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,27 @@
+.wrapper {
+  height: calc(100% - 48px);
+  display: flex;
+  width: 90%;
+  margin: 0 auto;
+  padding-top: 4rem;
+  box-sizing: border-box;
+}
+
+.wrapper .tabButton {
+  border-radius: 0;
+  color: #474646;
+}
+
+.tabButton > .mat-icon {
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.wrapper .tabButton.activeTab {
+  color: #109cf1;
+}
+
+.tabs {
+  flex-grow: 1;
+}

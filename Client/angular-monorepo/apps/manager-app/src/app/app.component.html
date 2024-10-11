@@ -1,3 +1,4 @@
-<button mat-icon-button>
-  <mat-icon>search</mat-icon>
-</button>
+@if (isAuthorized()) {
+  <app-toolbar></app-toolbar>
+}
+<router-outlet></router-outlet>

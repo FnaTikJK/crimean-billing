@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@angular-monorepo/invoice": ["libs/invoice/src/index.ts"]
+      "@angular-monorepo/infrastructure": ["libs/infrastructure/src/index.ts"],
+      "@angular-monorepo/shared-separate-entities": [
+        "libs/shared-separate-entities/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

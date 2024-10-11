@@ -1,0 +1,23 @@
+<mat-toolbar class="toolbar">
+  <span class="toolbarTitle" [routerLink]="['/main']">Crimean Billing</span>
+  <span class="spacer"></span>
+  <mat-divider class="divider" [vertical]="true" [inset]="true"></mat-divider>
+  <button class="menuTriggerBtn" [matMenuTriggerFor]="menu">
+    <mat-icon class="dropDownIcon">account_circle</mat-icon>
+    <mat-icon class="dropDownIcon">arrow_drop_down</mat-icon>
+  </button>
+</mat-toolbar>
+
+
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent>
+    <button [routerLink]="['settings']" mat-menu-item>
+      <mat-icon>settings</mat-icon>
+      <span>Настройки</span>
+    </button>
+    <button (click)="unAuthorize()" mat-menu-item>
+      <mat-icon>exit_to_app</mat-icon>
+      <span>Выйти</span>
+    </button>
+  </ng-template>
+</mat-menu>

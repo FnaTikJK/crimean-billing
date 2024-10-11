@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="60463fa3-08b7-446d-972a-9ad9514c8058" name="Changes" comment="" />
+    <list default="true" id="60463fa3-08b7-446d-972a-9ad9514c8058" name="Changes" comment="nginx user route updated">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,8 +38,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "RZ-14",
-    "last_opened_file_path": "C:/Users/Iceneo/WebstormProjects/crimean-billing",
+    "git-widget-placeholder": "RZ-43",
+    "last_opened_file_path": "C:/Users/Iceneo/WebstormProjects/crimean-billing/Client/angular-monorepo",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -64,6 +66,9 @@
       <updated>1727600643138</updated>
       <workItem from="1727600644167" duration="1591000" />
       <workItem from="1727602265503" duration="975000" />
+      <workItem from="1728629178640" duration="618000" />
+      <workItem from="1728633898872" duration="30000" />
+      <workItem from="1728641237523" duration="234000" />
     </task>
     <servers />
   </component>

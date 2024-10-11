@@ -1,0 +1,44 @@
+
+<div class="wrapper">
+
+  <section class="logoSection">
+  </section>
+
+  <section>
+    <form class="form" [formGroup]="authorizationForm" (ngSubmit)="submitForm()">
+      <h2 class="authorizationTitle">Авторизация</h2>
+
+      <div class="formFieldsWrapper">
+
+        <mat-form-field class="formField formItem" appearance="outline">
+          <mat-label>Логин</mat-label>
+          <mat-icon matIconPrefix>person</mat-icon>
+          <input [formControlName]="'login'" matInput placeholder="Введите значение...">
+          @if(authorizationForm.get('login')!.hasError('required')) {
+            <mat-error>Обязательное значение</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="formField formItem" appearance="outline">
+          <mat-label>Пароль</mat-label>
+          <mat-icon matIconPrefix>lock</mat-icon>
+          <input [formControlName]="'password'" matInput placeholder="Введите значение..."
+                 [type]="passwordInputType"
+          >
+          <button class="changePasswordTypeBtn" type="button" matSuffix mat-icon-button
+                  (click)="changePasswordVisibility($event)"
+          >
+            <mat-icon>{{passwordInputType === 'password' ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if(authorizationForm.get('password')!.hasError('required')) {
+            <mat-error>Обязательное значение</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <mat-checkbox class="formItem" [formControl]="saveCredentialsControl">Запомнить пароль</mat-checkbox>
+
+      <button [disabled]="authorizationForm.invalid" type="submit" class="formItem submitBtn" mat-flat-button>Войти</button>
+    </form>
+
+  </section>
+</div>

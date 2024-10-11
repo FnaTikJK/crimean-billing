@@ -1,0 +1,16 @@
+
+<div class="wrapper">
+  <section class="tabsList">
+    <button class="tabButton" mat-button
+            [routerLink]="['change-password']"
+            [routerLinkActive]="'activeTab'"
+    >
+      <mat-icon>key</mat-icon>
+      Изменить пароль
+    </button>
+  </section>
+
+  <section class="tabs">
+   <router-outlet></router-outlet>
+  </section>
+</div>

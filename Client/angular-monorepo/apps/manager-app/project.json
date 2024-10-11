@@ -63,7 +63,8 @@
           "buildTarget": "manager-app:build:production"
         },
         "development": {
-          "buildTarget": "manager-app:build:development"
+          "buildTarget": "manager-app:build:development",
+          "proxyConfig": "apps/manager-app/proxy.conf.json"
         }
       },
       "defaultConfiguration": "development"
