@@ -71,7 +71,8 @@ public class AuthController : ControllerBase
     {
         var managerId = User.GetId();
         var response = await authService.ChangeManagerPassword(managerId, request);
-        await Logout();
+        if (response.IsSuccess)
+            await Logout();
 
         return response.ActionResult;
     }
