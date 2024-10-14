@@ -159,7 +159,8 @@ public class AuthService : IAuthService
         var verificationCode = string.Join("", Enumerable.Range(0, 6).Select(e => rnd.Next(10)));
         var userId = account.User.Id.ToString();
         log.Info($"Set verification code for User: {userId}, PhoneNumber: {request.PhoneNumber}, VerificationCode: {verificationCode}");
-        cache.Add(verificationCode, userId);
+        cache.AddOrUpdate(verificationCode, userId);
+        cache.AddOrUpdate(PhoneConverter.ToPhoneWithoutRegMask(request.PhoneNumber)!, verificationCode);
         notificationService.SendEmail("Код подтверждения", verificationCode, account.User.Email);
         return Result.NoContent<bool>();
     }
@@ -192,6 +193,10 @@ public class AuthService : IAuthService
             .Include(e => e.Accounts)
             .AsNoTracking()
             .FirstAsync(e => e.Id == userId);
+        foreach (var truncatedPhone in user.Accounts.Select(a => PhoneConverter.ToPhoneWithoutRegMask(a.PhoneNumber)))
+        {
+            cache.Delete(truncatedPhone!);
+        }
         var verifyResponse = new VerifyUserResponse
         {
             UserId = userId,

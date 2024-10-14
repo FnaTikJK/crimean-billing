@@ -7,7 +7,7 @@ public class DistributedCache : ICache
         throw new NotImplementedException();
     }
 
-    public void Add(string key, string value)
+    public void AddOrUpdate(string key, string value)
     {
         throw new NotImplementedException();
     }

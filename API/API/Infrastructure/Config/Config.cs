@@ -8,4 +8,6 @@ public static class Config
     
     public static string MailBoxLogin { get; set; }
     public static string MailBoxPassword { get; set; }
+    
+    public static string TelegramApiKey { get; set; }
 }

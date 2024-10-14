@@ -19,13 +19,9 @@ public class CacheInMemory : ICache
         return null;
     }
 
-    public void Add(string key, string value)
+    public void AddOrUpdate(string key, string value)
     {
-        if (inner.ContainsKey(key))
-            throw new Exception($"Cache already have same key: {key}");
-
-        if (!inner.TryAdd(key, value))
-            throw new Exception($"Can not set value to cache. key {key}, value {value}");
+        inner.AddOrUpdate(key, value, (a, b) => value);
     }
 
     public void Delete(string key)

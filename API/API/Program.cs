@@ -4,6 +4,7 @@ using API.Infrastructure;
 using API.Infrastructure.Config;
 using API.Infrastructure.Middlewares;
 using API.Modules;
+using API.Modules.TelegramModule;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,5 +72,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.RegisterMiddlewares();
+app.Services.GetService(typeof(ITelegramService));
 
 app.Run();

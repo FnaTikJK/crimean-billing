@@ -2,5 +2,5 @@
 
 public class LoginUserRequest
 {
-    public int PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; }
 }

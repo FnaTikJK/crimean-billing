@@ -2,18 +2,16 @@
 
 public static class ConfigReader
 {
+    private static bool IsDebug;
+    
     public static void Init(bool isDebug)
     {
+        IsDebug = isDebug;
         Config.IsDebug = isDebug;
-        Config.DatabaseConnectionString = isDebug
-            ? GetStringIfExists(DatabaseConnectionStringKey)
-            : Environment.GetEnvironmentVariable(DatabaseConnectionStringKey)!;
-        Config.MailBoxLogin = isDebug
-            ? GetStringIfExists(MailBoxLoginKey)
-            : Environment.GetEnvironmentVariable(MailBoxLoginKey)!;
-        Config.MailBoxPassword = isDebug
-            ? GetStringIfExists(MailBoxPasswordKey)
-            : Environment.GetEnvironmentVariable(MailBoxPasswordKey)!;
+        Config.DatabaseConnectionString = GetStringByEnv(DatabaseConnectionStringKey)!;
+        Config.MailBoxLogin = GetStringByEnv(MailBoxLoginKey)!;
+        Config.MailBoxPassword = GetStringByEnv(MailBoxPasswordKey)!;
+        Config.TelegramApiKey = GetStringByEnv(TelegramApiKey)!;
     }
 
     private static readonly string DatabaseConnectionStringKey = "DATABASE_CONNECTION_STRING";
@@ -21,9 +19,15 @@ public static class ConfigReader
     private static readonly string MailBoxLoginKey = "MAIL_BOX_LOGIN";
     private static readonly string MailBoxPasswordKey = "MAIL_BOX_PASSWORD";
 
+    private static readonly string TelegramApiKey = "TELEGRAM_API_KEY";
+
     private static string PathToConfig => Environment.GetEnvironmentVariable("CONFIG_PATH") 
                                           ?? @"../Config";
 
+    private static string? GetStringByEnv(string varName) => IsDebug
+        ? GetStringIfExists(varName)
+        : Environment.GetEnvironmentVariable(varName)!;
+    
     private static string GetStringIfExists(string varName) => Search(varName);
     private static int? GetIntIfExists(string varName) => int.TryParse(Search(varName), out var number) 
         ? number 
