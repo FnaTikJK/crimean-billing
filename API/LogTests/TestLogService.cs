@@ -1,6 +1,5 @@
 ﻿using API.Infrastructure;
 using API.Modules.LogsModule;
-using Microsoft.Extensions.Logging;
 using Log = API.Infrastructure.Log;
 
 namespace LogServiceTests
@@ -29,13 +28,13 @@ namespace LogServiceTests
             var testDate = DateOnly.FromDateTime(DateTime.Now);
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", $"Log-{testDate:yyyy-MM-dd}.txt");
             var countLogsBeforeTest = logsService.ReadLog(testDate).Split('\n').Length;
-            
+
             logger.Info("Test log message");
             Thread.Sleep(100);
             var countLogsAfterLogWrite = logsService.ReadLog(testDate).Split('\n').Length;
-            
+
             Assert.IsTrue(File.Exists(logFilePath));
-            Assert.AreEqual(1, countLogsAfterLogWrite-countLogsBeforeTest);
+            Assert.AreEqual(1, countLogsAfterLogWrite - countLogsBeforeTest);
         }
     }
 }
