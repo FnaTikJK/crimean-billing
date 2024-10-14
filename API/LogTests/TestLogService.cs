@@ -8,16 +8,14 @@ namespace LogServiceTests
     [TestFixture]
     public class LogsServiceTests
     {
-        private ILog loggerMock;
+        private ILog logger;
         private LogsService logsService;
 
         [SetUp]
         public void SetUp()
         {
-            var logger = new Log();
-
+            logger = new Log();
             logsService = new LogsService(logger);
-
             var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
             if (!Directory.Exists(logDirectory))
             {
@@ -28,13 +26,16 @@ namespace LogServiceTests
         [Test]
         public void WriteLog_Should_CreateLogFile_And_WriteContent()
         {
-            var testMessage = "Test log message";
             var testDate = DateOnly.FromDateTime(DateTime.Now);
-            var expectedLogFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", $"Log-{testDate:yyyy-MM-dd}.txt");
-
-            logsService.WriteLog(testMessage, LogLevel.Information);
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", $"Log-{testDate:yyyy-MM-dd}.txt");
+            var countLogsBeforeTest = logsService.ReadLog(testDate).Split('\n').Length;
             
-            Assert.IsTrue(File.Exists(expectedLogFilePath));
+            logger.Info("Test log message");
+            Thread.Sleep(100);
+            var countLogsAfterLogWrite = logsService.ReadLog(testDate).Split('\n').Length;
+            
+            Assert.IsTrue(File.Exists(logFilePath));
+            Assert.AreEqual(1, countLogsAfterLogWrite-countLogsBeforeTest);
         }
     }
 }

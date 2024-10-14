@@ -1,12 +1,12 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using System.Text;
 using API.Infrastructure;
 
 namespace API.Modules.LogsModule;
 
 public interface ILogsService
 {
-    public void WriteLog(string log, LogLevel level);
+    public void WriteInfoLog(string log);
+    public void WriteErrorLog(string log);
 
     public string ReadLog(DateOnly date);
 }
@@ -14,38 +14,40 @@ public interface ILogsService
 public class LogsService : ILogsService
 {
     private readonly ILog logger;
+
     public LogsService(ILog logger)
     {
         this.logger = logger;
     }
-    public void WriteLog(string message, LogLevel level)
+
+    public void WriteInfoLog(string message)
     {
-        switch (level)
-        {
-            case LogLevel.Information:
-                logger.Info(message);
-                break;
-            case LogLevel.Error:
-                logger.Error(message);
-                break;
-        }
+        logger.Info(message);
+    }
+
+    public void WriteErrorLog(string message)
+    {
+        logger.Info(message);
     }
 
     public string ReadLog(DateOnly date)
     {
-        var filterDate = date.ToString(CultureInfo.InvariantCulture);
+        var formatDate = date.ToString("yyyy-MM-dd");
         var sb = new StringBuilder();
-        var logFilePath = $"Logs/log-{filterDate}.txt";
-        
-        if(File.Exists(logFilePath))
-            foreach (var line in File.ReadLines(logFilePath))
+        var logFilePath = $"Logs/log-{formatDate}.txt";
+
+        if (File.Exists(logFilePath))
+        {
+            using var stream = new FileStream(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(stream);
+            while (reader.ReadLine() is { } line)
             {
-                if (line.Contains(filterDate))
+                if (line.Contains(formatDate))
                 {
-                    sb.Append(line + '\n');
-                    break;
+                    sb.AppendLine(line);
                 }
             }
+        }
 
         return sb.ToString();
     }

@@ -20,33 +20,25 @@ public class LogsController : ControllerBase
     /// Логи по текущему дню
     /// </summary>
     [HttpGet]
-    public ActionResult<string> GetTodayLogs() 
-        => GetTodayLogs(DateOnly.FromDateTime(DateTime.UtcNow).ToString());
+    public ActionResult<string> GetTodayLogs()
+        => GetLogs(DateOnly.FromDateTime(DateTime.UtcNow).ToString());
 
     /// <summary>
     /// Логи по конкретной дате
     /// </summary>
     /// <param name="date">Дата в формате yyyy-MM-dd</param>
     [HttpGet(@"{date:regex([[\d*]])}")]
-    public ActionResult<string> GetTodayLogs([FromRoute] string date)
+    public ActionResult<string> GetLogs([FromRoute] string date)
     {
         if (!DateOnly.TryParse(date, out var dateOnly))
             return BadRequest("Неправильный формат в Route. Должен быть yyyy-MM-dd");
 
         return logsService.ReadLog(dateOnly);
     }
-    
+
     [HttpGet("throw")]
     public ActionResult<string> Throw()
     {
-        try
-        {
-            throw new Exception("Тестовое исключение");
-        }
-        catch (Exception ex)
-        { 
-            logsService.WriteLog(ex.Message, LogLevel.Error);
-            return logsService.ReadLog(DateOnly.FromDateTime(DateTime.Now));
-        }
+        throw new Exception();
     }
 }

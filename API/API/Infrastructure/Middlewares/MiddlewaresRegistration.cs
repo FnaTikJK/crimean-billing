@@ -4,7 +4,7 @@ public static class MiddlewaresRegistration
 {
     public static void RegisterMiddlewares(this WebApplication app)
     {
-        if (!app.Environment.IsDevelopment())
+        if (!app.Environment.IsStaging())
             app.UseMiddleware<ExceptionHandlerMiddleware>();
     }
 }

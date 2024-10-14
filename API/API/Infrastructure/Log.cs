@@ -14,20 +14,19 @@ public class Log : ILog
 
     public Log()
     {
-        var logFilePath =
-            Path.Combine(Directory.GetCurrentDirectory(), "Logs", $"Log-{DateTime.UtcNow:yyyy-MM-dd}.txt");
+        var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", $"Log-{DateTime.UtcNow:yyyy-MM-dd}.txt");
         serilog = new LoggerConfiguration()
-            .WriteTo.File(logFilePath)
-            .CreateLogger();
+            .WriteTo.Async(a => a.File(logFilePath, shared: true))
+            .CreateBootstrapLogger();
     }
 
     public void Error(string message)
     {
-        serilog.Error($"{DateTime.UtcNow}: {message}", LogLevel.Error);
+        serilog.Error($"{DateTime.UtcNow}: {message}");
     }
 
     public void Info(string message)
     {
-        serilog.Information($"{DateTime.UtcNow}: {message}", LogLevel.Information);
+        serilog.Information($"{DateTime.UtcNow}: {message}");
     }
 }
