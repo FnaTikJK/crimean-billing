@@ -28,6 +28,7 @@ public class TelegramService : ITelegramService
         {
             botClient = null;
             log.Info("Telegram api key is not initialised. Bot is inactive");
+            return;
         }
 
         this.log = log;
