@@ -179,7 +179,7 @@ public class AuthService : IAuthService
         }
         else
         {
-            var cacheKey = request.verificationCode.ToString();
+            var cacheKey = request.VerificationCode;
             if (!cacheRegex.IsMatch(cacheKey))
                 return Result.BadRequest<(VerifyUserResponse, ClaimsIdentity)>(
                     "Некорректный формат кода. Regex: `[0-9]{6}`");
@@ -194,9 +194,8 @@ public class AuthService : IAuthService
             .AsNoTracking()
             .FirstAsync(e => e.Id == userId);
         foreach (var truncatedPhone in user.Accounts.Select(a => PhoneConverter.ToPhoneWithoutRegMask(a.PhoneNumber)))
-        {
             cache.Delete(truncatedPhone!);
-        }
+       
         var verifyResponse = new VerifyUserResponse
         {
             UserId = userId,
