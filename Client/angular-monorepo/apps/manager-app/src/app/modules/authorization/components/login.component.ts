@@ -29,7 +29,6 @@ export default class LoginComponent {
   private authorizationS = inject(AuthorizationService);
   private managerSettingsS = inject(ManagerSettingsService);
   private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
 
   protected authorizationForm = new FormGroup({
     login: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),

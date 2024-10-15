@@ -1,5 +1,4 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpService } from '../../shared/services/http.service';
 import { ILoginManagerRequestDTO } from '../DTO/requests/ILoginManagerRequestDTO';
 import { IChangeManagerPasswordRequest } from '../DTO/requests/IChangeManagerPasswordRequest';
 import { catchError, map, of, ReplaySubject, tap, throwError } from 'rxjs';
@@ -7,6 +6,7 @@ import { ILoginManagerResponseDTO } from '../DTO/response/ILoginManagerResponseD
 import { ManagerSettingsService } from '../../shared/services/manager-settings.service';
 import { IProfile, ProfileService } from '../../shared/services/profile.service';
 import { ProfileRoleType } from '@angular-monorepo/shared-separate-entities';
+import { HttpService } from '@angular-monorepo/infrastructure';
 
 @Injectable({
   providedIn: 'root'

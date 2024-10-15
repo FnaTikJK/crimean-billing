@@ -1,0 +1,52 @@
+
+<div class="wrapper">
+  <mat-stepper class="matStepper" [linear]="true">
+    <mat-step [stepControl]="phoneNumberControl">
+      @if(matStepper().selectedIndex !== 0) {
+      <ng-template matStepLabel>Логин</ng-template>
+      }
+      <ng-template matStepContent>
+        <section class="loginStepSection">
+          <div class="loginImgWrapper">
+            <img class="loginImage" src="/assets/images/login-step.png">
+          </div>
+          <mat-form-field class="loginFormField formField" [floatLabel]="'always'">
+            <mat-label>Номер телефона</mat-label>
+            <div matIconPrefix class="phoneNumberPrefixWrapper">
+              <mat-icon class="phoneNumberPrefix">add</mat-icon>
+              <span class="countryPhoneCode">8</span>
+            </div>
+            <input matInput type="tel"
+                   [formControl]="phoneNumberControl"
+                   [mask]="'(000) 000-00-00'"
+                   [showMaskTyped]="true"
+                   (keydown)="pressKey($event)"
+            >
+            <mat-icon matIconSuffix>call</mat-icon>
+            <mat-hint>Формат: +8 (xxx) xxx-xx-xx</mat-hint>
+            @if (phoneNumberControl.hasError('required')) {
+            <mat-error>
+              Обязательное поле
+            </mat-error>
+            } @else if (phoneNumberControl.hasError('mask')) {
+              <mat-error>
+                Некорректный формат номера
+              </mat-error>
+            }
+          </mat-form-field>
+          <button class="loginBtn" mat-flat-button
+                  [disabled]="phoneNumberControl.invalid"
+                  (click)="sendLoginRequest()"
+          >Войти</button>
+        </section>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Подтверждение входа</ng-template>
+      <ng-template matStepContent>
+        <p>This content was also rendered lazily</p>
+        <button matStepperPrevious>Back</button>
+      </ng-template>
+    </mat-step>
+  </mat-stepper>
+</div>

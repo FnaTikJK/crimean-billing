@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { LocalStorageService } from './local-storage.service';
+import { LocalStorageService } from '@angular-monorepo/infrastructure';
 
 @Injectable({
   providedIn: 'root'
