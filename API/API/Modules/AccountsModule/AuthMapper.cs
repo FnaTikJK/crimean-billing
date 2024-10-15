@@ -1,8 +1,10 @@
-﻿using API.Modules.AccountsModule.User.DTO;
+﻿using API.Modules.AccountsModule.Manager;
+using API.Modules.AccountsModule.Manager.DTO;
+using API.Modules.AccountsModule.User.DTO;
 
 namespace API.Modules.AccountsModule.User;
 
-public static class UsersMapper
+public static class AuthMapper
 {
     public static UserEntity Map(RegisterUserRequest source)
         => new()
@@ -10,10 +12,7 @@ public static class UsersMapper
             Email = source.Email,
             Fio = source.Fio,
         };
-}
-
-public static class AccountMapper
-{
+    
     public static AccountEntity Map(RegisterAccountRequest source)
         => new()
         {
@@ -21,5 +20,13 @@ public static class AccountMapper
             Number = source.Number,
             PhoneNumber = source.PhoneNumber,
             AccountType = source.AccountType,
+        };
+
+    public static ManagerEntity Map(RegisterManagerRequest source, string hashedPassword)
+        => new()
+        {
+            Login = source.Login,
+            PasswordHash = hashedPassword,
+            Fio = source.Fio,
         };
 }

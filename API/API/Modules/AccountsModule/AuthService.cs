@@ -63,11 +63,7 @@ public class AuthService : IAuthService
         if (existed != null)
             return Result.BadRequest<RegisterManagerResponse>("Такой логин занят");
 
-        var newManager = new ManagerEntity
-        {
-            Login = request.Login,
-            PasswordHash = passwordHasher.Hash(request.Password)
-        };
+        var newManager = AuthMapper.Map(request, passwordHasher.Hash(request.Password));
         await managers.AddAsync(newManager);
         await db.SaveChangesAsync();
         
@@ -115,7 +111,7 @@ public class AuthService : IAuthService
         if (userWithSameEmail != null)
             return Result.BadRequest<RegisterUserResponse>("Email занят");
 
-        var user = UsersMapper.Map(request);
+        var user = AuthMapper.Map(request);
         await users.AddAsync(user);
         await db.SaveChangesAsync();
         
@@ -140,7 +136,7 @@ public class AuthService : IAuthService
         if (userWithSamePhone != null && userWithSamePhone != user.Id)
             return Result.BadRequest<RegisterAccountResponse>("Телефон уже привязан к другому пользователю");
 
-        var account = AccountMapper.Map(request);
+        var account = AuthMapper.Map(request);
         user.Accounts.Add(account);
         await db.SaveChangesAsync();
         

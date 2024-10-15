@@ -7,7 +7,7 @@ public class ManagerEntity : IEntity
 {
     [Key]
     public Guid Id { get; set; }
-    public string Login { get; set; }
-    public string PasswordHash { get; set; }
-    public string? Email { get; set; }
+    public required string Login { get; set; }
+    public required string PasswordHash { get; set; }
+    public required string Fio { get; set; }
 }
