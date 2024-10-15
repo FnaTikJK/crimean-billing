@@ -13,21 +13,21 @@ public interface ILogsService
 
 public class LogsService : ILogsService
 {
-    private readonly ILog logger;
+    private readonly ILog log;
 
     public LogsService(ILog logger)
     {
-        this.logger = logger;
+        this.log = logger;
     }
 
     public void WriteInfoLog(string message)
     {
-        logger.Info(message);
+        log.Info(message);
     }
 
     public void WriteErrorLog(string message)
     {
-        logger.Info(message);
+        log.Info(message);
     }
 
     public string ReadLog(DateOnly date)

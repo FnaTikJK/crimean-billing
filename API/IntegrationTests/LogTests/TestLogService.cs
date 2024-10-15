@@ -1,20 +1,20 @@
 ﻿using API.Infrastructure;
 using API.Modules.LogsModule;
-using Log = API.Infrastructure.Log;
+using NUnit.Framework;
 
-namespace LogServiceTests
+namespace IntegrationTests.LogTests
 {
     [TestFixture]
     public class LogsServiceTests
     {
-        private ILog logger;
+        private ILog log;
         private LogsService logsService;
 
         [SetUp]
         public void SetUp()
         {
-            logger = new Log();
-            logsService = new LogsService(logger);
+            log = new Log();
+            logsService = new LogsService(log);
             var logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
             if (!Directory.Exists(logDirectory))
             {
@@ -29,12 +29,12 @@ namespace LogServiceTests
             var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", $"Log-{testDate:yyyy-MM-dd}.txt");
             var countLogsBeforeTest = logsService.ReadLog(testDate).Split('\n').Length;
 
-            logger.Info("Test log message");
+            log.Info("Test log message");
             Thread.Sleep(100);
             var countLogsAfterLogWrite = logsService.ReadLog(testDate).Split('\n').Length;
-
-            Assert.IsTrue(File.Exists(logFilePath));
-            Assert.AreEqual(1, countLogsAfterLogWrite - countLogsBeforeTest);
+            
+            Assert.That(File.Exists(logFilePath), Is.True);
+            Assert.That(countLogsAfterLogWrite - countLogsBeforeTest, Is.EqualTo(1));
         }
     }
 }
