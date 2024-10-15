@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Modules.AdminModule;
 
+/// <summary>
+/// Для всяких хаков сценариев
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class AdminController : ControllerBase
