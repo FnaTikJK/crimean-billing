@@ -47,12 +47,8 @@ export default class ChangePasswordComponent {
   }
   submitForm() {
     this.#authorizationS.changePassword$(this.changePasswordForm.value as IChangeManagerPasswordRequest)
-      .subscribe({
-        next: () => this.#router.navigate(['authorization'], { relativeTo: null }),
-        error: (err) => {
-          this.#router.navigate(['authorization'], { relativeTo: null });
-          throw err;
-        }
-      });
+      .subscribe(
+        () => this.#router.navigate(['authorization'], { relativeTo: null }),
+      );
   }
 }

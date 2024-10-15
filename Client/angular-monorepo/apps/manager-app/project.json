@@ -23,7 +23,7 @@
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/manager-app/public"
+            "input": "apps/manager-app/public/test"
           }
         ],
         "styles": [

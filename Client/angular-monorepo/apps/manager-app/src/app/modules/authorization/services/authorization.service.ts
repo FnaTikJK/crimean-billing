@@ -38,10 +38,7 @@ export class AuthorizationService {
   changePassword$(changeManagerPasswordRequest: IChangeManagerPasswordRequest) {
     return this.#httpS.post('Auth/Managers/ChangePassword', changeManagerPasswordRequest)
       .pipe(
-        tap({
-          next: () => this.unAuthorize(),
-          error: () => this.unAuthorize()
-        })
+        tap( () => this.unAuthorize())
       );
   }
 
