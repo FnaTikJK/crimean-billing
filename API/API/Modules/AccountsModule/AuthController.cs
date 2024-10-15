@@ -77,7 +77,6 @@ public class AuthController : ControllerBase
         return response.ActionResult;
     }
     
-    
     /// <summary>
     /// Регистрация для обычных юзеров
     /// </summary>
