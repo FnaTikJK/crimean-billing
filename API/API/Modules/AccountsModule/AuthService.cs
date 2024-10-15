@@ -19,7 +19,8 @@ public interface IAuthService
     Task<Result<RegisterManagerResponse>> RegisterManager(RegisterManagerRequest request);
     Task<Result<(LoginManagerResponse, ClaimsIdentity)>> LoginManager(LoginManagerRequest request);
     Task<Result<bool>> ChangeManagerPassword(Guid managerId, ChangeManagerPasswordRequest request);
-    Task<Result<RegisterUserResponse>> Register(RegisterUserRequest request);
+    Task<Result<RegisterUserResponse>> RegisterUser(RegisterUserRequest request);
+    Task<Result<RegisterAccountResponse>> RegisterAccount(RegisterAccountRequest request);
     Task<Result<bool>> Login(LoginUserRequest request);
     Task<Result<(VerifyUserResponse, ClaimsIdentity)>> Verify(VerifyUserRequest request);
 }
@@ -108,39 +109,42 @@ public class AuthService : IAuthService
         return Result.NoContent<bool>();
     }
 
-    public async Task<Result<RegisterUserResponse>> Register(RegisterUserRequest request)
+    public async Task<Result<RegisterUserResponse>> RegisterUser(RegisterUserRequest request)
+    {
+        var userWithSameEmail = await users.AsNoTracking().FirstOrDefaultAsync(e => e.Email == request.Email);
+        if (userWithSameEmail != null)
+            return Result.BadRequest<RegisterUserResponse>("Email занят");
+
+        var user = UsersMapper.Map(request);
+        await users.AddAsync(user);
+        await db.SaveChangesAsync();
+        
+        log.Info($"Create new User: {user.Id}");
+        return Result.Ok(new RegisterUserResponse()
+        {
+            UserId = user.Id
+        });
+    }
+
+    public async Task<Result<RegisterAccountResponse>> RegisterAccount(RegisterAccountRequest request)
     {
         var isNumberOccupied = await accounts.AsNoTracking().FirstOrDefaultAsync(e => e.Number == request.Number);
         if (isNumberOccupied != null)
-            return Result.BadRequest<RegisterUserResponse>("Лицевой счёт с таким номером уже существует");
-        var userWithSamePhone = (await accounts.AsNoTracking().Include(e => e.User)
-            .FirstOrDefaultAsync(e => e.PhoneNumber == request.PhoneNumber))
+            return Result.BadRequest<RegisterAccountResponse>("Лицевой счёт с таким номером уже существует");
+
+        var user = await users.Include(e => e.Accounts).FirstOrDefaultAsync(e => e.Id == request.UserId);
+        if (user == null)
+            return Result.BadRequest<RegisterAccountResponse>("Такого пользователя не существует");
+        var userWithSamePhone = (await accounts.AsNoTracking().Include(e => e.User).FirstOrDefaultAsync(e => e.PhoneNumber == request.PhoneNumber))
             ?.User.Id;
-        
-        UserEntity? user;
-        if (request.UserId != null)
-        {
-            user = await users.Include(e => e.Accounts).FirstOrDefaultAsync(e => e.Id == request.UserId);
-            if (user == null)
-                return Result.BadRequest<RegisterUserResponse>("Такого пользователя не существует");
-            if (userWithSamePhone != null && userWithSamePhone != user.Id)
-                return Result.BadRequest<RegisterUserResponse>("Телефон уже привязан к другому пользователю");
-        }
-        else
-        {
-            if (userWithSamePhone != null)
-                return Result.BadRequest<RegisterUserResponse>("Телефон уже привязан к другому пользователю");
-            if (string.IsNullOrEmpty(request.Email))
-                return Result.BadRequest<RegisterUserResponse>("Невозможно создать пользователя без почты");
-            log.Info($"Create new User with PhoneNumber: {request.PhoneNumber}.");
-            user = UserMapper.Map(request);
-            await users.AddAsync(user);
-        }
+        if (userWithSamePhone != null && userWithSamePhone != user.Id)
+            return Result.BadRequest<RegisterAccountResponse>("Телефон уже привязан к другому пользователю");
 
         var account = AccountMapper.Map(request);
         user.Accounts.Add(account);
         await db.SaveChangesAsync();
-        return Result.Ok(new RegisterUserResponse
+        
+        return Result.Ok(new RegisterAccountResponse
         {
             UserId = user.Id,
             AccountId = account.Id,
@@ -174,23 +178,20 @@ public class AuthService : IAuthService
         if (!Guid.TryParse(cache.Get(cacheKey), out var userId))
             return Result.BadRequest<(VerifyUserResponse, ClaimsIdentity)>("Некорректный код подтверждения");
 
-        cache.Delete(cacheKey);
-        
-
         var user = await users
             .Include(e => e.Accounts)
             .AsNoTracking()
             .FirstAsync(e => e.Id == userId);
+        cache.Delete(cacheKey);
         foreach (var truncatedPhone in user.Accounts.Select(a => PhoneConverter.ToPhoneWithoutRegMask(a.PhoneNumber)))
             cache.Delete(truncatedPhone!);
        
+        log.Info($"Verified User: {userId}");
         var verifyResponse = new VerifyUserResponse
         {
             UserId = userId,
             AccountIds = user.Accounts.Select(e => e.Id).ToArray(),
         };
-        
-        log.Info($"Verified User: {userId}");
         return Result.Ok((verifyResponse, GetCredentials(user)));
     }
 

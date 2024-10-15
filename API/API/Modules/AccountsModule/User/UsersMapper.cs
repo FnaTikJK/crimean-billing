@@ -2,19 +2,19 @@
 
 namespace API.Modules.AccountsModule.User;
 
-public static class UserMapper
+public static class UsersMapper
 {
     public static UserEntity Map(RegisterUserRequest source)
         => new()
         {
-            Email = source.Email!,
-            Accounts = new HashSet<AccountEntity>(),
+            Email = source.Email,
+            Fio = source.Fio,
         };
 }
 
 public static class AccountMapper
 {
-    public static AccountEntity Map(RegisterUserRequest source)
+    public static AccountEntity Map(RegisterAccountRequest source)
         => new()
         {
             Money = 0,
