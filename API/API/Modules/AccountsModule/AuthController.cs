@@ -107,7 +107,8 @@ public class AuthController : ControllerBase
     /// Подтверждение входа для юзеров
     /// </summary>
     /// <remarks>
-    /// Код из 6 цифр. Если хочешь скипнуть подтверждение - добавь телефон
+    /// Код из 6 цифр.
+    /// <br/> Чтобы получить код без Tg/email - ручка в Админском контроллеке
     /// </remarks>
     [HttpPost("Verify")]
     public async Task<ActionResult<VerifyUserResponse>> VerifyLogin([FromBody] VerifyUserRequest request)

@@ -167,27 +167,15 @@ public class AuthService : IAuthService
 
     public async Task<Result<(VerifyUserResponse, ClaimsIdentity)>> Verify(VerifyUserRequest request)
     {
-        Guid userId;
-        if (request.PhoneNumber != null)
-        { // Скипаем верификацию (для тестирования)
-            log.Info($"Skip verification for PhoneNumber: {request.PhoneNumber}");
-            userId = (await accounts
-                .AsNoTracking()
-                .Include(e => e.User)
-                .FirstAsync(e => e.PhoneNumber == request.PhoneNumber))
-                .User.Id;
-        }
-        else
-        {
-            var cacheKey = request.VerificationCode;
-            if (!cacheRegex.IsMatch(cacheKey))
-                return Result.BadRequest<(VerifyUserResponse, ClaimsIdentity)>(
-                    "Некорректный формат кода. Regex: `[0-9]{6}`");
-            if (!Guid.TryParse(cache.Get(cacheKey), out userId))
-                return Result.BadRequest<(VerifyUserResponse, ClaimsIdentity)>("Некорректный код подтверждения");
+        var cacheKey = request.VerificationCode;
+        if (!cacheRegex.IsMatch(cacheKey))
+            return Result.BadRequest<(VerifyUserResponse, ClaimsIdentity)>(
+                "Некорректный формат кода. Regex: `[0-9]{6}`");
+        if (!Guid.TryParse(cache.Get(cacheKey), out var userId))
+            return Result.BadRequest<(VerifyUserResponse, ClaimsIdentity)>("Некорректный код подтверждения");
 
-            cache.Delete(cacheKey);
-        }
+        cache.Delete(cacheKey);
+        
 
         var user = await users
             .Include(e => e.Accounts)
