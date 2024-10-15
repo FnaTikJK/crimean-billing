@@ -28,8 +28,8 @@ public class PaymentsController : ControllerBase
     }
     
     /// <summary>
-    /// Симет со счёта сколько укажешь.
-    /// <br/> Ошибка, если недосаточно денег
+    /// Снимет со счёта сколько укажешь.
+    /// Ошибка, если недосаточно денег
     /// </summary>
     [HttpPost("Spend")]
     public async Task<ActionResult<PaymentsResponse>> SpendMoney(SpendMoneyRequest request)
