@@ -1,12 +1,37 @@
 
 <div class="wrapper">
-  <mat-stepper class="matStepper" [linear]="true">
-    <mat-step [stepControl]="phoneNumberControl">
+  <mat-stepper labelPosition="bottom" class="matStepper" [linear]="true">
+
+    <ng-template matStepperIcon="phoneNumberState">
+      <mat-icon>smartphone</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="verificationCodeState">
+      <mat-icon>vpn_key</mat-icon>
+    </ng-template>
+
+    <ng-template matStepperIcon="edit" let-index="index">
+      @if (index === 0) {
+        <mat-icon>smartphone</mat-icon>
+      } @else if (index === 1) {
+        <mat-icon>vpn_key</mat-icon>
+      }
+    </ng-template>
+
+    <ng-template matStepperIcon="done" let-index="index">
+      @if (index === 0) {
+        <mat-icon>smartphone</mat-icon>
+      } @else if (index === 1) {
+        <mat-icon>vpn_key</mat-icon>
+      }
+    </ng-template>
+
+    <mat-step [completed]="phoneNumberStepCompleted()" state="phoneNumberState">
       @if(matStepper().selectedIndex !== 0) {
-      <ng-template matStepLabel>Логин</ng-template>
+        <ng-template matStepLabel>Логин</ng-template>
       }
       <ng-template matStepContent>
         <section class="loginStepSection">
+          <h2 class="stepTitle">Логин</h2>
           <div class="loginImgWrapper">
             <img class="loginImage" src="/assets/images/login-step.png">
           </div>
@@ -41,12 +66,42 @@
         </section>
       </ng-template>
     </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Подтверждение входа</ng-template>
+
+    <mat-step state="verificationCodeState">
+      @if(matStepper().selectedIndex !== 1) {
+        <ng-template matStepLabel>Подтверждение входа</ng-template>
+      }
       <ng-template matStepContent>
-        <p>This content was also rendered lazily</p>
-        <button matStepperPrevious>Back</button>
+       <section class="verificationStepSection" [ngClass]="{active: matStepper().selectedIndex === 1}">
+        <div class="verificationTitleWrapper">
+          <p class="verificationTitle">Подтверждение входа</p>
+        </div>
+        <p class="verificationMessage">Пожалуйста, введите код отправленный на Вашу почту или воспользуйтесь нашим <a href="https://t.me/crimean_billing_bot" target="_blank">Telegram-ботом</a></p>
+        <p class="resendVerificationMessageTimer"> {{ (secondsLeftToResendVerificationCode() * 1000)  | date: 'mm:ss' }} </p>
+         <button mat-button
+                 (click)="resendLoginRequest()"
+                 [disabled]="resendVerificationCodeBtnDisabled()"
+         >Отправить код заново</button>
+
+         <div class="verificationCodeWrapper">
+           @for (control of verificationCodeFormArray.controls; track $index) {
+             <mat-form-field [subscriptSizing]="'dynamic'">
+               <input class="verificationCodeInput" #verificationCodeInput [formControl]="control" matInput
+                      type="number"
+                      (paste)="onPasteVerificationCode($event, $index)"
+                      (keydown)="onKeyDownVerificationCode($event, $index)">
+             </mat-form-field>
+           }
+         </div>
+       </section>
       </ng-template>
     </mat-step>
+
+    <ng-template matStepperIcon="phone">
+      <mat-icon>call_end</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="chat">
+      <mat-icon>forum</mat-icon>
+    </ng-template>
   </mat-stepper>
 </div>

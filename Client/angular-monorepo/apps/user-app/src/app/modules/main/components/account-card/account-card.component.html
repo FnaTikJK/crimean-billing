@@ -1,0 +1,19 @@
+@if (account()) {
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title class="cardTitle">Услуги активны</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="cardContent">
+      <p class="rowTitle">Мой баланс: <b>{{ (account()!.money | number: '1.2-2')+ ' ₽' }}</b></p>
+      <mat-divider></mat-divider>
+      <p class="rowTitle">Тип: <b>{{AccountType[account()!.accountType]}}</b></p>
+      <mat-divider></mat-divider>
+      @if (account()!.phoneNumber) {
+        <p class="rowTitle">Номер телефона: <b>{{account()?.phoneNumber}}</b></p>
+      }
+    </mat-card-content>
+    <mat-card-footer class="footer">
+      <button (click)="openAddMoneyModal()" class="addMoneyBtn" mat-flat-button>Пополнить</button>
+    </mat-card-footer>
+  </mat-card>
+}

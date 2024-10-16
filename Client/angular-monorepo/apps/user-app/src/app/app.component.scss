@@ -1,0 +1,23 @@
+.header {
+  position: sticky;
+  top: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.routeContent {
+  flex-grow: 1;
+}
+
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  background-color: #dadada2e;
+  padding-top: 8px;
+}

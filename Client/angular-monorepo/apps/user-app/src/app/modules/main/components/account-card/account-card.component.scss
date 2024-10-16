@@ -1,0 +1,29 @@
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: .75em;
+  padding: 1rem;
+}
+
+.cardTitle {
+  font-weight: 500;
+}
+
+.rowTitle {
+  margin: 0;
+}
+
+.footer {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.addMoneyBtn {
+  width: 100%;
+}
+
+.mat-divider {
+  border-top-color: #74777f70;
+}

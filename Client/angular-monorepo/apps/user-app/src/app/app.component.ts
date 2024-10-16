@@ -1,17 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { ToolbarComponent } from './page-design/desktop/toolbar/toolbar.component';
+import { AuthorizationService } from './modules/authorization/services/authorization.service';
+import { isMobile } from './modules/shared/help-functions';
+import { FooterMobileComponent } from './page-design/mobile/footer-mobile/footer-mobile.component';
+import { NgClass } from '@angular/common';
 @Component({
   standalone: true,
-  imports: [RouterModule, MatIcon, MatIconButton],
+  imports: [RouterModule, MatIcon, MatIconButton, ToolbarComponent, FooterMobileComponent, NgClass],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'user-app';
-  constructor() {
-    console.log('UserApp started')
-  }
+
+  #authS = inject(AuthorizationService);
+  protected isAuthorized = this.#authS.isAuthorized;
+  protected readonly isMobile = isMobile;
 }

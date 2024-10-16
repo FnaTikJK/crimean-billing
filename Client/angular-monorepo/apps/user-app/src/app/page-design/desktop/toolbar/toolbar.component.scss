@@ -1,0 +1,51 @@
+
+.routeTitle {
+  text-align: center;
+  flex-basis: 100%;
+}
+
+.toolbarTitle {
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 2rem;
+  &:hover {
+    color: #109cf1;
+  }
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.formField {
+  flex-grow: 1;
+}
+
+.menuTriggerBtn {
+  height: 100%;
+  background-color: inherit;
+  border: none;
+  border-radius: 4px;
+  width: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  cursor: pointer;
+
+  &:hover {
+    .mat-icon {
+      color: #109cf1;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .mat-mdc-text-field-wrapper, .mat-mdc-form-field-flex {
+    height: 35px;
+    .mat-mdc-form-field-infix {
+      min-height: unset;
+      padding: 0.4em;
+    }
+  }
+
+}

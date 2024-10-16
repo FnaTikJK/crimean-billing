@@ -1,0 +1,24 @@
+.footer {
+  display: flex;
+  justify-content: space-around;
+}
+
+
+.tabLink {
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: gray;
+  text-decoration: none;
+  .mat-icon {
+    color: inherit;
+  }
+  .tabTitle {
+    margin: 0;
+  }
+
+  &.active {
+    color: black;
+  }
+}
