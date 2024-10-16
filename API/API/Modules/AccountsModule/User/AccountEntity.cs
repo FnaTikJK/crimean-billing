@@ -9,7 +9,8 @@ public class AccountEntity : IEntity
     [Key]
     public Guid Id { get; set; }
     public UserEntity User { get; set; }
-    public string PhoneNumber { get; set; }
-    public int Number { get; set; }
-    public AccountType AccountType { get; set; }
+    public required string PhoneNumber { get; set; }
+    public required int Number { get; set; }
+    public required float Money { get; set; }
+    public required AccountType AccountType { get; set; }
 }

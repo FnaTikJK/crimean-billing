@@ -1,12 +1,14 @@
-﻿using API.Modules.AccountsModule.Share;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Modules.AccountsModule.User.DTO;
 
 public class RegisterUserRequest
 {
-    public Guid? UserId { get; set; }
-    public string PhoneNumber { get; set; }
-    public int Number { get; set; }
-    public string? Email { get; set; }
-    public AccountType AccountType { get; set; }
+    [RegularExpression(@".+@.+\..+")]
+    [DefaultValue("test@test.tt")]
+    public required string Email { get; set; }
+    [RegularExpression(@"^.+ .+ .+$")]
+    [DefaultValue("Фамилия Имя Отчество")]
+    public required string Fio { get; set; }
 }

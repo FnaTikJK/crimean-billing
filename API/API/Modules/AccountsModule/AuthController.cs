@@ -76,20 +76,31 @@ public class AuthController : ControllerBase
 
         return response.ActionResult;
     }
-    
-    
+
     /// <summary>
-    /// Регистрация для обычных юзеров
+    /// Регистрация Юзеров.
     /// </summary>
     /// <remarks>
-    /// Если указан UserId, то добавляем ему Account <br/>
-    /// Иначе создаём нового UserId, создаём и привязываем ему Account <br/>
-    /// AccountType - Какого типа акк создать (SIM, TV, Internet)
+    /// Email должен быть УНИКАЛЕН
+    /// </remarks>
+    [HttpPost("Users/Register")]
+    public async Task<ActionResult<RegisterUserResponse>> RegisterUser(RegisterUserRequest request)
+    {
+        var response = await authService.RegisterUser(request);
+        return response.ActionResult;
+    }
+
+    /// <summary>
+    /// Регистрация ЛС (лицевых счетов)
+    /// </summary>
+    /// <remarks>
+    /// Добавляем Account для User
+    /// <br/> AccountType - Какого типа акк создать (SIM, TV, Internet)
     /// </remarks>
     [HttpPost("Register")]
-    public async Task<ActionResult<RegisterUserResponse>> Register([FromBody] RegisterUserRequest request)
+    public async Task<ActionResult<RegisterAccountResponse>> Register([FromBody] RegisterAccountRequest request)
     {
-        var response = await authService.Register(request);
+        var response = await authService.RegisterAccount(request);
         return response.ActionResult;
     }
     
@@ -107,7 +118,8 @@ public class AuthController : ControllerBase
     /// Подтверждение входа для юзеров
     /// </summary>
     /// <remarks>
-    /// Код из 6 цифр. Если хочешь скипнуть подтверждение - добавь телефон
+    /// Код из 6 цифр.
+    /// <br/> Чтобы получить код без Tg/email - ручка в Админском контроллеке
     /// </remarks>
     [HttpPost("Verify")]
     public async Task<ActionResult<VerifyUserResponse>> VerifyLogin([FromBody] VerifyUserRequest request)
