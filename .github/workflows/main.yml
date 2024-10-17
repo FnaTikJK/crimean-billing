@@ -90,6 +90,6 @@ jobs:
 
     - name: Host App
       run: |
-        sudo docker login --username oauth --password ${{ YC_OAUTH_TOKEN }} cr.yandex
+        sudo docker login --username oauth --password ${{ secrets.YC_OAUTH_TOKEN }} cr.yandex
         sudo docker compose pull
         sudo docker compose up --build
