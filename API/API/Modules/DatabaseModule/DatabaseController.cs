@@ -1,4 +1,3 @@
-using API.DAL;
 using API.Infrastructure.Config;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +18,10 @@ public class DatabaseController : ControllerBase
     /// Пересоздаёт БД
     /// </summary>
     [HttpPost]
-    public ActionResult RecreateDatabase()
+    public async Task<ActionResult> RecreateDatabase([FromQuery] bool withAutoFilling = true)
     {
-        return databaseService.RecreateDatabase().ActionResult;
+        var response =  await databaseService.RecreateDatabase(withAutoFilling);
+        return response.ActionResult;
     }
 
     [HttpGet]
