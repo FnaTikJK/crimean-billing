@@ -1,0 +1,14 @@
+
+<div class="wrapper">
+  <form class="form" [formGroup]="profileFormGroup">
+    <mat-form-field class="formField">
+      <input [formControlName]="'fio'" matInput>
+    </mat-form-field>
+
+    <mat-form-field class="formField">
+      <input [formControlName]="'email'" matInput>
+    </mat-form-field>
+  </form>
+
+  <button class="logoutBtn" mat-button (click)="logout()">Выйти</button>
+</div>

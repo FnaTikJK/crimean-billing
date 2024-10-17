@@ -1,0 +1,14 @@
+:host {
+  max-width: 400px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.addMoneyInput::-webkit-outer-spin-button,
+.addMoneyInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

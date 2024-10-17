@@ -1,4 +1,18 @@
 
-<button mat-icon-button>
-  <mat-icon>search</mat-icon>
-</button>
+<div class="wrapper">
+  @if(isAuthorized()) {
+    <header class="header">
+      <app-toolbar></app-toolbar>
+    </header>
+  }
+
+  <section class="routeContent">
+    <router-outlet></router-outlet>
+  </section>
+
+  @if (isAuthorized() && isMobile()) {
+    <footer class="footer">
+      <app-footer-mobile></app-footer-mobile>
+    </footer>
+  }
+</div>

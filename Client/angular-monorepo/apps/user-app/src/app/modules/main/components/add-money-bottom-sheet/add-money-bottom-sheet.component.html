@@ -1,0 +1,16 @@
+  <form class="form" (ngSubmit)="submitForm()">
+    <mat-form-field>
+      <mat-label>Сумма платежа</mat-label>
+      <input class="addMoneyInput" type="number" matInput [formControl]="addMoneyControl">
+      <p matTextSuffix></p>
+      @if(addMoneyControl.hasError('min')) {
+        <mat-error>Не менее 1 ₽</mat-error>
+      } @else if(addMoneyControl.hasError('max')) {
+      <mat-error>Не более 1000000 ₽</mat-error>
+    }
+    </mat-form-field>
+
+    <button mat-flat-button
+            [disabled]="addMoneyControl.invalid"
+    >Пополнить баланс на {{ addMoneyControl.value }}</button>
+  </form>

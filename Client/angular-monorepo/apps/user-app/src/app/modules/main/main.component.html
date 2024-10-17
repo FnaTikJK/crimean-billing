@@ -1,0 +1,7 @@
+<div class="wrapper">
+  <section class="accountSection">
+    @if(accountIDToDisplay()) {
+      <app-account-card [accountID]="accountIDToDisplay()!"></app-account-card>
+    }
+  </section>
+</div>
