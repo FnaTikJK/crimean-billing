@@ -1,8 +1,9 @@
 ﻿using API.Modules.AccountsModule.Manager;
 using API.Modules.AccountsModule.Manager.DTO;
+using API.Modules.AccountsModule.User;
 using API.Modules.AccountsModule.User.DTO;
 
-namespace API.Modules.AccountsModule.User;
+namespace API.Modules.AccountsModule;
 
 public static class AuthMapper
 {

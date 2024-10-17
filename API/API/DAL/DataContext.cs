@@ -2,6 +2,7 @@ using API.Infrastructure;
 using API.Infrastructure.Config;
 using API.Modules.AccountsModule.Manager;
 using API.Modules.AccountsModule.User;
+using API.Modules.ServicesModule.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.DAL;
@@ -32,4 +33,6 @@ public class DataContext : DbContext
     public DbSet<ManagerEntity> Managers => Set<ManagerEntity>();
     public DbSet<UserEntity> Users => Set<UserEntity>();
     public DbSet<AccountEntity> Accounts => Set<AccountEntity>();
+    public DbSet<ServiceTemplateEntity> ServiceTemplates => Set<ServiceTemplateEntity>();
+    public DbSet<ServiceEntity> Services => Set<ServiceEntity>();
 }

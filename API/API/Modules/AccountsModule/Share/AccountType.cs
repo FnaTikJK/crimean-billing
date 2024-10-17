@@ -4,5 +4,5 @@ public enum AccountType
 {
     Sim,
     Tv,
-    Internet,
+    HomeInternet,
 }
