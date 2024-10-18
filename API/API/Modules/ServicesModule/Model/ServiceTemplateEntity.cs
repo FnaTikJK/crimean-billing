@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using API.DAL;
 using API.Modules.AccountsModule.Share;
+using API.Modules.TariffsModule.Models;
 
 namespace API.Modules.ServicesModule.Model;
 
@@ -16,4 +17,5 @@ public class ServiceTemplateEntity : IEntity
     public ServiceType ServiceType { get; set; }
     public UnitType UnitType { get; set; }
     public bool IsTariffService { get; set; }
+    public HashSet<TariffServiceAmountEntity> AmountsInTariffs { get; set; }
 }

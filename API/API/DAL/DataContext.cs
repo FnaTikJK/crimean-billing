@@ -3,6 +3,7 @@ using API.Infrastructure.Config;
 using API.Modules.AccountsModule.Manager;
 using API.Modules.AccountsModule.User;
 using API.Modules.ServicesModule.Model;
+using API.Modules.TariffsModule.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.DAL;
@@ -24,6 +25,11 @@ public class DataContext : DbContext
             builder => { builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); });
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+    }
+
     public void RecreateDatabase()
     {
         this.Database.EnsureDeleted();
@@ -35,4 +41,7 @@ public class DataContext : DbContext
     public DbSet<AccountEntity> Accounts => Set<AccountEntity>();
     public DbSet<ServiceTemplateEntity> ServiceTemplates => Set<ServiceTemplateEntity>();
     public DbSet<ServiceEntity> Services => Set<ServiceEntity>();
+    public DbSet<TariffTemplateEntity> TariffTemplates => Set<TariffTemplateEntity>();
+    public DbSet<TariffEntity> Tariffs => Set<TariffEntity>();
+    public DbSet<TariffServiceAmountEntity> TariffServiceAmounts => Set<TariffServiceAmountEntity>();
 }

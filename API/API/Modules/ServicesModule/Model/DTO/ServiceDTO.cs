@@ -13,6 +13,7 @@ public class ServiceDTO
     public AccountType AccountType { get; set; }
     public ServiceType ServiceType { get; set; }
     public UnitType UnitType { get; set; }
+    
     public float? Price { get; set; }
     public float? Amount { get; set; }
 }
