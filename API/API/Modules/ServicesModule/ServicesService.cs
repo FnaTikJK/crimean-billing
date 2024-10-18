@@ -46,16 +46,18 @@ public class ServicesService : IServicesService
 
     public async Task<Result<ServiceDTO>> PatchService(PatchServiceRequest request)
     {
-        var findResponse = await FindService(request.TemplateId, request.ServiceId);
+        var findResponse = await FindService(request.TemplateId, request.ServiceId, request.Code);
         if (!findResponse.IsSuccess)
             return Result.BadRequest<ServiceDTO>(findResponse.Error!);
 
         var (template, service) = findResponse.Value;
         ServicesMapper.Patch(request, template);
         var actualService = await ActualizeService(request, template, service);
+        if (!actualService.IsSuccess)
+            return Result.BadRequest<ServiceDTO>(actualService.Error!);
         await db.SaveChangesAsync();
 
-        return Result.Ok(ServicesMapper.Map(template, actualService));
+        return Result.Ok(ServicesMapper.Map(template, actualService.Value));
     }
 
     public async Task<Result<SearchServicesResponse>> SearchServices(SearchServicesRequest request)
@@ -129,27 +131,31 @@ public class ServicesService : IServicesService
         throw new NotImplementedException("not implemented order by");
     }
 
-    private async Task<ServiceEntity?> ActualizeService(
+    private async Task<Result<ServiceEntity?>> ActualizeService(
         PatchServiceRequest request,
         ServiceTemplateEntity template, 
         ServiceEntity? service)
     {
         if (request.Price == null && request.Amount == null)
-            return service;
+            return Result.Ok(service);
         
         if (service != null)
             service.DeletedAt = DateTimeProvider.Now;
         if (request.NeedKillService is true)
-            return null;
-        
+        {
+            if (request.Price != null || request.Amount != null)
+                return Result.BadRequest<ServiceEntity?>("Вы пытаетесь удалить сервис и пропатичть его. (Флаг NeedKillService)");
+            return Result.Ok<ServiceEntity?>(null);
+        }
+
         var actualService = ServicesMapper.MapService(request, service);
         template.Services ??= new HashSet<ServiceEntity>();
         template.Services.Add(actualService);
         await services.AddAsync(actualService);
-        return actualService;
+        return Result.Ok<ServiceEntity?>(actualService);
     }
 
-    private async Task<Result<(ServiceTemplateEntity, ServiceEntity?)>> FindService(Guid? serviceTemplateId, Guid? serviceId)
+    private async Task<Result<(ServiceTemplateEntity, ServiceEntity?)>> FindService(Guid? serviceTemplateId, Guid? serviceId, string? patchCode)
     {
         if (serviceId == null && serviceTemplateId == null)
             return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity?)>("Не указаны Id");
@@ -174,6 +180,12 @@ public class ServicesService : IServicesService
             return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity?)>("ServiceTemplate не найден");
         if (serviceTemplateId != null && template.Id != serviceTemplateId)
             return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity)>($"Найденный ServiceTemplateId: {service.Id} не совпадает с целевым ServiceTemplateId: {serviceId}");
+        if (patchCode != null && patchCode != template.Code)
+        {
+            var withSameCode = await templates.FirstOrDefaultAsync(e => e.Code == patchCode);
+            if (withSameCode != null)
+                return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity?)>("Код для Template уже занят");
+        }
 
         return Result.Ok((template, service));
     }

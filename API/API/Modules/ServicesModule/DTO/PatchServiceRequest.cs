@@ -1,4 +1,5 @@
-﻿using API.Modules.AccountsModule.Share;
+﻿using System.ComponentModel;
+using API.Modules.AccountsModule.Share;
 using API.Modules.ServicesModule.Model;
 
 namespace API.Modules.ServicesModule.DTO;
@@ -15,7 +16,9 @@ public class PatchServiceRequest
     public UnitType? UnitType { get; set; }
     public bool? IsTariffService { get; set; }
 
-    public bool? NeedKillService { get; set; } 
     public float? Price { get; set; }
     public float? Amount { get; set; }
+    
+    [DefaultValue(false)]
+    public bool? NeedKillService { get; set; }
 }
