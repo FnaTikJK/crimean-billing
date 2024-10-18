@@ -7,6 +7,7 @@ namespace API.Modules.AdminModule;
 public interface IAdminService
 {
     Result<GetVerificationCodeResponse> GetVerificationCode(GetVerificationCodeRequest request);
+    Result<DateTime> MockDateTime(DateTime toMock);
 }
 
 public class AdminService : IAdminService
@@ -24,5 +25,11 @@ public class AdminService : IAdminService
         return code == null 
             ? Result.BadRequest<GetVerificationCodeResponse>("Нет кода для этого пользователя")
             : Result.Ok(new GetVerificationCodeResponse {VerificationCode = code});
+    }
+
+    public Result<DateTime> MockDateTime(DateTime toMock)
+    {
+        DateTimeProvider.Now = toMock;
+        return Result.Ok(DateTimeProvider.Now);
     }
 }

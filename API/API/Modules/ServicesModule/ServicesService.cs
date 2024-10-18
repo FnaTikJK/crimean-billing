@@ -138,7 +138,7 @@ public class ServicesService : IServicesService
             return service;
         
         if (service != null)
-            service.DeletedAt = DateTime.UtcNow;
+            service.DeletedAt = DateTimeProvider.Now;
         if (request.NeedKillService is true)
             return null;
         

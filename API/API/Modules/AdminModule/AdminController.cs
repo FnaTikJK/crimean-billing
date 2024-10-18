@@ -26,4 +26,15 @@ public class AdminController : ControllerBase
         var response = adminService.GetVerificationCode(request);
         return response.ActionResult;
     }
+
+    /// <summary>
+    /// Меняет время у программы на определённую дату (для демонов)
+    /// </summary>
+    [HttpPost("MockDateTime")]
+    public ActionResult<DateTime> MockDatetime([FromQuery] MockDateTimeRequest request)
+    {
+        var dateTime = DateTime.Parse(request.Date);
+        var response = adminService.MockDateTime(dateTime);
+        return response.ActionResult;
+    }
 }

@@ -1,4 +1,5 @@
-﻿using API.Modules.ServicesModule.DTO;
+﻿using API.Infrastructure;
+using API.Modules.ServicesModule.DTO;
 using API.Modules.ServicesModule.Model;
 using API.Modules.ServicesModule.Model.DTO;
 
@@ -31,7 +32,7 @@ public static class ServicesMapper
             {
                 Price = source.Price.Value,
                 Amount = source.Amount,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTimeProvider.Now,
             };
 
     public static ServiceDTO Map(ServiceTemplateEntity template, ServiceEntity? actualService)
@@ -92,7 +93,7 @@ public static class ServicesMapper
         {
             Price = request.Price ?? previousService?.Price ?? -1,
             Amount = request.Amount ?? previousService?.Amount,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = DateTimeProvider.Now,
         };
 
     public static ServiceHistoryDTO Map(ServiceEntity service)
