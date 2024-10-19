@@ -12,6 +12,7 @@ public interface ITariffsService
 {
     Task<Result<TariffDTO>> CreateTariff(CreateTariffRequest request);
     Task<Result<TariffDTO>> PatchTariff(PatchTariffRequest request);
+    Result<SearchTariffResponse> SearchTariffs(SearchTariffsRequest request);
 }
 
 public class TariffsService : ITariffsService
@@ -73,6 +74,45 @@ public class TariffsService : ITariffsService
         await db.SaveChangesAsync();
 
         return Result.Ok(TariffsMapper.Map(template));
+    }
+
+    public Result<SearchTariffResponse> SearchTariffs(SearchTariffsRequest request)
+    {
+        var query = templates.AsNoTracking()
+            .Include(e => e.Tariffs).ThenInclude(t => t.ServicesAmounts).ThenInclude(s => s.ServiceTemplate)
+            .Select(TariffsMapper.Map)
+            .AsQueryable();
+
+        
+        if (request.Code != null)
+            query = query.Where(e => e.Code.Contains(request.Code, StringComparison.OrdinalIgnoreCase)); 
+        if (request.Name != null)
+            query = query.Where(e => e.Name.Contains(request.Name, StringComparison.OrdinalIgnoreCase));
+        if (request.Description != null)
+            query = query.Where(e => e.Description.Contains(request.Description, StringComparison.OrdinalIgnoreCase));
+        if (request.AccountType != null)
+            query = query.Where(e => e.AccountType == request.AccountType);
+        
+        if (request.Price != null)
+            query = query.Where(e => request.Price.Fit(e.Price));
+        if (request.ServicesAmounts != null)
+            query = query.Where(e => SearchServicesAmounts(e.Services, request.ServicesAmounts));
+        
+        var result = query.Skip(request.Skip).Take(request.Take);
+        var totalCount = query.Count();
+        return Result.Ok(new SearchTariffResponse()
+        {
+            TotalCount = totalCount,
+            Items = result.ToList(),
+        });
+    }
+
+    private bool SearchServicesAmounts(IEnumerable<ServiceAmountDTO> source, IEnumerable<SearchServiceQuery> toSearch)
+    {
+        return toSearch.All(
+            s => source.Any(e => (s.UnitType == null || s.UnitType.Value == e.UnitType)
+                                && (s.ServiceType == null || s.ServiceType.Value == e.ServiceType)
+                                && (s.Amount == null || s.Amount.Fit(e.Amount))));
     }
 
     private Result<Dictionary<Guid, ServiceTemplateEntity>?> FindServicesToBound(

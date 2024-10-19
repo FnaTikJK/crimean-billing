@@ -31,4 +31,11 @@ public class TariffsController : ControllerBase
         var response = await tariffsService.PatchTariff(request);
         return response.ActionResult;
     }
+
+    [HttpPost("Search")]
+    public ActionResult<SearchTariffResponse> SearchTariffs([FromBody] SearchTariffsRequest request)
+    {
+        var response = tariffsService.SearchTariffs(request);
+        return response.ActionResult;
+    }
 }
