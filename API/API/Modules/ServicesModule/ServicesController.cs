@@ -35,7 +35,6 @@ public class ServicesController : ControllerBase
     /// Редактирует Service 
     /// </summary>
     /// <remarks>
-    /// Ищет по одному из Id. Для Template выбирает актуальный(DeletedAt != null) Service.
     /// <br/>Редактируются только !null поля.
     /// <br/>Если отредачить часть Service (Price, Amount), то у него сменится Id, тк мы создали новый, чтобы сохранить стат. данные
     /// <br/><strong>NeedKillService</strong> - флаг, чтобы оставить только шаблон

@@ -6,8 +6,7 @@ namespace API.Modules.ServicesModule.DTO;
 
 public class PatchServiceRequest
 {
-    public Guid? ServiceId { get; set; }
-    public Guid? TemplateId { get; set; }
+    public Guid TemplateId { get; set; }
     public string? Name { get; set; }
     public string? Code { get; set; }
     public string? Description { get; set; }

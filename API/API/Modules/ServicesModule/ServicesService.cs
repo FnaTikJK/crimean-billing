@@ -5,6 +5,7 @@ using API.Modules.ServicesModule.DTO;
 using API.Modules.ServicesModule.Model;
 using API.Modules.ServicesModule.Model.DTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace API.Modules.ServicesModule;
 
@@ -46,11 +47,14 @@ public class ServicesService : IServicesService
 
     public async Task<Result<ServiceDTO>> PatchService(PatchServiceRequest request)
     {
-        var findResponse = await FindService(request.TemplateId, request.ServiceId, request.Code);
-        if (!findResponse.IsSuccess)
-            return Result.BadRequest<ServiceDTO>(findResponse.Error!);
-
-        var (template, service) = findResponse.Value;
+        var withSameCode = await templates.AsNoTracking().FirstOrDefaultAsync(e => e.Code == request.Code);
+        if (withSameCode != null)
+            return Result.BadRequest<ServiceDTO>("ServiceTemplate с таким кодом уже существует");
+        var template = await templates.Include(e => e.Services).FirstOrDefaultAsync(e => e.Id == request.TemplateId);
+        if (template == null)
+            return Result.BadRequest<ServiceDTO>("ServiceTemplate не найден");
+        
+        var service = template.Services?.FirstOrDefault(e => e.DeletedAt == null);
         ServicesMapper.Patch(request, template);
         var actualService = await ActualizeService(request, template, service);
         if (!actualService.IsSuccess)
@@ -153,40 +157,5 @@ public class ServicesService : IServicesService
         template.Services.Add(actualService);
         await services.AddAsync(actualService);
         return Result.Ok<ServiceEntity?>(actualService);
-    }
-
-    private async Task<Result<(ServiceTemplateEntity, ServiceEntity?)>> FindService(Guid? serviceTemplateId, Guid? serviceId, string? patchCode)
-    {
-        if (serviceId == null && serviceTemplateId == null)
-            return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity?)>("Не указаны Id");
-        
-        ServiceTemplateEntity? template;
-        ServiceEntity? service;
-        if (serviceId != null)
-        {
-            service = await services.Include(e => e.Template).ThenInclude(e => e.Services)
-                .FirstOrDefaultAsync(e => e.Id == serviceId);
-            template = service?.Template;
-        }
-        else
-        {
-            template = await templates.Include(e => e.Services).FirstOrDefaultAsync(e => e.Id == serviceTemplateId);
-            service = template?.Services?.FirstOrDefault(e => e.DeletedAt == null);
-        }
-
-        if (serviceId != null && service?.Id != serviceId)
-            return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity)>($"Найденный ServiceId: {service.Id} не совпадает с целевым ServiceId: {serviceId}");
-        if (template == null)
-            return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity?)>("ServiceTemplate не найден");
-        if (serviceTemplateId != null && template.Id != serviceTemplateId)
-            return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity)>($"Найденный ServiceTemplateId: {service.Id} не совпадает с целевым ServiceTemplateId: {serviceId}");
-        if (patchCode != null && patchCode != template.Code)
-        {
-            var withSameCode = await templates.FirstOrDefaultAsync(e => e.Code == patchCode);
-            if (withSameCode != null)
-                return Result.BadRequest<(ServiceTemplateEntity, ServiceEntity?)>("Код для Template уже занят");
-        }
-
-        return Result.Ok((template, service));
     }
 }
