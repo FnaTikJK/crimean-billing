@@ -7,6 +7,7 @@ public class TariffEntity : IEntity
 {
     [Key]
     public Guid Id { get; set; }
+    public TariffTemplateEntity Template { get; set; }
     public float Price { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }

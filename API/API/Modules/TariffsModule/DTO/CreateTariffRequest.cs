@@ -13,9 +13,3 @@ public class CreateTariffRequest
     
     public IEnumerable<CreateTariffServiceAmountsRequest> ServicesAmounts { get; set; }
 }
-
-public class CreateTariffServiceAmountsRequest
-{
-    public Guid ServiceTemplateId { get; set; }
-    public float? Amount { get; set; }
-}

@@ -24,4 +24,11 @@ public class TariffsController : ControllerBase
         var response = await tariffsService.CreateTariff(request);
         return response.ActionResult;
     }
+    
+    [HttpPatch("")]
+    public async Task<ActionResult<TariffDTO>> PatchTariff([FromBody] PatchTariffRequest request)
+    {
+        var response = await tariffsService.PatchTariff(request);
+        return response.ActionResult;
+    }
 }

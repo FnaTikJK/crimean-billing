@@ -1,6 +1,7 @@
 ﻿using API.Infrastructure;
 using API.Modules.ServicesModule.Model;
 using API.Modules.TariffsModule.DTO;
+using API.Modules.TariffsModule.Extensions;
 using API.Modules.TariffsModule.Models;
 using API.Modules.TariffsModule.Models.DTO;
 
@@ -10,7 +11,7 @@ public static class TariffsMapper
 {
     public static TariffDTO Map(TariffTemplateEntity tariffTemplate)
     {
-        var tariff = tariffTemplate.Tariffs.First();
+        var tariff = tariffTemplate.Tariffs.FindActual();
         return new()
         {
             Id = tariff.Id,
@@ -45,14 +46,44 @@ public static class TariffsMapper
         };
     }
 
+    public static void Map(
+        TariffTemplateEntity targetTemplate, 
+        PatchTariffRequest request,
+        Dictionary<Guid, ServiceTemplateEntity> services)
+    {
+        if (request.Code != null)
+            targetTemplate.Code = request.Code;
+        if (request.Name != null)
+            targetTemplate.Name = request.Name;
+        if (request.Description != null)
+            targetTemplate.Description = request.Description;
+        if (request.AccountType != null)
+            targetTemplate.AccountType = request.AccountType.Value;
+
+        if (request.NeedActualizeTariff())
+        {
+            targetTemplate.Tariffs.FindActual().DeletedAt = DateTimeProvider.Now;
+            targetTemplate.Tariffs.Add(MapTariff(request, services));
+        }
+    }
+
+    private static TariffEntity MapTariff(PatchTariffRequest request, Dictionary<Guid, ServiceTemplateEntity> services)
+        => MapTariff(request.Price!.Value, request.ServicesAmounts!, services);
+
     private static TariffEntity MapTariff(CreateTariffRequest request, Dictionary<Guid, ServiceTemplateEntity> services)
+        => MapTariff(request.Price, request.ServicesAmounts, services);
+
+    private static TariffEntity MapTariff(
+        float price,
+        IEnumerable<CreateTariffServiceAmountsRequest> serviceAmounts, 
+        Dictionary<Guid, ServiceTemplateEntity> services)
     {
         var tariff = new TariffEntity()
         {
-            Price = request.Price,
+            Price = price,
             CreatedAt = DateTimeProvider.Now,
         };
-        tariff.ServicesAmounts = request.ServicesAmounts.Select(e => new TariffServiceAmountEntity()
+        tariff.ServicesAmounts = serviceAmounts.Select(e => new TariffServiceAmountEntity()
         {
             Tariff = tariff,
             ServiceTemplate = services[e.ServiceTemplateId],

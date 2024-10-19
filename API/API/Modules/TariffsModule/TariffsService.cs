@@ -11,6 +11,7 @@ namespace API.Modules.TariffsModule;
 public interface ITariffsService
 {
     Task<Result<TariffDTO>> CreateTariff(CreateTariffRequest request);
+    Task<Result<TariffDTO>> PatchTariff(PatchTariffRequest request);
 }
 
 public class TariffsService : ITariffsService
@@ -39,19 +40,56 @@ public class TariffsService : ITariffsService
         if (withSameCode != null)
             return Result.BadRequest<TariffDTO>("Тариф с таким кодом уже существует");
 
-        var serviceTemplatesIds = request.ServicesAmounts.Select(e => e.ServiceTemplateId).ToHashSet();
-        var serviceTemplates = services
-            .Where(e => serviceTemplatesIds.Contains(e.Id))
-            .ToDictionary(e => e.Id, e => e);
-        if (serviceTemplates.Count < request.ServicesAmounts.Count())
-            return Result.BadRequest<TariffDTO>("Некорректные ServiceTemplateIds");
-        if (serviceTemplates.Any(e => e.Value.IsTariffService == false))
-            return Result.BadRequest<TariffDTO>("Вы пытаетесь добавить добавить Service не предназначенный для Tariff (флаг IsTariffService)");
+        var serviceTemplatesResult = FindServicesToBound(request.ServicesAmounts);
+        if (!serviceTemplatesResult.IsSuccess)
+            return Result.BadRequest<TariffDTO>(serviceTemplatesResult.Error!);
 
+        var serviceTemplates = serviceTemplatesResult.Value;
         var template = TariffsMapper.Map(request, serviceTemplates);
         await templates.AddAsync(template);
         await db.SaveChangesAsync();
 
         return Result.Ok(TariffsMapper.Map(template));
+    }
+
+    public async Task<Result<TariffDTO>> PatchTariff(PatchTariffRequest request)
+    {
+        if (request.IsIncorrect(out var errorMessage))
+            return Result.BadRequest<TariffDTO>(errorMessage);
+        var withSameCode = await templates.AsNoTracking().FirstOrDefaultAsync(e => e.Code == request.Code);
+        if (withSameCode != null)
+            return Result.BadRequest<TariffDTO>("Tariff с таким кодом уже существует");
+        var template = await templates
+            .Include(e => e.Tariffs).ThenInclude(t => t.ServicesAmounts)
+            .FirstOrDefaultAsync(e => e.Id == request.TemplateId);
+        if (template == null)
+            return Result.BadRequest<TariffDTO>("Такого Tariff не существует");
+        
+        var serviceTemplatesResult = FindServicesToBound(request.ServicesAmounts);
+        if (!serviceTemplatesResult.IsSuccess)
+            return Result.BadRequest<TariffDTO>(serviceTemplatesResult.Error!);
+
+        TariffsMapper.Map(template, request, serviceTemplatesResult.Value);
+        await db.SaveChangesAsync();
+
+        return Result.Ok(TariffsMapper.Map(template));
+    }
+
+    private Result<Dictionary<Guid, ServiceTemplateEntity>?> FindServicesToBound(
+        IEnumerable<CreateTariffServiceAmountsRequest>? servicesAmounts)
+    {
+        if (servicesAmounts == null)
+            return Result.Ok<Dictionary<Guid, ServiceTemplateEntity>?>(null);
+        
+        var serviceTemplatesIds = servicesAmounts.Select(e => e.ServiceTemplateId).ToHashSet();
+        var serviceTemplates = services
+            .Where(e => serviceTemplatesIds.Contains(e.Id))
+            .ToDictionary(e => e.Id, e => e);
+        if (serviceTemplates.Count < serviceTemplatesIds.Count())
+            return Result.BadRequest<Dictionary<Guid, ServiceTemplateEntity>?>("Некорректные ServiceTemplateIds");
+        if (serviceTemplates.Any(e => e.Value.IsTariffService == false))
+            return Result.BadRequest<Dictionary<Guid, ServiceTemplateEntity>?>("Вы пытаетесь добавить добавить Service не предназначенный для Tariff (флаг IsTariffService)");
+
+        return Result.Ok(serviceTemplates)!;
     }
 }
