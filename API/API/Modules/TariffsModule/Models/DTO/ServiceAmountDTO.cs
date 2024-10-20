@@ -4,8 +4,9 @@ namespace API.Modules.TariffsModule.Models.DTO;
 
 public class ServiceAmountDTO
 {
-    public Guid TemplateId { get; set; }
-    public ServiceType ServiceType { get; set; }
-    public UnitType UnitType { get; set; }
-    public float? Amount { get; set; }
+    public required Guid TemplateId { get; set; }
+    public required string Name { get; set; }
+    public required ServiceType ServiceType { get; set; }
+    public required UnitType UnitType { get; set; }
+    public required float? Amount { get; set; }
 }

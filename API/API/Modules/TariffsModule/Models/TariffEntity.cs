@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using API.DAL;
+using API.Modules.SubscriptionsModule.Model;
 
 namespace API.Modules.TariffsModule.Models;
 
@@ -12,4 +13,5 @@ public class TariffEntity : IEntity
     public DateTime CreatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
     public HashSet<TariffServiceAmountEntity> ServicesAmounts { get; set; }
+    public HashSet<SubscriptionEntity>? Subscriptions { get; set; }
 }

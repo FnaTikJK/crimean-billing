@@ -24,6 +24,7 @@ public static class TariffsMapper
             Services = tariff.ServicesAmounts.Select(e => new ServiceAmountDTO()
             {
                 TemplateId = e.Id,
+                Name = e.ServiceTemplate.Name,
                 ServiceType = e.ServiceTemplate.ServiceType,
                 UnitType = e.ServiceTemplate.UnitType,
                 Amount = e.Amount,

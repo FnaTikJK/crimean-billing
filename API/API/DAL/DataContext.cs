@@ -3,6 +3,8 @@ using API.Infrastructure.Config;
 using API.Modules.AccountsModule.Manager;
 using API.Modules.AccountsModule.User;
 using API.Modules.ServicesModule.Model;
+using API.Modules.SubscriptionsModule.Model;
+using API.Modules.SubscriptionsModule.Model;
 using API.Modules.TariffsModule.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,9 +27,10 @@ public class DataContext : DbContext
             builder => { builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null); });
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        builder.Entity<SubscriptionsPreferredChangesEntity>()
+            .HasKey(e => new {e.SubscriptionId, e.TariffTemplateId});
     }
 
     public void RecreateDatabase()
@@ -44,4 +47,6 @@ public class DataContext : DbContext
     public DbSet<TariffTemplateEntity> TariffTemplates => Set<TariffTemplateEntity>();
     public DbSet<TariffEntity> Tariffs => Set<TariffEntity>();
     public DbSet<TariffServiceAmountEntity> TariffServiceAmounts => Set<TariffServiceAmountEntity>();
+    public DbSet<SubscriptionEntity> Subscriptions => Set<SubscriptionEntity>();
+    public DbSet<SubscriptionsPreferredChangesEntity> SubscriptionsPreferredChanges => Set<SubscriptionsPreferredChangesEntity>();
 }
