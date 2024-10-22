@@ -81,7 +81,7 @@ public class SubscriptionsService : ISubscriptionsService
     {
         var subscription = await FindSubscription(request.AccountId, true);
         if (subscription == null)
-            Result.NotFound<SubscriptionDTO>("Такого Subscription не существует");
+            return Result.NotFound<SubscriptionDTO>("Такого Subscription не существует");
         
         return Result.Ok(SubscriptionsMapper.Map(subscription));
     }
