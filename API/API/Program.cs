@@ -72,6 +72,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.RegisterMiddlewares();
-app.Services.GetService(typeof(ITelegramService));
+
+app.ConfigureDaemons();
 
 app.Run();

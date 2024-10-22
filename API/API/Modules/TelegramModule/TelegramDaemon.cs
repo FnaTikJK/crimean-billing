@@ -10,19 +10,17 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace API.Modules.TelegramModule;
 
-
-public interface ITelegramService
+public interface ITelegramDaemon
 {
-    
 }
 
-public class TelegramService : ITelegramService
+public class TelegramDaemon : ITelegramDaemon
 {
     private readonly ITelegramBotClient botClient;
     private readonly ILog log;
     private readonly ICache cache;
 
-    public TelegramService(ILog log, ICache cache)
+    public TelegramDaemon(ILog log, ICache cache)
     {
         if (string.IsNullOrEmpty(Config.TelegramApiKey))
         {
@@ -43,7 +41,7 @@ public class TelegramService : ITelegramService
             },
             // Параметр, отвечающий за обработку сообщений, пришедших за то время, когда ваш бот был оффлайн
             // True - не обрабатывать, False (стоит по умолчанию) - обрабаывать
-            ThrowPendingUpdates = false, 
+            ThrowPendingUpdates = true, 
         };
         
         using var cts = new CancellationTokenSource();
