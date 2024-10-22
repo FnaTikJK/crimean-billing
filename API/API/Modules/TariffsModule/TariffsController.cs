@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Modules.TariffsModule;
 
-[Authorize(Roles = nameof(AccountRole.Manager))]
+//[Authorize(Roles = nameof(AccountRole.Manager))]
 [Route("api/[controller]")]
 [ApiController]
 public class TariffsController : ControllerBase
