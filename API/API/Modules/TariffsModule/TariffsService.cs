@@ -13,6 +13,7 @@ public interface ITariffsService
     Task<Result<TariffDTO>> CreateTariff(CreateTariffRequest request);
     Task<Result<TariffDTO>> PatchTariff(PatchTariffRequest request);
     Result<SearchTariffResponse> SearchTariffs(SearchTariffsRequest request);
+    Task<Result<TariffDTO>> GetById(Guid tariffTemplateId);
 }
 
 public class TariffsService : ITariffsService
@@ -78,12 +79,8 @@ public class TariffsService : ITariffsService
 
     public Result<SearchTariffResponse> SearchTariffs(SearchTariffsRequest request)
     {
-        var query = templates.AsNoTracking()
-            .Include(e => e.Tariffs).ThenInclude(t => t.ServicesAmounts).ThenInclude(s => s.ServiceTemplate)
-            .Select(TariffsMapper.Map)
-            .AsQueryable();
+        var query = GetQuery(true);
 
-        
         if (request.Code != null)
             query = query.Where(e => e.Code.Contains(request.Code, StringComparison.OrdinalIgnoreCase)); 
         if (request.Name != null)
@@ -108,6 +105,27 @@ public class TariffsService : ITariffsService
             TotalCount = totalCount,
             Items = result.ToList(),
         });
+    }
+
+    public async Task<Result<TariffDTO>> GetById(Guid tariffTemplateId)
+    {
+        var tariff = await GetQuery(true)
+            .FirstOrDefaultAsync(e => e.TemplateId == tariffTemplateId);
+        if (tariff == null)
+            return Result.NotFound<TariffDTO>("Такого Tariff не существует");
+        return Result.Ok(tariff);
+    }
+
+    private IQueryable<TariffDTO> GetQuery(bool asNoTracking)
+    {
+        var query = templates
+            .Include(e => e.Tariffs).ThenInclude(t => t.ServicesAmounts).ThenInclude(s => s.ServiceTemplate)
+            .Select(TariffsMapper.Map)
+            .AsQueryable();
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        return query;
     }
 
     private bool SearchServicesAmounts(IEnumerable<ServiceAmountDTO> source, IEnumerable<SearchServiceQuery> toSearch)

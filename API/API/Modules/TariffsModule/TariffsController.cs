@@ -39,4 +39,12 @@ public class TariffsController : ControllerBase
         var response = tariffsService.SearchTariffs(request);
         return response.ActionResult;
     }
+
+    [AllowAnonymous]
+    [HttpGet("{tariffTemplateId:Guid}")]
+    public async Task<ActionResult<TariffDTO>> GetById([FromRoute] Guid tariffTemplateId)
+    {
+        var response = await tariffsService.GetById(tariffTemplateId);
+        return response.ActionResult;
+    }
 }

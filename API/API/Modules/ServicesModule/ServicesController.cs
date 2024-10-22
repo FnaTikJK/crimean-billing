@@ -64,6 +64,7 @@ public class ServicesController : ControllerBase
     /// <summary>
     /// Получить полную инфу о сервисе с историей изменений
     /// </summary>
+    [AllowAnonymous]
     [HttpGet("{templateId:Guid}")]
     public async Task<ActionResult<ServiceWithHistoryDTO>> GetServiceInfo([FromRoute] Guid templateId)
     {
