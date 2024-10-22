@@ -6,9 +6,15 @@ using API.Modules.AccountsModule.Manager.DTO;
 using API.Modules.AccountsModule.Share;
 using API.Modules.AccountsModule.User;
 using API.Modules.AccountsModule.User.DTO;
+using API.Modules.DatabaseModule.BaseEntities;
 using API.Modules.ServicesModule;
 using API.Modules.ServicesModule.DTO;
 using API.Modules.ServicesModule.Model;
+using API.Modules.ServicesModule.Model.DTO;
+using API.Modules.SubscriptionsModule;
+using API.Modules.SubscriptionsModule.DTO;
+using API.Modules.TariffsModule;
+using API.Modules.TariffsModule.Models.DTO;
 
 namespace API.Modules.DatabaseModule;
 
@@ -22,15 +28,21 @@ public class DatabaseService : IDatabaseService
     private readonly DataContext dataContext;
     private readonly IAuthService authService;
     private readonly IServicesService servicesService;
+    private readonly ITariffsService tariffsService;
+    private readonly ISubscriptionsService subscriptionsService;
 
     public DatabaseService(
         DataContext dataContext,
         IAuthService authService,
-        IServicesService servicesService)
+        IServicesService servicesService,
+        ITariffsService tariffsService,
+        ISubscriptionsService subscriptionsService)
     {
         this.dataContext = dataContext;
         this.authService = authService;
         this.servicesService = servicesService;
+        this.tariffsService = tariffsService;
+        this.subscriptionsService = subscriptionsService;
     }
     
     public async Task<Result<bool>> RecreateDatabase(bool withAutoFilling)
@@ -40,8 +52,10 @@ public class DatabaseService : IDatabaseService
         if (withAutoFilling)
         {
             var managerIds = await AddManagers();
-            var users = await AddUsers();
-            await AddServices();
+            var accountsByUser = await AddUsers();
+            var servicesByCode = await AddServices();
+            var tariffsByCode = await AddTariffs(servicesByCode);
+            await AddSubscriptions(accountsByUser, tariffsByCode);
         }
         return Result.NoContent<bool>();
     }
@@ -57,7 +71,7 @@ public class DatabaseService : IDatabaseService
         return new() {response.Value.UserId};
     }
 
-    private async Task<List<(Guid userId, List<Guid> accountIds)>> AddUsers()
+    private async Task<Dictionary<Guid, List<Guid>>> AddUsers()
     {
         var user = await authService.RegisterUser(new RegisterUserRequest()
         {
@@ -72,110 +86,59 @@ public class DatabaseService : IDatabaseService
             PhoneNumber = "88005553535",
         });
 
-        return new List<(Guid userId, List<Guid> accountIds)>()
+        return new Dictionary<Guid, List<Guid>>()
         {
-            (user.Value.UserId, new List<Guid> {account.Value.AccountId})
+            {user.Value.UserId, new List<Guid> {account.Value.AccountId}}
         };
     }
 
-    private async Task AddServices()
+    private async Task<Dictionary<string, ServiceDTO>> AddServices()
     {
-        var serviceOnlyTemplate = await servicesService.CreateService(new CreateServiceRequest()
-        {
-            Code = "542131",
-            AccountType = AccountType.Sim,
-            Name = "Сервис только из Template",
-            Description = "Описание.фвафыв.афыа",
-            ServiceType = ServiceType.Internet,
-            IsTariffService = true,
-            UnitType = UnitType.Mb,
-            
-            Price = null,
-            Amount = null,
-        });
-        
-        var simpleService1 = await servicesService.CreateService(new CreateServiceRequest()
-        {
-            Code = "1",
-            AccountType = AccountType.Sim,
-            Name = "Обычный сервис 1",
-            Description = "Рандомное описание сервиса 1",
-            ServiceType = ServiceType.Calls,
-            IsTariffService = true,
-            Price = 100,
-            Amount = 100,
-            UnitType = UnitType.Units,
-        });
+        var servicesByCode = BaseServiceEntityRequests.CreateRequests
+            .Select(async (e, i) =>
+            {
+                var response = await servicesService.CreateService(e);
+                return response.IsSuccess
+                    ? response.Value
+                    : throw new Exception(response.Error);
+            })
+            .Select(e => e.Result)
+            .ToDictionary(e => e.Code, e => e);
 
-        var simpleService2 = await servicesService.CreateService(new CreateServiceRequest()
+        foreach (var patchReqs in BaseServiceEntityRequests.PatchRequests)
         {
-            Code = "2",
-            AccountType = AccountType.Sim,
-            Name = "Обычный сервис 2",
-            Description = "Так называемое описание",
-            ServiceType = ServiceType.SMS,
-            IsTariffService = false,
-            Price = 81.5f,
-            Amount = 33.4f,
-            UnitType = UnitType.Units,
-        });
+            var response = await servicesService.PatchService(patchReqs(servicesByCode));
+            if (!response.IsSuccess)
+                throw new Exception(response.Error);
 
-        var simpleService3 = await servicesService.CreateService(new CreateServiceRequest()
-        {
-            Code = "3",
-            AccountType = AccountType.Sim,
-            Name = "Обычный сервис 3",
-            Description = "Так называемое описание",
-            ServiceType = ServiceType.MMS,
-            IsTariffService = true,
-            Price = 3453,
-            Amount = null,
-            UnitType = UnitType.Units,
-        });
-        
-        var simpleService4 = await servicesService.CreateService(new CreateServiceRequest()
-        {
-            Code = "4",
-            AccountType = AccountType.Sim,
-            Name = "Обычный сервис 4",
-            Description = "Описал сервис 4",
-            ServiceType = ServiceType.Internet,
-            IsTariffService = true,
-            Price = 999,
-            Amount = 234,
-            UnitType = UnitType.Gb,
-        });
+            servicesByCode[response.Value.Code] = response.Value;
+        }
 
-        var serviceWithHistory = await servicesService.CreateService(new CreateServiceRequest()
-        {
-            Code = "11",
-            AccountType = AccountType.Sim,
-            Name = "У этого сервиса много редактирований(история)",
-            Description = "Много изменений",
-            ServiceType = ServiceType.Internet,
-            IsTariffService = true,
-            Price = 500,
-            Amount = null,
-            UnitType = UnitType.Mb,
-        });
+        return servicesByCode;
+    }
 
-        await servicesService.PatchService(new PatchServiceRequest()
+    private async Task<Dictionary<string, TariffDTO>> AddTariffs(Dictionary<string, ServiceDTO> servicesByCode)
+    {
+        var tariffsByCode = BaseTariffEntityRequests.CreateRequests
+            .Select(async createFunc =>
+            {
+                var response = await tariffsService.CreateTariff(createFunc(servicesByCode));
+                return response.IsSuccess
+                    ? response.Value
+                    : throw new Exception(response.Error);
+            })
+            .Select(e => e.Result)
+            .ToDictionary(e => e.Code, e => e);
+
+        return tariffsByCode;
+    }
+
+    private async Task AddSubscriptions(Dictionary<Guid, List<Guid>> accountsByUser, Dictionary<string, TariffDTO> tariffsByCode)
+    {
+        var sub = await subscriptionsService.Subscribe(new SubscribeRequest()
         {
-            TemplateId = serviceWithHistory.Value.TemplateId,
-            Price = 550,
-            Amount = 9,
-        });
-        await servicesService.PatchService(new PatchServiceRequest()
-        {
-            TemplateId = serviceWithHistory.Value.TemplateId,
-            Price = 600,
-            Amount = 99,
-        });
-        await servicesService.PatchService(new PatchServiceRequest()
-        {
-            TemplateId = serviceWithHistory.Value.TemplateId,
-            Price = 650,
-            Amount = 999,
+            AccountId = accountsByUser.First().Value.First(),
+            TariffTemplateId = tariffsByCode.First().Value.TemplateId,
         });
     }
 }
