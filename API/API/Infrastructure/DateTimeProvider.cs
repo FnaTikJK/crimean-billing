@@ -14,6 +14,8 @@ public static class DateTimeProvider
         }
     }
 
+    public static DateTime NowDate => new DateTime(Now.Year, Now.Month, Now.Day);
+
     private static DateTime initTime = DateTime.UtcNow;
     private static readonly Stopwatch sw = new();
 }

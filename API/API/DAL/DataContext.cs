@@ -2,6 +2,7 @@ using API.Infrastructure;
 using API.Infrastructure.Config;
 using API.Modules.AccountsModule.Manager;
 using API.Modules.AccountsModule.User;
+using API.Modules.InvoiceModule.Model;
 using API.Modules.ServicesModule.Model;
 using API.Modules.SubscriptionsModule.Model;
 using API.Modules.SubscriptionsModule.Model;
@@ -49,4 +50,5 @@ public class DataContext : DbContext
     public DbSet<TariffServiceAmountEntity> TariffServiceAmounts => Set<TariffServiceAmountEntity>();
     public DbSet<SubscriptionEntity> Subscriptions => Set<SubscriptionEntity>();
     public DbSet<SubscriptionsPreferredChangesEntity> SubscriptionsPreferredChanges => Set<SubscriptionsPreferredChangesEntity>();
+    public DbSet<InvoiceEntity> Invoices => Set<InvoiceEntity>();
 }
