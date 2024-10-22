@@ -1,0 +1,41 @@
+
+<div class="wrapper">
+  <section class="tariffsSection">
+
+    @if(loading()) {
+      <div class="spinnerWrapper">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else {
+        @for (tariff of allTariffs() | slice: pageIndex() * itemsOnPage(): itemsOnPage(); track tariff?.id) {
+          <a class="tariffLink" [routerLink]="['../', 'tariff', tariff?.id]">
+            <mat-card matRipple class="tariffCard" appearance="outlined" [ngStyle]="{
+              'width.px': itemWidthPx,
+              'height.px': itemHeightPx
+            }">
+              <mat-card-header class="tariffCardHeader">
+                <mat-card-title class="tariffCardTitle">{{tariff?.name}}</mat-card-title>
+              </mat-card-header>
+              <mat-divider></mat-divider>
+              <mat-card-footer>
+                <div class="tariffCardFooter">
+                  {{ tariff?.price + " ₽/мес." }}
+                </div>
+              </mat-card-footer>
+            </mat-card>
+          </a>
+        }
+    }
+
+  </section>
+
+  <mat-paginator
+    class="paginator"
+                 [length]="itemsLength()"
+                 [pageSize]="itemsOnPage()"
+                 [hidePageSize]="true"
+                 [pageIndex]="pageIndex()"
+                 (page)="changePage($event)"
+                 >
+  </mat-paginator>
+</div>

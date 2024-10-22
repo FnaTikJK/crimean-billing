@@ -1,8 +1,10 @@
 import { effect, EffectRef, inject, Injectable, signal } from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
-import { AccountService, IAccount } from './account.service';
 import { HttpService } from '@angular-monorepo/infrastructure';
 import { EntityState } from '../../shared/help-entities';
+import { AccountService } from '../submodules/account/services/account.service';
+import { IAccount } from '../submodules/account/models/IAccount';
+import { IProfile } from '../models/IProfile';
 
 @Injectable({
   providedIn: 'root'
@@ -56,10 +58,5 @@ export class ProfileService {
   }
 }
 
-export interface IProfile {
-  userId: string;
-  email: string;
-  fio: string;
-  accounts: IAccount[];
-}
+
 

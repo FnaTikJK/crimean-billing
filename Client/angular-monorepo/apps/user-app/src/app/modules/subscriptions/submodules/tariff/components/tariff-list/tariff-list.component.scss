@@ -1,0 +1,55 @@
+
+:host {
+  display: block;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0.5rem;
+}
+
+.spinnerWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tariffsSection {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  gap: 0.5rem;
+  align-content: flex-start;
+}
+
+.tariffLink {
+  text-decoration: none;
+  color: unset;
+}
+
+.tariffCard {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.tariffCardTitle {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.tariffCardHeader {
+  padding: 16px;
+}
+
+.tariffCardFooter {
+  padding: 16px;
+  font-weight: 500;
+}
+
+.paginator {
+  margin: 0 -0.5rem;
+}

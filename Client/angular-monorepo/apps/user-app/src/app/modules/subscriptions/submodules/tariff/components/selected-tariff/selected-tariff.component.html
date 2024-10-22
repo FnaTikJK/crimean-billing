@@ -1,0 +1,14 @@
+
+<section class="wrapper">
+  <h2 class="title">Тариф {{"«" + tariff().name + "»"}}</h2>
+  <p>В этом месяце — {{ tariff().price + " ₽"}}</p>
+
+  <section class="carousel">
+    <a class="carouselLink" (click)="f()">
+      <div matRipple class="carouselItem">
+        <mat-icon>autorenew</mat-icon>
+        <p>Сменить тариф</p>
+      </div>
+    </a>
+  </section>
+</section>

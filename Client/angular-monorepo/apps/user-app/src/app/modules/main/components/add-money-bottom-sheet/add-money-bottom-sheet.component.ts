@@ -5,7 +5,7 @@ import { MatInput } from '@angular/material/input';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { AccountService } from '../../../profile/services/account.service';
+import { AccountService } from '../../../profile/submodules/account/services/account.service';
 import { tap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
