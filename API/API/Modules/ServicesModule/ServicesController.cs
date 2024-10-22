@@ -53,6 +53,7 @@ public class ServicesController : ControllerBase
     /// OrderBy: {Code,Price,Amount}
     /// <br/> OrderDirection: {Desc, Asc}. 
     /// </remarks>
+    [AllowAnonymous]
     [HttpPost("Search")]
     public async Task<ActionResult<SearchServicesResponse>> Search([FromBody] SearchServicesRequest request)
     {

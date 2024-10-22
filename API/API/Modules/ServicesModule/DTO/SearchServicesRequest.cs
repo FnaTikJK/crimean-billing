@@ -18,6 +18,8 @@ public class SearchServicesRequest : SearchRequest
     
     public SearchServiceRequestOrderBy? OrderBy { get; set; }
     public OrderDirection? OrderDirection { get; set; }
+    
+    public HashSet<Guid>? ExcludedTemplateIds { get; set; }
 }
 
 public enum SearchServiceRequestOrderBy

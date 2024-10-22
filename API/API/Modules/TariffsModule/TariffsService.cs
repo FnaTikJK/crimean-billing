@@ -97,6 +97,9 @@ public class TariffsService : ITariffsService
             query = query.Where(e => request.Price.Fit(e.Price));
         if (request.ServicesAmounts != null)
             query = query.Where(e => SearchServicesAmounts(e.Services, request.ServicesAmounts));
+
+        if (request.ExcludedTemplateIds != null)
+            query = query.Where(e => !request.ExcludedTemplateIds.Contains(e.TemplateId));
         
         var result = query.Skip(request.Skip).Take(request.Take);
         var totalCount = query.Count();
