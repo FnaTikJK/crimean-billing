@@ -7,8 +7,8 @@ public class TelegramModule : IDaemonModule
         services.AddSingleton<ITelegramDaemon, TelegramDaemon>();
     }
 
-    public void ConfigureDaemons(WebApplication app)
+    public void ConfigureDaemons(IServiceScope scope)
     {
-        app.Services.GetService(typeof(ITelegramDaemon));
+        scope.ServiceProvider.GetRequiredService<ITelegramDaemon>();
     }
 }
