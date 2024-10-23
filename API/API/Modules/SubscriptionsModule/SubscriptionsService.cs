@@ -49,13 +49,13 @@ public class SubscriptionsService : ISubscriptionsService
             var account = await db.Accounts.FirstOrDefaultAsync(e => e.Id == request.AccountId);
             if (account == null)
                 return Result.BadRequest<SubscriptionDTO>("Такого Account не существует");
-            var now = DateTimeProvider.Now;
+            
             subscription = new SubscriptionEntity
             {
                 Account = account,
                 Tariff = tariffTemplate.Tariffs.FindActual(),
-                CreatedAt = now,
-                PaymentDate = now.AddDays(30),
+                CreatedAt = DateTimeProvider.Now,
+                PaymentDate = DateTimeProvider.NowDate.AddDays(30),
             };
             await subscriptions.AddAsync(subscription);
         }
@@ -81,7 +81,7 @@ public class SubscriptionsService : ISubscriptionsService
     {
         var subscription = await FindSubscription(request.AccountId, true);
         if (subscription == null)
-            Result.NotFound<SubscriptionDTO>("Такого Subscription не существует");
+            return Result.NotFound<SubscriptionDTO>("Такого Subscription не существует");
         
         return Result.Ok(SubscriptionsMapper.Map(subscription));
     }

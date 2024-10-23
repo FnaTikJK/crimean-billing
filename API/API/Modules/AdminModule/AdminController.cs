@@ -37,4 +37,18 @@ public class AdminController : ControllerBase
         var response = adminService.MockDateTime(dateTime);
         return response.ActionResult;
     }
+    
+    /// <summary>
+    /// Форсит вызов демона, создающего Invoice-ы
+    /// </summary>
+    /// <remarks>
+    /// Проходит по подпискам и тем, у кого осталось 3 дня до PaymentPeriod создаёт Invoice
+    /// <br/> Чтобы поменять дату - используй соседний контрол `MockDateTime`
+    /// </remarks>
+    [HttpPost("ForceInvoicesCreation")]
+    public async Task<ActionResult> ForceInvoicesCreation()
+    {
+        var response = await adminService.ForceInvoicesCreation();
+        return response.ActionResult;
+    }
 }

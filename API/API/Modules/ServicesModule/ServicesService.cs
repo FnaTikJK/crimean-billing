@@ -91,6 +91,9 @@ public class ServicesService : IServicesService
 
         if (request.OrderBy != null)
             query = OrderSearch(query, request.OrderBy.Value, request.OrderDirection);
+        
+        if (request.ExcludedTemplateIds != null)
+            query = query.Where(e => !request.ExcludedTemplateIds.Contains(e.TemplateId));
 
         var result = query.Skip(request.Skip).Take(request.Take);
         var totalCount = query.Count();

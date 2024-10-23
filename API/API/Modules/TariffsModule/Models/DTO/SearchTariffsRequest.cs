@@ -13,6 +13,8 @@ public class SearchTariffsRequest : SearchRequest
     
     public SearchFloatQuery? Price { get; set; }
     public IEnumerable<SearchServiceQuery>? ServicesAmounts { get; set; }
+    
+    public HashSet<Guid>? ExcludedTemplateIds { get; set; }
 }
 
 public class SearchServiceQuery

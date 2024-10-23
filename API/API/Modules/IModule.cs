@@ -10,6 +10,11 @@ public interface IHubModule : IModule
     void ConfigureHubs(WebApplication app);
 }
 
+public interface IDaemonModule : IModule
+{
+    void ConfigureDaemons(IServiceScope scope);
+}
+
 public static class ModuleExtensions
 {
     private static List<IModule> modules;
@@ -28,6 +33,14 @@ public static class ModuleExtensions
         foreach (var module in Modules.Where(m => m is IHubModule).Cast<IHubModule>())
         {
             module.ConfigureHubs(app);
+        }
+    }
+    
+    public static void ConfigureDaemons(this WebApplication app)
+    {
+        foreach (var module in Modules.Where(m => m is IDaemonModule).Cast<IDaemonModule>())
+        {
+            module.ConfigureDaemons(app.Services.CreateScope());
         }
     }
 
