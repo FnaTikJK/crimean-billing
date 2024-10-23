@@ -109,8 +109,8 @@ public class TariffsService : ITariffsService
 
     public async Task<Result<TariffDTO>> GetById(Guid tariffTemplateId)
     {
-        var tariff = await GetQuery(true)
-            .FirstOrDefaultAsync(e => e.TemplateId == tariffTemplateId);
+        var tariff = GetQuery(true)
+            .FirstOrDefault(e => e.TemplateId == tariffTemplateId);
         if (tariff == null)
             return Result.NotFound<TariffDTO>("Такого Tariff не существует");
         return Result.Ok(tariff);
