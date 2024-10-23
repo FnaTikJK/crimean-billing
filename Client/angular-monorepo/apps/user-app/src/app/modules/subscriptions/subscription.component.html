@@ -1,5 +1,5 @@
 @if (subscription()) {
-  <app-selected-tariff [tariff]="subscription()!.tariff"></app-selected-tariff>
+  <app-selected-tariff [subscription]="subscription()!"></app-selected-tariff>
 } @else {
   <section class="addTariffSection">
     <p>Отсутствуют подключённые тарифы</p>

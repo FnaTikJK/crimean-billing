@@ -4,6 +4,8 @@ import { ISearchTariffResponseDTO } from '../DTO/response/ISearchTariffResponseD
 import { map } from 'rxjs/operators';
 import { ISearchTariffRequestDTO } from '../DTO/request/ISearchTariffRequestDTO';
 import { ITariff } from '../models/ITariff';
+import { ITariffDTO } from '../DTO/ITariffDTO';
+import { catchError, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +20,17 @@ export class TariffService {
         map(res => res.items as ITariff[])
       );
   }
-  getTariffLength$() {
-    return this.#httpS.post<ISearchTariffResponseDTO>('Tariffs/Search', { take: 0 })
+
+  getTariff$(tariffTemplateID: string) {
+    return this.#httpS.get<ITariffDTO>(`Tariffs/${tariffTemplateID}`)
+      .pipe(
+        map(tariff => tariff as ITariff),
+        catchError(() => of(null))
+      );
+  }
+  getTariffLength$(tariffIDToExclude?: string) {
+    const searchParams: ISearchTariffRequestDTO = { take: 0, excludedTemplateIds: tariffIDToExclude ? [tariffIDToExclude] : undefined };
+    return this.#httpS.post<ISearchTariffResponseDTO>('Tariffs/Search', searchParams)
       .pipe(
         map(res => res.totalCount)
       );

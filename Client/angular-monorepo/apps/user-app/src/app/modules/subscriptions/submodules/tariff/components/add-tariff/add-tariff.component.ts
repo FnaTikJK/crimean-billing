@@ -11,3 +11,4 @@ import TariffListComponent from '../tariff-list/tariff-list.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AddTariffComponent {}
+

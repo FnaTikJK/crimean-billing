@@ -1,0 +1,35 @@
+.wrapper {
+  padding: 1rem 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.matSpinnerSection, .notFoundSection {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notFountTitle {
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: grey;
+}
+
+.tableSection {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.tariffTitle {
+  font-size: 1rem;
+  line-height: 1rem;
+  text-align: center;
+}
+
+.subscribeBtn {
+  align-self: center;
+}

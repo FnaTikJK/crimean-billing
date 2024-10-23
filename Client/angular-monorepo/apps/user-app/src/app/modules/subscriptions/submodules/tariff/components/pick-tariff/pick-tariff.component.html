@@ -1,0 +1,45 @@
+
+<div class="wrapper">
+
+  @if (loading()) {
+    <section class="matSpinnerSection">
+      <mat-spinner></mat-spinner>
+    </section>
+  } @else if (!tariff()) {
+    <section class="notFoundSection">
+      <h3 class="notFountTitle">Тариф не найден</h3>
+    </section>
+  } @else {
+    <section class="tableSection">
+      <div>
+          <h3 class="tariffTitle">Новый тариф: {{tariff()?.name}}</h3>
+          <table mat-table [dataSource]="tariff()!.services!">
+
+            <ng-container matColumnDef="Type">
+              <th mat-header-cell *matHeaderCellDef> Сервис </th>
+              <td mat-cell *matCellDef="let service"> {{service.serviceType | serviceName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Units">
+              <th mat-header-cell *matHeaderCellDef> Объём </th>
+              <td mat-cell *matCellDef="let service"> {{service.amount + " " + (service.unitType | unitName)}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+          </table>
+        </div>
+
+      <button (click)="subscribeToTariff()" class="subscribeBtn" mat-flat-button>Подключить тариф</button>
+    </section>
+  }
+
+  <section>
+
+  </section>
+
+<!--  <section class="footerSection">-->
+<!--    <p class="changeTariffText">Тариф сменится после окончания текущего платёжного периода</p>-->
+<!--    <button mat-flat-button (click)="changeTariff()">Сменить тариф</button>-->
+<!--  </section>-->
+</div>

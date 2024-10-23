@@ -4,9 +4,9 @@ import { HttpService } from '@angular-monorepo/infrastructure';
 import { ISubscriptionsResponseDTO } from '../DTO/response/ISubscriptionsResponseDTO';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { AppSettingsService } from '../../shared/services/app-settings.service';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { ISubscription } from '../models/ISubscription';
 import { ISubscribeRequestDTO } from '../DTO/request/ISubscribeRequestDTO';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,8 @@ export class SubscriptionService {
     return this.#httpS.post<ISubscriptionsResponseDTO>('Subscriptions/Subscribe', subscribeRequest)
       .pipe(
         tap(res => {
-          this.#subscriptionState.update(state => ({...state, entity: {...state.entity as ISubscription, preferredTariff: res.preferredTariff}}))
+          this.#subscriptionState.update(state => (
+            {...state, entity: {...state.entity as ISubscription, tariff: res.tariff, preferredTariff: res.preferredTariff}}))
         })
       );
   }
@@ -41,12 +42,12 @@ export class SubscriptionService {
   private listenForSelectedAccountChange() {
     const accountChangeSignal = computed(() => this.#appSettingsS.appSettingsState().entity?.accountSelected);
 
-    // toObservable(accountChangeSignal)
-    //   .pipe(
-    //     filter(accountID => !!accountID),
-    //     tap(() => this.#subscriptionState.update(state => ({...state, loaded: false}))),
-    //     switchMap((accountID) => this.getAccountSubscription$(accountID as string)),
-    //     tap((subscription) => this.#subscriptionState.set({ entity: subscription, loaded: true })),
-    //   ).subscribe();
+    toObservable(accountChangeSignal)
+      .pipe(
+        filter(accountID => !!accountID),
+        tap(() => this.#subscriptionState.update(state => ({...state, loaded: false}))),
+        switchMap((accountID) => this.getAccountSubscription$(accountID as string)),
+        tap((subscription) => this.#subscriptionState.set({ entity: subscription, loaded: true })),
+      ).subscribe();
   }
 }

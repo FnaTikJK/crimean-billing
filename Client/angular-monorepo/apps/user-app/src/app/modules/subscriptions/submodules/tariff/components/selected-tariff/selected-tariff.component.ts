@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ITariffSubscription } from '../../../../models/ITariffSubscription';
 import { MatIcon } from '@angular/material/icon';
 import { MatRipple } from '@angular/material/core';
-import { Router, RouterLink } from '@angular/router';
+import {RouterLink } from '@angular/router';
+import { ISubscription } from '../../../../models/ISubscription';
 
 @Component({
   selector: 'app-selected-tariff',
@@ -15,10 +16,5 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class SelectedTariffComponent {
 
-  tariff = input.required<ITariffSubscription>();
-  #router = inject(Router);
-
-  protected f() {
-    this.#router.navigate(['subscriptions', 'change-tariff'])
-  }
+  subscription = input.required<ISubscription>();
 }

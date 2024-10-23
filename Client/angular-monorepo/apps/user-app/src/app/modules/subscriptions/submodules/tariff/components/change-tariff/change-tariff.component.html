@@ -4,6 +4,6 @@
     Выберите тариф, чтобы сравнить его со своим
   </p>
 
-  <app-tariff-list class="tariffList" >
+  <app-tariff-list [tariffIDToExclude]="tariffToChangeID()" class="tariffList">
   </app-tariff-list>
 </div>

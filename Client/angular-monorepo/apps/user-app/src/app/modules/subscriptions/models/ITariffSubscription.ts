@@ -1,8 +1,9 @@
 import { IServiceAmountDTO } from '../submodules/service/DTO/iServiceAmountDTO';
 
 export interface ITariffSubscription {
-  templateID: string;
+  templateId: string;
   name?: string;
   price?: string;
   services?: IServiceAmountDTO[];
 }
+

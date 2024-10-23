@@ -8,4 +8,5 @@ export interface ISearchTariffRequestDTO {
   name?: string;
   description?: string;
   accountType?: AccountType;
+  excludedTemplateIds?: string[];
 }
