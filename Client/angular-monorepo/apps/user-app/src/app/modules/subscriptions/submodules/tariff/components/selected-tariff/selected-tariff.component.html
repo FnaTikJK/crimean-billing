@@ -1,0 +1,17 @@
+
+<section class="wrapper">
+  <h2 class="title">Тариф {{"«" + subscription().tariff.name + "»"}}</h2>
+  <p>В этом месяце — {{ subscription().tariff.price + " ₽"}}</p>
+  @if(subscription().preferredTariff) {
+    <p>В следующем месяце сменится на {{ subscription()!.preferredTariff!.name }}</p>
+  }
+
+  <section class="carousel">
+    <a class="carouselLink" [routerLink]="'change-tariff'">
+      <div matRipple class="carouselItem">
+        <mat-icon>autorenew</mat-icon>
+        <p>Сменить тариф</p>
+      </div>
+    </a>
+  </section>
+</section>

@@ -10,10 +10,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppSettingsService } from '../../../modules/shared/services/app-settings.service';
-import { AccountService, IAccount } from '../../../modules/profile/services/account.service';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
-import { map, skip, take } from 'rxjs';
+import { skip } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconButton } from '@angular/material/button';
@@ -22,6 +21,8 @@ import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/m
 import { isMobile } from '../../../modules/shared/help-functions';
 import { RouterLink } from '@angular/router';
 import { TitleService } from '../../services/title.service';
+import { AccountService } from '../../../modules/profile/submodules/account/services/account.service';
+import { IAccount } from '../../../modules/profile/submodules/account/models/IAccount';
 
 @Component({
   selector: 'app-toolbar',

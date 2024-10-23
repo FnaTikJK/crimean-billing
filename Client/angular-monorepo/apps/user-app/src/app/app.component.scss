@@ -1,6 +1,7 @@
 .header {
   position: sticky;
   top: 0;
+  flex-shrink: 0;
 }
 
 .wrapper {
@@ -13,6 +14,9 @@
   flex-grow: 1;
 }
 
+.mobileAuthorized {
+  max-height: calc(100% - (var(--mat-toolbar-mobile-height) * 2));
+}
 
 .footer {
   position: sticky;
@@ -20,4 +24,5 @@
   width: 100%;
   background-color: #dadada2e;
   padding-top: 8px;
+  flex-shrink: 0;
 }

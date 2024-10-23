@@ -1,9 +1,10 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { EntitiesState } from '../../shared/help-entities';
+import { EntitiesState } from '../../../../shared/help-entities';
 import { HttpService } from '@angular-monorepo/infrastructure';
-import { IAddMoneyRequest } from '../DTO/requests/IAddMoneyRequest';
-import { IAddMoneyResponse } from '../DTO/responses/IAddMoneyResponse';
+import { IAddMoneyRequestDTO } from '../../../DTO/request/IAddMoneyRequestDTO';
+import { IAddMoneyResponseDTO } from '../../../DTO/response/IAddMoneyResponseDTO';
 import { tap } from 'rxjs';
+import { IAccount } from '../models/IAccount';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ export class AccountService {
   #httpS = inject(HttpService);
 
 
-  addMoney$(addMoneyData: IAddMoneyRequest) {
-    return this.#httpS.post<IAddMoneyResponse>('Payments/Add', addMoneyData)
+  addMoney$(addMoneyData: IAddMoneyRequestDTO) {
+    return this.#httpS.post<IAddMoneyResponseDTO>('Payments/Add', addMoneyData)
       .pipe(
         tap(() => {
           const currentAccounts: IAccount[] = JSON.parse(JSON.stringify(this.#accountsState().entities));
@@ -35,16 +36,3 @@ export class AccountService {
   }
 }
 
-export interface IAccount {
-  id: string;
-  phoneNumber?: string;
-  number: number;
-  money: number;
-  accountType: AccountType;
-}
-
-export enum AccountType {
-  SIM,
-  TV,
-  Internet
-}

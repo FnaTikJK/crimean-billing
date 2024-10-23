@@ -1,0 +1,8 @@
+@if (subscription()) {
+  <app-selected-tariff [subscription]="subscription()!"></app-selected-tariff>
+} @else {
+  <section class="addTariffSection">
+    <p>Отсутствуют подключённые тарифы</p>
+    <button [routerLink]="'add-tariff'" mat-flat-button>Добавить</button>
+  </section>
+}

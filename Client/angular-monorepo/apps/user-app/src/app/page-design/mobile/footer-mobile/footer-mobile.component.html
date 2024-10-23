@@ -4,6 +4,10 @@
     <mat-icon>home</mat-icon>
     <p class="tabTitle">Главная</p>
   </a>
+  <a class="tabLink" [routerLink]="['subscriptions']" [routerLinkActive]="'active'">
+    <mat-icon>subscriptions</mat-icon>
+    <p class="tabTitle">Услуги</p>
+  </a>
   <a class="tabLink" [routerLink]="['profile']" [routerLinkActive]="'active'">
     <mat-icon>account_circle</mat-icon>
     <p class="tabTitle">Профиль</p>

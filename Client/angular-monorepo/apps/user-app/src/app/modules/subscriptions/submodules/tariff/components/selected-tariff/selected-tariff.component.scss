@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  background-color: var(--mat-toolbar-container-background-color);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+}
+
+.wrapper {
+  padding: 1rem;
+}
+
+.carousel {
+  display: flex;
+  gap: 0.5rem;
+  overflow: auto;
+}
+
+.carouselLink {
+  text-decoration: none;
+  color: unset;
+}
+
+.carouselItem {
+  width: max-content;
+  max-width: 100px;
+  background-color: white;
+  padding: 0.3rem;
+  border-radius: 10%;
+  flex-shrink: 0;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

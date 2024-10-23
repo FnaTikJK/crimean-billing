@@ -8,11 +8,13 @@ import {
   MatCardSubtitle,
   MatCardTitle
 } from '@angular/material/card';
-import { AccountService, AccountType, IAccount } from '../../../profile/services/account.service';
 import { MatButton } from '@angular/material/button';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { AddMoneyBottomSheetComponent } from '../add-money-bottom-sheet/add-money-bottom-sheet.component';
 import { MatDivider } from '@angular/material/divider';
+import { AccountService } from '../../../profile/submodules/account/services/account.service';
+import { IAccount } from '../../../profile/submodules/account/models/IAccount';
+import { AccountType } from '../../../profile/submodules/account/models/AccountType';
 
 @Component({
   selector: 'app-account-card',
@@ -35,3 +37,4 @@ export class AccountCardComponent {
     this.#bottomSheet.open(AddMoneyBottomSheetComponent, { data: this.accountID() });
   }
 }
+

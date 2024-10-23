@@ -1,0 +1,65 @@
+
+  @if (loading()) {
+    <section class="matSpinnerSection">
+      <mat-spinner></mat-spinner>
+    </section>
+  } @else if (!preferredTariff()) {
+    <section class="notFoundSection">
+      <h3 class="notFountTitle">Тариф не найден</h3>
+    </section>
+  } @else {
+    <section class="tableSection">
+      <div class="tableWrapper">
+        <table mat-table [dataSource]="rows() ?? []">
+
+          <ng-container matColumnDef="Type">
+            <th mat-header-cell *matHeaderCellDef> Сервис </th>
+            <td mat-cell *matCellDef="let serviceInfo"> {{ serviceInfo.serviceType | serviceName }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="CurrentTariff">
+            <th mat-header-cell *matHeaderCellDef>
+              <section class="headerSection">
+                <p class="tariffStatus">Текущий тариф</p>
+                <p class="tariffName">{{ currentTariff()?.name }}</p>
+                <p class="tariffPrice">{{ currentTariff()?.price + '₽/мес.' }}</p>
+              </section>
+            </th>
+            <td class="centeredCell" mat-cell *matCellDef="let serviceInfo">
+              @if (serviceInfo.currentTariff) {
+                {{ serviceInfo.currentTariff.amount + " " + (serviceInfo.currentTariff.unitType | unitName)}}
+              } @else {
+                —
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="PreferredTariff">
+            <th mat-header-cell *matHeaderCellDef>
+              <section class="headerSection">
+                <p class="tariffStatus">Новый тариф</p>
+                <p class="tariffName">{{ preferredTariff()?.name }}</p>
+                <p class="tariffPrice">{{ preferredTariff()?.price + '₽/мес.' }}</p>
+              </section>
+            </th>
+            <td class="centeredCell"  mat-cell *matCellDef="let serviceInfo">
+              @if (serviceInfo.preferredTariff) {
+                {{ serviceInfo.preferredTariff.amount + " " + (serviceInfo.preferredTariff.unitType | unitName)}}
+              } @else {
+                —
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+          <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></tr>
+        </table>
+      </div>
+
+      <button (click)="changeTariff()" class="changeTariffBtn" mat-flat-button>Сменить тариф</button>
+    </section>
+  }
+
+  <section>
+
+  </section>

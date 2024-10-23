@@ -6,7 +6,9 @@
     </header>
   }
 
-  <section class="routeContent">
+  <section class="routeContent" [ngClass]="{
+    mobileAuthorized: isMobile() && isAuthorized()
+  }">
     <router-outlet></router-outlet>
   </section>
 
