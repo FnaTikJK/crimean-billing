@@ -51,4 +51,17 @@ public class AdminController : ControllerBase
         var response = await adminService.ForceInvoicesCreation();
         return response.ActionResult;
     }
+
+    /// <summary>
+    /// Форсит демона по оплате Invoice-ов
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    [HttpPost("ForcePayInvoices")]
+    public async Task<ActionResult> ForcePayInvoices()
+    {
+        var response = await adminService.TryPayInvoices();
+        return response.ActionResult;
+    }
 }

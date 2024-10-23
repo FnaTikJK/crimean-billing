@@ -2,6 +2,7 @@
 using API.Infrastructure;
 using API.Modules.ServicesModule.Model;
 using API.Modules.TariffsModule.DTO;
+using API.Modules.TariffsModule.Extensions;
 using API.Modules.TariffsModule.Models;
 using API.Modules.TariffsModule.Models.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ public interface ITariffsService
     Task<Result<TariffDTO>> PatchTariff(PatchTariffRequest request);
     Result<SearchTariffResponse> SearchTariffs(SearchTariffsRequest request);
     Task<Result<TariffDTO>> GetById(Guid tariffTemplateId);
+    Task<Result<TariffEntity>> FindActual(Guid tariffId);
 }
 
 public class TariffsService : ITariffsService
@@ -114,6 +116,16 @@ public class TariffsService : ITariffsService
         if (tariff == null)
             return Result.NotFound<TariffDTO>("Такого Tariff не существует");
         return Result.Ok(tariff);
+    }
+
+    public async Task<Result<TariffEntity>> FindActual(Guid tariffId)
+    {
+        var curTariff = await tariffs.Include(e => e.Template).ThenInclude(t => t.Tariffs)
+            .FirstOrDefaultAsync(e => e.Id == tariffId);
+        if (curTariff == null)
+            return Result.NotFound<TariffEntity>("Такого Tariff не существует");
+
+        return Result.Ok(curTariff.Template.FindActualTariff());
     }
 
     private IQueryable<TariffDTO> GetQuery(bool asNoTracking)

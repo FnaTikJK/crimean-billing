@@ -1,6 +1,8 @@
 ﻿using API.DAL;
 using API.Infrastructure;
 using API.Modules.AccountsModule.User;
+using API.Modules.InvoiceModule;
+using API.Modules.InvoiceModule.Model;
 using API.Modules.PaymentsModule.DTO;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +12,7 @@ public interface IPaymentsService
 {
     Task<Result<PaymentsResponse>> AddMoney(AddMoneyRequest request);
     Task<Result<PaymentsResponse>> SpendMoney(SpendMoneyRequest request);
+    Result<bool> TryPayInvoice(InvoiceEntity invoice);
 }
 
 public class PaymentsService : IPaymentsService
@@ -59,5 +62,16 @@ public class PaymentsService : IPaymentsService
         {
             RemainedMoney = account.Money,
         });
+    }
+
+    public Result<bool> TryPayInvoice(InvoiceEntity invoice)
+    {
+        var account = invoice.Account;
+        var invoicePrice = invoice.CalculateTotalPrice();
+        if (account.Money < invoicePrice)
+            return Result.BadRequest<bool>("Недостаточно средств на счету");
+
+        account.Money -= invoicePrice;
+        return Result.Ok(true);
     }
 }

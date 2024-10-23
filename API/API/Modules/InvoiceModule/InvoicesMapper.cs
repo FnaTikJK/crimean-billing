@@ -12,12 +12,7 @@ public static class InvoicesMapper
             Id = invoice.Id,
             CreatedAt = invoice.CreatedAt,
             PayedAt = invoice.PayedAt,
-            ToPay = CalculatePrice(invoice)
+            ToPay = invoice.CalculateTotalPrice(),
         };
-    }
-
-    private static float CalculatePrice(InvoiceEntity invoice)
-    {
-        return invoice.Tariff.Price;
     }
 }
