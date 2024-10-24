@@ -16,5 +16,8 @@ public class SubscriptionEntity : IEntity
     public DateTime? DeletedAt { get; set; }
     public DateTime PaymentDate { get; set; }
     
+    public HashSet<ActualTariffUsageEntity>? ActualTariffUsage { get; set; }
+    public HashSet<TariffUsageHistoryEntity>? UsageHistories { get; set; } 
+
     public SubscriptionsPreferredChangesEntity? PreferredChange { get; set; }
 }

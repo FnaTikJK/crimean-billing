@@ -23,7 +23,7 @@ public static class TariffsMapper
             Price = tariff.Price,
             Services = tariff.ServicesAmounts.Select(e => new ServiceAmountDTO()
             {
-                TemplateId = e.Id,
+                TemplateId = e.ServiceTemplateId,
                 Name = e.ServiceTemplate.Name,
                 ServiceType = e.ServiceTemplate.ServiceType,
                 UnitType = e.ServiceTemplate.UnitType,

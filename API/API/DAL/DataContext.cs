@@ -1,10 +1,8 @@
-using API.Infrastructure;
 using API.Infrastructure.Config;
 using API.Modules.AccountsModule.Manager;
 using API.Modules.AccountsModule.User;
 using API.Modules.InvoiceModule.Model;
 using API.Modules.ServicesModule.Model;
-using API.Modules.SubscriptionsModule.Model;
 using API.Modules.SubscriptionsModule.Model;
 using API.Modules.TariffsModule.Models;
 using Microsoft.EntityFrameworkCore;
@@ -30,8 +28,14 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.Entity<TariffServiceAmountEntity>()
+            .HasKey(e => new {e.TariffId, e.ServiceTemplateId});
         builder.Entity<SubscriptionsPreferredChangesEntity>()
             .HasKey(e => new {e.SubscriptionId, e.TariffTemplateId});
+        builder.Entity<ActualTariffUsageEntity>()
+            .HasKey(e => new {e.SubscriptionId, e.ServiceTemplateId});
+        builder.Entity<TariffUsageHistoryByServicesEntity>()
+            .HasKey(e => new {e.TariffUsageHistoryId, e.ServiceTemplateId});
     }
 
     public void RecreateDatabase()
@@ -51,4 +55,7 @@ public class DataContext : DbContext
     public DbSet<SubscriptionEntity> Subscriptions => Set<SubscriptionEntity>();
     public DbSet<SubscriptionsPreferredChangesEntity> SubscriptionsPreferredChanges => Set<SubscriptionsPreferredChangesEntity>();
     public DbSet<InvoiceEntity> Invoices => Set<InvoiceEntity>();
+    public DbSet<ActualTariffUsageEntity> ActualTariffUsages => Set<ActualTariffUsageEntity>();
+    public DbSet<TariffUsageHistoryEntity> TariffUsageHistories => Set<TariffUsageHistoryEntity>();
+    public DbSet<TariffUsageHistoryByServicesEntity> TariffUsageHistoryByServices => Set<TariffUsageHistoryByServicesEntity>();
 }

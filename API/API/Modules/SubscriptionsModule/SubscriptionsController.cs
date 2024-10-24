@@ -1,5 +1,6 @@
 ﻿using API.Infrastructure.Extensions;
 using API.Modules.AccountsModule.Share;
+using API.Modules.AdminModule.DTO;
 using API.Modules.SubscriptionsModule.DTO;
 using API.Modules.SubscriptionsModule.Model.DTO;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,13 @@ public class SubscriptionsController : ControllerBase
     public async Task<ActionResult<SubscriptionDTO>> GetMySubscription([FromQuery] GetSubscriptionRequest request)
     {
         var response = await subscriptionsService.GetMySubscription(request, User.GetId());
+        return response.ActionResult;
+    }
+
+    [HttpPost("Spend")]
+    public async Task<ActionResult> SpendTariff(SpendSubscriptionRequest request)
+    {
+        var response = await subscriptionsService.SpendTariff(request);
         return response.ActionResult;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using API.DAL;
 using API.Infrastructure;
+using API.Modules.AdminModule.DTO;
 using API.Modules.SubscriptionsModule.DTO;
 using API.Modules.SubscriptionsModule.Model;
 using API.Modules.SubscriptionsModule.Model.DTO;
@@ -13,6 +14,7 @@ public interface ISubscriptionsService
 {
     Task<Result<SubscriptionDTO>> Subscribe(SubscribeRequest request);
     Task<Result<SubscriptionDTO>> GetMySubscription(GetSubscriptionRequest request, Guid userId);
+    Task<Result<bool>> SpendTariff(SpendSubscriptionRequest request);
 }
 
 public class SubscriptionsService : ISubscriptionsService
@@ -21,6 +23,7 @@ public class SubscriptionsService : ISubscriptionsService
     private readonly ILog log;
 
     private readonly DbSet<SubscriptionEntity> subscriptions;
+    private readonly DbSet<ActualTariffUsageEntity> actualTariffUsages;
     private readonly DbSet<SubscriptionsPreferredChangesEntity> subscriptionsPreferredChanges;
     private readonly DbSet<TariffEntity> tariffs;
     private readonly DbSet<TariffTemplateEntity> tariffTemplates;
@@ -30,6 +33,7 @@ public class SubscriptionsService : ISubscriptionsService
         this.db = db;
         this.log = log;
         this.subscriptions = db.Subscriptions;
+        this.actualTariffUsages = db.ActualTariffUsages;
         this.subscriptionsPreferredChanges = db.SubscriptionsPreferredChanges;
         this.tariffs = db.Tariffs;
         this.tariffTemplates = db.TariffTemplates;
@@ -86,12 +90,55 @@ public class SubscriptionsService : ISubscriptionsService
         return Result.Ok(SubscriptionsMapper.Map(subscription));
     }
 
+    public async Task<Result<bool>> SpendTariff(SpendSubscriptionRequest request)
+    {
+        var subscription = await subscriptions
+            .Include(e => e.Tariff).ThenInclude(t => t.ServicesAmounts)
+            .Include(e => e.ActualTariffUsage)
+            .FirstOrDefaultAsync(e => e.Id == request.SubscriptionId);
+        if (subscription == null)
+            return Result.NotFound<bool>("Такого Subscription не существует");
+
+        var incorrectService = request.ServicesSpends
+            .FirstOrDefault(e => subscription.Tariff.ServicesAmounts.All(s => s.ServiceTemplateId != e.ServiceTemplateId));
+        if (incorrectService != null)
+            return Result.BadRequest<bool>($"Tariff не содержит ServiceTemplate: {incorrectService.ServiceTemplateId}");
+
+        foreach (var serviceSpend in request.ServicesSpends)
+        {
+            subscription.ActualTariffUsage ??= new HashSet<ActualTariffUsageEntity>();
+            var curServiceSpends = subscription.ActualTariffUsage
+                .FirstOrDefault(e => e.ServiceTemplateId == serviceSpend.ServiceTemplateId);
+            if (curServiceSpends == null)
+            {
+                curServiceSpends = new ActualTariffUsageEntity
+                {
+                    SubscriptionId = subscription.Id,
+                    ServiceTemplateId = serviceSpend.ServiceTemplateId,
+                    Spent = 0,
+                };
+                await actualTariffUsages.AddAsync(curServiceSpends);
+            }
+
+            curServiceSpends.Spent += serviceSpend.ToSpend;
+            
+            var serviceAmount = subscription.Tariff.ServicesAmounts
+                .First(e => e.ServiceTemplateId == serviceSpend.ServiceTemplateId).Amount;
+            if (serviceAmount != null && curServiceSpends.Spent > serviceAmount)
+                return Result.BadRequest<bool>($"Нельзя потратить больше, чем предусмотренно в тарифе. ServiceTemplateId: {serviceSpend.ServiceTemplateId}, result spent: {curServiceSpends.Spent}, service amount: {serviceAmount}");
+        }
+
+        await db.SaveChangesAsync();
+        return Result.Ok(true);
+    }
+
     private Task<SubscriptionEntity?> FindSubscription(Guid accountId, bool asNoTracking)
     {
         var query = subscriptions
             .Include(e => e.Tariff).ThenInclude(t => t.Template)
             .Include(e => e.Tariff).ThenInclude(t => t.ServicesAmounts).ThenInclude(s => s.ServiceTemplate)
             .Include(e => e.PreferredChange).ThenInclude(p => p.TariffTemplate).ThenInclude(tm => tm.Tariffs).ThenInclude(t => t.ServicesAmounts).ThenInclude(s => s.ServiceTemplate)
+            .Include(e => e.ActualTariffUsage)
             .AsQueryable();
         if (asNoTracking)
             query = query.AsNoTracking();
