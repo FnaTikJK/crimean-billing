@@ -47,6 +47,9 @@ public class SubscriptionsController : ControllerBase
         return response.ActionResult;
     }
 
+    /// <summary>
+    /// Тратит Service в Tariff
+    /// </summary>
     [HttpPost("Spend")]
     public async Task<ActionResult> SpendTariff(SpendSubscriptionRequest request)
     {
