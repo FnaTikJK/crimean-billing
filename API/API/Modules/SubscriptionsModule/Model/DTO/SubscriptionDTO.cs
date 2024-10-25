@@ -8,4 +8,5 @@ public class SubscriptionDTO
     public DateOnly PaymentDate { get; set; }
     public TariffSubscriptionDTO Tariff { get; set; }
     public PreferredTariffDTO? PreferredTariff { get; set; }
+    public PreferredTariffDTO? ActualTariff { get; set; }
 }

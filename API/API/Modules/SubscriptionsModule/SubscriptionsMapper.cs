@@ -16,6 +16,7 @@ public static class SubscriptionsMapper
             PaymentDate = DateOnly.FromDateTime(subscription.PaymentDate),
             Tariff = Map(subscription.Tariff, subscription.ActualTariffUsage)!,
             PreferredTariff = Map(subscription.PreferredChange?.TariffTemplate),
+            ActualTariff = Map(subscription.Tariff),
         };
     }
     
@@ -52,14 +53,34 @@ public static class SubscriptionsMapper
             TemplateId = preferredTariffTemplate.Id,
             Name = preferredTariffTemplate.Name,
             Price = tariff.Price,
-            Services = tariff.ServicesAmounts.Select(e => new ServiceAmountDTO()
-            {
-                TemplateId = e.ServiceTemplateId,
-                Name = e.ServiceTemplate.Name,
-                ServiceType = e.ServiceTemplate.ServiceType,
-                UnitType = e.ServiceTemplate.UnitType,
-                Amount = e.Amount
-            })
+            Services = tariff.ServicesAmounts.Select(Map),
+        };
+    }
+
+    private static PreferredTariffDTO? Map(TariffEntity tariff)
+    {
+        if (tariff.DeletedAt == null)
+            return null;
+
+        var actualTariff = tariff.Template.FindActualTariff();
+        return new PreferredTariffDTO
+        {
+            TemplateId = tariff.Template.Id,
+            Name = tariff.Template.Name,
+            Price = actualTariff.Price,
+            Services = actualTariff.ServicesAmounts.Select(Map),
+        };
+    }
+
+    private static ServiceAmountDTO Map(TariffServiceAmountEntity serviceAmount)
+    {
+        return new ServiceAmountDTO
+        {
+            TemplateId = serviceAmount.ServiceTemplateId,
+            Name = serviceAmount.ServiceTemplate.Name,
+            ServiceType = serviceAmount.ServiceTemplate.ServiceType,
+            UnitType = serviceAmount.ServiceTemplate.UnitType,
+            Amount = serviceAmount.Amount
         };
     }
 }
