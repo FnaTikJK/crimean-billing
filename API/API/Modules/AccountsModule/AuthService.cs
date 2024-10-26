@@ -41,8 +41,8 @@ public class AuthService : IAuthService
 
     public AuthService(
         ICache cache,
-        DataContext db, 
-        IPasswordHasher passwordHasher, 
+        DataContext db,
+        IPasswordHasher passwordHasher,
         ILog log,
         INotificationService notificationService)
     {
@@ -51,7 +51,7 @@ public class AuthService : IAuthService
         this.passwordHasher = passwordHasher;
         this.log = log;
         this.notificationService = notificationService;
-        
+
         users = db.Users;
         accounts = db.Accounts;
         managers = db.Managers;
@@ -66,7 +66,7 @@ public class AuthService : IAuthService
         var newManager = AuthMapper.Map(request, passwordHasher.Hash(request.Password));
         await managers.AddAsync(newManager);
         await db.SaveChangesAsync();
-        
+
         log.Info($"Registered Manager: {newManager.Id}");
         return Result.Ok(new RegisterManagerResponse
         {
@@ -76,15 +76,13 @@ public class AuthService : IAuthService
 
     public async Task<Result<(LoginManagerResponse, ClaimsIdentity)>> LoginManager(LoginManagerRequest request)
     {
-        var hashed = passwordHasher.Hash(request.Password);
         var manager = await managers.AsNoTracking()
-            .FirstOrDefaultAsync(e => e.Login == request.Login
-                                      && e.PasswordHash == hashed);
-        if (manager == null)
+            .FirstOrDefaultAsync(e => e.Login == request.Login);
+        if (manager == null || !passwordHasher.VerifyPassword(request.Password, manager.PasswordHash))
             return Result.BadRequest<(LoginManagerResponse, ClaimsIdentity)>("Неправильный логин или пароль");
 
         return Result.Ok((
-            new LoginManagerResponse {UserId = manager.Id},
+            new LoginManagerResponse { UserId = manager.Id },
             GetCredentials(manager)));
     }
 
@@ -94,13 +92,12 @@ public class AuthService : IAuthService
         if (manager == null)
             return Result.BadRequest<bool>("Такого менеджера не существует");
 
-        var hashed = passwordHasher.Hash(request.OldPassword);
-        if (manager.PasswordHash != hashed)
+        if (!passwordHasher.VerifyPassword(request.OldPassword, manager.PasswordHash))
             return Result.BadRequest<bool>("Старый пароль не совпадает");
 
         manager.PasswordHash = passwordHasher.Hash(request.NewPassword);
         await db.SaveChangesAsync();
-        
+
         log.Info($"Changed password for Manger: {managerId}");
         return Result.NoContent<bool>();
     }
@@ -114,7 +111,7 @@ public class AuthService : IAuthService
         var user = AuthMapper.Map(request);
         await users.AddAsync(user);
         await db.SaveChangesAsync();
-        
+
         log.Info($"Create new User: {user.Id}");
         return Result.Ok(new RegisterUserResponse()
         {
@@ -131,7 +128,8 @@ public class AuthService : IAuthService
         var user = await users.Include(e => e.Accounts).FirstOrDefaultAsync(e => e.Id == request.UserId);
         if (user == null)
             return Result.BadRequest<RegisterAccountResponse>("Такого пользователя не существует");
-        var userWithSamePhone = (await accounts.AsNoTracking().Include(e => e.User).FirstOrDefaultAsync(e => e.PhoneNumber == request.PhoneNumber))
+        var userWithSamePhone = (await accounts.AsNoTracking().Include(e => e.User)
+                .FirstOrDefaultAsync(e => e.PhoneNumber == request.PhoneNumber))
             ?.User.Id;
         if (userWithSamePhone != null && userWithSamePhone != user.Id)
             return Result.BadRequest<RegisterAccountResponse>("Телефон уже привязан к другому пользователю");
@@ -139,14 +137,14 @@ public class AuthService : IAuthService
         var account = AuthMapper.Map(request);
         user.Accounts.Add(account);
         await db.SaveChangesAsync();
-        
+
         return Result.Ok(new RegisterAccountResponse
         {
             UserId = user.Id,
             AccountId = account.Id,
         });
     }
-    
+
     public async Task<Result<bool>> Login(LoginUserRequest request)
     {
         var account = await accounts
@@ -158,7 +156,8 @@ public class AuthService : IAuthService
 
         var verificationCode = string.Join("", Enumerable.Range(0, 6).Select(e => rnd.Next(10)));
         var userId = account.User.Id.ToString();
-        log.Info($"Set verification code for User: {userId}, PhoneNumber: {request.PhoneNumber}, VerificationCode: {verificationCode}");
+        log.Info(
+            $"Set verification code for User: {userId}, PhoneNumber: {request.PhoneNumber}, VerificationCode: {verificationCode}");
         cache.AddOrUpdate(verificationCode, userId);
         cache.AddOrUpdate(PhoneConverter.ToPhoneWithoutRegMask(request.PhoneNumber)!, verificationCode);
         notificationService.SendEmail("Код подтверждения", verificationCode, account.User.Email);
@@ -181,7 +180,7 @@ public class AuthService : IAuthService
         cache.Delete(cacheKey);
         foreach (var truncatedPhone in user.Accounts.Select(a => PhoneConverter.ToPhoneWithoutRegMask(a.PhoneNumber)))
             cache.Delete(truncatedPhone!);
-       
+
         log.Info($"Verified User: {userId}");
         var verifyResponse = new VerifyUserResponse
         {
@@ -201,7 +200,7 @@ public class AuthService : IAuthService
         };
         return new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
     }
-    
+
     private ClaimsIdentity GetCredentials(UserEntity user)
     {
         var claims = new List<Claim>
