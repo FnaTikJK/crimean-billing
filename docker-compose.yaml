@@ -24,7 +24,7 @@ services:
       - "MAIL_BOX_PASSWORD=${MAIL_BOX_PASSWORD}"
     ports:
       - 8080:8080
-      - 443:443
+      - 4443:443
     depends_on:
       - postgres
     networks:
@@ -55,8 +55,11 @@ services:
     container_name: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./crimean-billing.work.gd.crt:/etc/nginx/crimean-billing.work.gd.crt
+      - ./crimean-billing.work.gd.key:/etc/nginx/crimean-billing.work.gd.key
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - app
       - front-manager-page
