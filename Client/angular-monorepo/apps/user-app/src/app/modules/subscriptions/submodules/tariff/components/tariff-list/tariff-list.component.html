@@ -1,13 +1,13 @@
 
 <div class="wrapper">
-  <section class="tariffsSection">
+  <section class="tariffsSection" #tariffsSection>
 
     @if(loading()) {
       <div class="spinnerWrapper">
         <mat-spinner></mat-spinner>
       </div>
     } @else {
-        @for (tariff of allTariffs() | slice: pageIndex() * itemsOnPage(): itemsOnPage(); track tariff?.id) {
+        @for (tariff of allTariffs() | slice: pageIndex() * itemsOnPage(): itemsOnPage() * pageIndex() + itemsOnPage(); track tariff?.id) {
           @if(tariff) {
             <a class="tariffLink" (click)="navigateToTariffPage(tariff.templateId)">
               <mat-card matRipple class="tariffCard" appearance="outlined" [ngStyle]="{

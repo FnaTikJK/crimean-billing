@@ -22,6 +22,13 @@ export const appRoutes: Route[] = [
   },
 
   {
+    path: 'expenses',
+    loadComponent: () => import('./modules/expenses/expenses.component'),
+    title: 'Контроль расходов',
+    canActivate: [ userAuthorizedCanActivateFn ]
+  },
+
+  {
     path: 'subscriptions',
     loadChildren: () => import('./modules/subscriptions/subscriptions.routes'),
     canActivate: [ userAuthorizedCanActivateFn ]

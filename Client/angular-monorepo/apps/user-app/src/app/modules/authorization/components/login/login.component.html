@@ -39,7 +39,7 @@
             <mat-label>Номер телефона</mat-label>
             <div matIconPrefix class="phoneNumberPrefixWrapper">
               <mat-icon class="phoneNumberPrefix">add</mat-icon>
-              <span class="countryPhoneCode">8</span>
+              <span class="countryPhoneCode">7</span>
             </div>
             <input matInput type="tel"
                    [formControl]="phoneNumberControl"
@@ -48,7 +48,7 @@
                    (keydown)="pressKey($event)"
             >
             <mat-icon matIconSuffix>call</mat-icon>
-            <mat-hint>Формат: +8 (xxx) xxx-xx-xx</mat-hint>
+            <mat-hint>Формат: +7 (xxx) xxx-xx-xx</mat-hint>
             @if (phoneNumberControl.hasError('required')) {
             <mat-error>
               Обязательное поле

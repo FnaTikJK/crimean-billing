@@ -5,6 +5,7 @@
 
 
 .tabLink {
+  -webkit-tap-highlight-color: transparent;
   width: max-content;
   display: flex;
   flex-direction: column;
