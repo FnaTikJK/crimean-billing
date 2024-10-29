@@ -13,7 +13,7 @@ public class AccountEntity : IEntity
     public UserEntity User { get; set; }
     public SubscriptionEntity? Subscription { get; set; }
     public required string PhoneNumber { get; set; }
-    public required int Number { get; set; }
+    public required string Number { get; set; }
     public required float Money { get; set; }
     public required AccountType AccountType { get; set; }
     public HashSet<InvoiceEntity>? Invoices { get; set; }

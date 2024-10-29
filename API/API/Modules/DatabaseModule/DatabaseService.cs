@@ -81,7 +81,7 @@ public class DatabaseService : IDatabaseService
         var account = await authService.RegisterAccount(new RegisterAccountRequest
         {
             UserId = user.Value.UserId,
-            Number = 999,
+            Number = "999",
             AccountType = AccountType.Sim,
             PhoneNumber = "88005553535",
         });
