@@ -1,12 +1,16 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+function getProtocol () {
+  return origin.startsWith('https') ? 'https' : 'http'
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class HttpService {
 
-  BACKEND_URL = 'http://www.crimean-billing.work.gd/api/'
+  BACKEND_URL = `${getProtocol()}://www.crimean-billing.work.gd/api/`
 
   private httpClient = inject(HttpClient);
   private origin = location.origin;
