@@ -5,4 +5,5 @@ namespace API.Modules.InvoiceModule.DTO;
 public class SearchInvoicesRequest : SearchRequestWithoutIds
 {
     public required Guid AccountId { get; set; }
+    public bool? IsPayed { get; set; }
 }

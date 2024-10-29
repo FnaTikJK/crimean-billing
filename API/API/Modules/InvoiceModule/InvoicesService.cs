@@ -31,9 +31,14 @@ public class InvoicesService : IInvoicesService
             .Include(e => e.Account)
             .Include(e => e.Tariff)
             .Where(e => e.Account.Id == request.AccountId);
+        
+        if (request.IsPayed is true)
+            query = query.Where(e => e.PayedAt != null);
+        else if (request.IsPayed is false)
+            query = query.Where(e => e.PayedAt == null);
 
         var totalCount = query.Count();
-        return Result.Ok(new SearchInvoicesResponse()
+        return Result.Ok(new SearchInvoicesResponse
         {
             Items = query.Skip(request.Skip).Take(request.Take).Select(InvoicesMapper.Map).ToList(),
             TotalCount = totalCount
