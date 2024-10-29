@@ -89,6 +89,8 @@ ConfigReader.Init(app.Environment.IsDevelopment());
 
 app.UseHttpsRedirection();
 
+app.UseCors(CorsPolicyName);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
