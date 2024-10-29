@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  OnInit,
+  signal,
+  viewChild
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCard, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { TariffService } from '../../services/tariff.service';
@@ -21,12 +31,14 @@ import { ISearchTariffRequestDTO } from '../../DTO/request/ISearchTariffRequestD
 })
 export default class TariffListComponent implements OnInit {
 
-  #elementRef = inject(ElementRef);
   #tariffS = inject(TariffService);
   #router = inject(Router);
   #route = inject(ActivatedRoute);
 
   tariffIDToExclude = input<string>();
+
+  protected tariffsSection = viewChild.required<ElementRef<HTMLElement>>('tariffsSection');
+
   private displayMode = computed(() => this.tariffIDToExclude() ? 'change' : 'add');
 
   protected allTariffs = signal<(ITariff | undefined)[]>([]);
@@ -46,6 +58,7 @@ export default class TariffListComponent implements OnInit {
 
   protected changePage(changePageEvent: PageEvent) {
     this.loading.set(true);
+    this.pageIndex.set(changePageEvent.pageIndex);
     const firstItemIndexOnANewPage = changePageEvent.pageIndex * this.itemsOnPage();
 
     if (!this.allTariffs()[firstItemIndexOnANewPage]) {
@@ -81,10 +94,10 @@ export default class TariffListComponent implements OnInit {
   }
 
   private calcItemsPerPage() {
-    const tariffListElement: HTMLElement = this.#elementRef.nativeElement;
-    const maxItemsInRow = tariffListElement.clientWidth / this.itemWidthPx;
-    const maxItemsInColumn = tariffListElement.clientHeight / this.itemHeightPx;
-    this.itemsOnPage.set(Math.floor(maxItemsInRow * maxItemsInColumn));
+    const tariffListElement: HTMLElement = this.tariffsSection().nativeElement;
+    const maxItemsInRow = Math.floor(tariffListElement.clientWidth / this.itemWidthPx);
+    const maxItemsInColumn = Math.floor(tariffListElement.clientHeight / this.itemHeightPx);
+    this.itemsOnPage.set(maxItemsInRow * maxItemsInColumn);
   }
 
   private getItemsLength() {

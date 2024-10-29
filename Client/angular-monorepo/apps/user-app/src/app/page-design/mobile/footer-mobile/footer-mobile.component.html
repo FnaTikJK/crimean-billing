@@ -1,14 +1,21 @@
 
 <section class="footer">
-  <a class="tabLink" [routerLink]="['main']" [routerLinkActive]="'active'">
+  <a matRipple class="tabLink" [routerLink]="['main']" [routerLinkActive]="'active'">
     <mat-icon>home</mat-icon>
     <p class="tabTitle">Главная</p>
   </a>
-  <a class="tabLink" [routerLink]="['subscriptions']" [routerLinkActive]="'active'">
+
+  <a matRipple class="tabLink" [routerLink]="['expenses']" [routerLinkActive]="'active'">
+    <mat-icon>credit_card</mat-icon>
+    <p class="tabTitle">Расходы</p>
+  </a>
+
+  <a matRipple class="tabLink" [routerLink]="['subscriptions']" [routerLinkActive]="'active'">
     <mat-icon>subscriptions</mat-icon>
     <p class="tabTitle">Услуги</p>
   </a>
-  <a class="tabLink" [routerLink]="['profile']" [routerLinkActive]="'active'">
+
+  <a matRipple class="tabLink" [routerLink]="['profile']" [routerLinkActive]="'active'">
     <mat-icon>account_circle</mat-icon>
     <p class="tabTitle">Профиль</p>
   </a>

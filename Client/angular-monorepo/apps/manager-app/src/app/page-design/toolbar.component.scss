@@ -3,6 +3,7 @@
 }
 
 .toolbarTitle {
+  flex-grow: 1;
   cursor: pointer;
   &:hover {
     color: #109cf1;

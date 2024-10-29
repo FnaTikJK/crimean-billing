@@ -1,0 +1,85 @@
+$primaryItemText: #1D2023;
+$secondaryItemText: #626c77;
+
+
+.tabGroup, .tabWrapper {
+  max-height: 100%;
+}
+
+.invoiceToPayWrapper {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.itemsWrapper {
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;;
+}
+
+.tabWrapper.withToggle .itemsWrapper {
+  height: calc(100% - 44px); //44px - высота toggl-а
+}
+
+.itemIconWrapper {
+  background-color: #f2f3f7;
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  padding: 0.5rem;
+  border-radius: 20%;
+  .itemIcon {
+    color: #969fa8;
+    font-size: inherit;
+    height: inherit;
+    width: inherit;
+  }
+}
+
+.invoiceTitleWrapper {
+  flex-grow: 1;
+  width: 60%;
+  .primaryText {
+    color: $primaryItemText;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .secondaryText {
+    color: $secondaryItemText;
+    font-size: 0.9rem;
+  }
+
+  .primaryText, .secondaryText {
+    margin-bottom: 0;
+  }
+}
+
+.invoicePaymentWrapper {
+  flex-shrink: 0;
+
+  .paymentPrice {
+    font-weight: 500;
+    &.toPayPrice {
+      color: red;
+    }
+  }
+
+  .paymentPrice, .secondaryText {
+    margin-bottom: 0;
+  }
+}
+
+:host ::ng-deep {
+  .mat-mdc-tab-body-wrapper {
+    padding: 1rem;
+    height: calc(100% - 49px); //49px - высота header-а табов
+  }
+
+  .slideToggleText label {
+    font-weight: 500;
+  }
+}
