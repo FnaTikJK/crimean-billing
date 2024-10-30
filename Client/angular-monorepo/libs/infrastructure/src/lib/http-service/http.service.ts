@@ -1,4 +1,4 @@
-import { inject, Injectable, isDevMode } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 function getProtocol () {
@@ -10,10 +10,10 @@ function getProtocol () {
 })
 export class HttpService {
 
+  BACKEND_URL = `${getProtocol()}://www.crimean-billing.work.gd/api/`
+
   private httpClient = inject(HttpClient);
   private origin = location.origin;
-
-  BACKEND_URL =  isDevMode() ? this.origin + '/api/' : `${getProtocol()}://www.crimean-billing.work.gd/api/`;
 
   public get<T>(method: string) {
     return this.httpClient.get<T>(`${this.BACKEND_URL}${method}`);
