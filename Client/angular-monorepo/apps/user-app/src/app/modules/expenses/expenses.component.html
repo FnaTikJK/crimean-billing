@@ -1,82 +1,17 @@
 
-<mat-tab-group class="tabGroup" [(selectedIndex)]="currentTabIndex">
+<mat-tab-group class="tabGroup">
 
-    <mat-tab label="Все">
+    <mat-tab label="Пополнения/Расходы">
       <ng-template matTabContent>
-        <div class="tabWrapper withToggle">
-          <p class="slideToggleText"><mat-slide-toggle labelPosition="before">Показать только неоплаченные</mat-slide-toggle></p>
-          <section class="itemsWrapper"  #allWrapper>
-            @for (item of currentTabItems(); track item.id) {
-              @if (item.payedAt) {
-                <ng-container *ngTemplateOutlet="invoicePayed; context: { $implicit: item }"></ng-container>
-              } @else {
-                <ng-container *ngTemplateOutlet="invoiceToPay; context: { $implicit: item }"></ng-container>
-              }
-            }
-          </section>
+        <div class="tabWrapper">
         </div>
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Пополнения">
-      <ng-template matTabContent>
-        <div class="tabWrapper" #replenishWrapper>
-        </div>
-      </ng-template>
-    </mat-tab>
+  <mat-tab label="Инвойсы">
+    <ng-template matTabContent>
+      <app-invoices-list></app-invoices-list>
+    </ng-template>
+  </mat-tab>
 
-    <mat-tab label="Списания">
-      <ng-template matTabContent>
-        <div class="tabWrapper withToggle" #expensesWrapper>
-          <p class="slideToggleText"><mat-slide-toggle labelPosition="before">Показать только неоплаченные</mat-slide-toggle></p>
-          <section>
-            @for (item of currentTabItems(); track item.id) {
-              @if (item.payedAt) {
-                <ng-container *ngTemplateOutlet="invoicePayed; context: { $implicit: item }"></ng-container>
-              } @else {
-                <ng-container *ngTemplateOutlet="invoiceToPay; context: { $implicit: item }"></ng-container>
-              }
-            }
-          </section>
-        </div>
-      </ng-template>
-    </mat-tab>
 </mat-tab-group>
-
-<ng-template #invoicePayed let-invoice>
-  <section class="invoiceToPayWrapper">
-
-    <div class="itemIconWrapper">
-      <mat-icon class="itemIcon">sim_card</mat-icon>
-    </div>
-
-    <div class="invoiceTitleWrapper">
-      <p class="primaryText">Ежемесячная плата {{ subscription()?.tariff?.name }}</p>
-      <p class="secondaryText">Абонентская плата</p>
-    </div>
-
-    <div class="invoicePaymentWrapper">
-      <p class="paymentPrice"> -{{invoice.toPay}} ₽</p>
-      <p class="secondaryText"> {{ invoice.payedAt | date: 'HH:mm' }} </p>
-    </div>
-  </section>
-</ng-template>
-
-<ng-template #invoiceToPay let-invoice>
-  <section class="invoiceToPayWrapper">
-
-    <div class="itemIconWrapper">
-      <mat-icon class="itemIcon">sim_card</mat-icon>
-    </div>
-
-    <div class="invoiceTitleWrapper">
-      <p class="primaryText">Ежемесячная плата {{ subscription()?.tariff?.name }}</p>
-      <p class="secondaryText">Абонентская плата</p>
-    </div>
-
-    <div class="invoicePaymentWrapper">
-      <p class="paymentPrice toPayPrice"> {{invoice.toPay}} ₽</p>
-      <p class="secondaryText"> {{ invoice.createdAt | date: 'HH:mm' }} </p>
-    </div>
-  </section>
-</ng-template>

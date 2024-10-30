@@ -1,0 +1,54 @@
+<div class="wrapper">
+  <p class="slideToggleText"><mat-slide-toggle labelPosition="before">Показать только неоплаченные</mat-slide-toggle></p>
+  <section class="invoicesWrapper" #invoicesList>
+    @if (!currentInvoices().length){
+      <p>Нет результатов</p>
+    } @else {
+      @for (item of currentInvoices(); track item.id)  {
+        @if (item.payedAt) {
+          <ng-container *ngTemplateOutlet="invoicePayed; context: { $implicit: item }"></ng-container>
+        } @else {
+          <ng-container *ngTemplateOutlet="invoiceToPay; context: { $implicit: item }"></ng-container>
+        }
+      }
+    }
+  </section>
+</div>
+
+<ng-template #invoicePayed let-invoice>
+  <section class="itemWrapper">
+
+    <div class="itemIconWrapper">
+      <mat-icon class="itemIcon">sim_card</mat-icon>
+    </div>
+
+    <div class="itemTitleWrapper">
+      <p class="primaryText">Плата по тарифу {{ subscription()?.tariff?.name }}</p>
+      <p class="secondaryText">Абонентская плата</p>
+    </div>
+
+    <div class="itemPaymentWrapper">
+      <p class="paymentPrice"> -{{invoice.toPay}} ₽</p>
+      <p class="secondaryText"> {{ invoice.payedAt | date: 'HH:mm' }} </p>
+    </div>
+  </section>
+</ng-template>
+
+<ng-template #invoiceToPay let-invoice>
+  <section class="itemWrapper">
+
+    <div class="itemIconWrapper">
+      <mat-icon class="itemIcon">sim_card</mat-icon>
+    </div>
+
+    <div class="itemTitleWrapper">
+      <p class="primaryText">Плата по тарифу {{ subscription()?.tariff?.name }}</p>
+      <p class="secondaryText">Абонентская плата</p>
+    </div>
+
+    <div class="itemPaymentWrapper">
+      <p class="paymentPrice toPayPrice"> {{invoice.toPay}} ₽</p>
+      <button mat-button class="payBtn">Оплатить</button>
+    </div>
+  </section>
+</ng-template>

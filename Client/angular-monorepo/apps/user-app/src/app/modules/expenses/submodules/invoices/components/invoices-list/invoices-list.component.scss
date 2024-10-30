@@ -1,0 +1,35 @@
+
+.wrapper {
+  height: 100%;
+}
+
+.invoicesWrapper {
+  height: calc(100% - 44px); //44px - высота toggl-а
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;;
+}
+
+.itemTitleWrapper {
+  max-width: calc(100% - 48px - 71px - 1.6rem); //48px - иконка; 71px - сумма + кнопка; 1.6rem отступы
+}
+
+.payBtn {
+  height: 30px;
+  font-size: 0.8rem;
+  min-width: unset;
+  padding: 0 6px;
+
+  ::ng-deep {
+    .mat-mdc-button-touch-target {
+      display: none;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .paymentPrice.toPayPrice {
+    color: red;
+  }
+}
