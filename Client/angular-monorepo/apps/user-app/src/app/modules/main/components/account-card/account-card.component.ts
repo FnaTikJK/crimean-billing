@@ -34,7 +34,7 @@ export class AccountCardComponent {
   protected readonly AccountType = AccountType;
 
   protected openAddMoneyModal() {
-    this.#bottomSheet.open(AddMoneyBottomSheetComponent, { data: this.accountID() });
+    this.#bottomSheet.open(AddMoneyBottomSheetComponent, { data: { accountID: this.accountID() } });
   }
 }
 

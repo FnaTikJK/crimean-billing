@@ -1,18 +1,18 @@
 <div class="wrapper">
-  <p class="slideToggleText"><mat-slide-toggle labelPosition="before">Показать только неоплаченные</mat-slide-toggle></p>
-  <section class="invoicesWrapper" #invoicesList>
-    @if (!currentInvoices().length){
-      <p>Нет результатов</p>
-    } @else {
-      @for (item of currentInvoices(); track item.id)  {
-        @if (item.payedAt) {
-          <ng-container *ngTemplateOutlet="invoicePayed; context: { $implicit: item }"></ng-container>
-        } @else {
-          <ng-container *ngTemplateOutlet="invoiceToPay; context: { $implicit: item }"></ng-container>
+  <p class="slideToggleText"><mat-slide-toggle [formControl]="onlyNotPaidInvoicesControl" labelPosition="before">Показать только неоплаченные</mat-slide-toggle></p>
+    <section class="invoicesWrapper" #invoicesList>
+      @if (!currentInvoices().length){
+        <p>Нет результатов</p>
+      } @else {
+        @for (item of currentInvoices(); track item.id)  {
+          @if (item.payedAt) {
+            <ng-container *ngTemplateOutlet="invoicePayed; context: { $implicit: item }"></ng-container>
+          } @else {
+            <ng-container *ngTemplateOutlet="invoiceToPay; context: { $implicit: item }"></ng-container>
+          }
         }
       }
-    }
-  </section>
+    </section>
 </div>
 
 <ng-template #invoicePayed let-invoice>
@@ -29,7 +29,7 @@
 
     <div class="itemPaymentWrapper">
       <p class="paymentPrice"> -{{invoice.toPay}} ₽</p>
-      <p class="secondaryText"> {{ invoice.payedAt | date: 'HH:mm' }} </p>
+      <p class="secondaryText"> {{ invoice.payedAt | date: 'dd.MM' }} </p>
     </div>
   </section>
 </ng-template>
@@ -48,7 +48,7 @@
 
     <div class="itemPaymentWrapper">
       <p class="paymentPrice toPayPrice"> {{invoice.toPay}} ₽</p>
-      <button mat-button class="payBtn">Оплатить</button>
+      <button (click)="payForInvoice(invoice)" mat-button class="payBtn">Оплатить</button>
     </div>
   </section>
 </ng-template>

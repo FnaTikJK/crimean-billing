@@ -23,20 +23,27 @@ export class AddMoneyBottomSheetComponent {
   #matSnackbar = inject(MatSnackBar);
   #matBottomSheetRef = inject(MatBottomSheetRef);
 
-  #accountID: string =  inject(MAT_BOTTOM_SHEET_DATA);
+  #config: IAddMoneyBottomSheetConfig =  inject(MAT_BOTTOM_SHEET_DATA);
 
-  protected addMoneyControl = new FormControl<number>(1, {
+  protected addMoneyControl = new FormControl<number>(this.#config.defaultMoneyValue ?? 1, {
     validators: [Validators.min(1), Validators.max(1000000)],
     nonNullable: true
   });
 
   protected submitForm() {
-    this.#accountS.addMoney$({ accountId: this.#accountID, toAdd: this.addMoneyControl.value })
+    this.#accountS.addMoney$({ accountId: this.#config.accountID, toAdd: this.addMoneyControl.value })
       .pipe(
         tap(() => {
-          this.#matBottomSheetRef.dismiss();
+          this.#matBottomSheetRef.dismiss(true);
+          if (!this.#config.showSnackbar) { return; }
           this.#matSnackbar.open('Счёт успешно полнен', 'Закрыть', { duration: 1500 });
-        })
+        }),
       ).subscribe()
   }
+}
+
+export interface IAddMoneyBottomSheetConfig {
+  accountID: string;
+  defaultMoneyValue?: number;
+  showSnackbar?: boolean;
 }

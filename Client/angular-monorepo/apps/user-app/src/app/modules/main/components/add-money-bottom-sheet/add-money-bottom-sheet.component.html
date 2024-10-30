@@ -2,7 +2,7 @@
     <mat-form-field>
       <mat-label>Сумма платежа</mat-label>
       <input class="addMoneyInput" type="number" matInput [formControl]="addMoneyControl">
-      <p matTextSuffix></p>
+      <p matTextSuffix>₽</p>
       @if(addMoneyControl.hasError('min')) {
         <mat-error>Не менее 1 ₽</mat-error>
       } @else if(addMoneyControl.hasError('max')) {
@@ -12,5 +12,5 @@
 
     <button mat-flat-button
             [disabled]="addMoneyControl.invalid"
-    >Пополнить баланс на {{ addMoneyControl.value }}</button>
+    >Пополнить баланс на {{ addMoneyControl.value }} ₽</button>
   </form>

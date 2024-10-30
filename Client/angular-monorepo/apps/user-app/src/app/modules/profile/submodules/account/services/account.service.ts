@@ -19,14 +19,24 @@ export class AccountService {
   addMoney$(addMoneyData: IAddMoneyRequestDTO) {
     return this.#httpS.post<IAddMoneyResponseDTO>('Payments/Add', addMoneyData)
       .pipe(
-        tap(() => {
-          const currentAccounts: IAccount[] = JSON.parse(JSON.stringify(this.#accountsState().entities));
-          const updatedAccountIndex = currentAccounts.find(account => account.id === addMoneyData.accountId);
-          updatedAccountIndex!.money += addMoneyData.toAdd;
-          this.#accountsState.update(state => ({...state, entities: currentAccounts}));
-        })
-      )
+        tap(() => this.addMoney(addMoneyData.accountId, addMoneyData.toAdd))
+      );
   }
+
+  addMoney(accountID: string, amount: number) {
+    const currentAccounts: IAccount[] = JSON.parse(JSON.stringify(this.#accountsState().entities));
+    const updatedAccountIndex = currentAccounts.find(account => account.id === accountID);
+    updatedAccountIndex!.money += amount;
+    this.#accountsState.update(state => ({...state, entities: currentAccounts}));
+  }
+
+  spendMoney(accountID: string, amount: number) {
+    const currentAccounts: IAccount[] = JSON.parse(JSON.stringify(this.#accountsState().entities));
+    const updatedAccountIndex = currentAccounts.find(account => account.id === accountID);
+    updatedAccountIndex!.money += amount;
+    this.#accountsState.update(state => ({...state, entities: currentAccounts}));
+  }
+
   setAccounts(accounts: IAccount[]) {
     this.#accountsState.set({ entities: accounts, loaded: true });
   }
