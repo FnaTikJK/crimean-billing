@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ProfileService } from './services/profile.service';
@@ -10,7 +10,7 @@ import { AuthorizationService } from '../authorization/services/authorization.se
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, MatFormField, MatInput, ReactiveFormsModule, MatButton],
+  imports: [CommonModule, MatFormField, MatInput, ReactiveFormsModule, MatButton, MatLabel],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
