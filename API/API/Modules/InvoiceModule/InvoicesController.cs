@@ -21,4 +21,11 @@ public class InvoicesController : ControllerBase
         var response = invoicesService.Search(request);
         return response.ActionResult;
     }
+
+    [HttpPost("Pay")]
+    public async Task<ActionResult<InvoiceDTO>> Pay(PayInvoiceRequest request)
+    {
+        var response = await invoicesService.PayInvoice(request);
+        return response.ActionResult;
+    }
 }
