@@ -1,4 +1,5 @@
 ﻿using API.Modules.AccountsModule.Share;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace IntegrationTests.PasswordHasherTests;
@@ -20,9 +21,8 @@ public class PasswordHasherTest
 
         var hashedPassword = passwordHasher.Hash(password);
 
-        Assert.IsNotNull(hashedPassword);
-        Assert.IsNotEmpty(hashedPassword);
-        Console.WriteLine(hashedPassword);
+        hashedPassword.Should().NotBeNull();
+        hashedPassword.Should().NotBeEmpty();
     }
 
     [Test]
@@ -33,13 +33,15 @@ public class PasswordHasherTest
         var hash1 = passwordHasher.Hash(password);
         var hash2 = passwordHasher.Hash(password);
 
-        Assert.AreNotEqual(hash1, hash2, "Хэш с одинаковым паролем не должен совпадать.");
+        hash1.Should().NotBe(hash2, "Хэш с одинаковым паролем не должен совпадать.");
     }
 
     [Test]
     public void Hash_ThrowsArgumentNullException_WhenPasswordIsNull()
     {
-        Assert.Throws<ArgumentNullException>(() => passwordHasher.Hash(null));
+        Action act = () => passwordHasher.Hash("");
+
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [Test]
@@ -49,6 +51,6 @@ public class PasswordHasherTest
 
         var hash = passwordHasher.Hash(password);
 
-        Assert.AreEqual(48, hash.Length);
+        hash.Length.Should().Be(48);
     }
 }

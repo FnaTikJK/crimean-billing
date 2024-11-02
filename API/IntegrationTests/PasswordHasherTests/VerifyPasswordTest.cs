@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using API.Modules.AccountsModule.Share;
+using FluentAssertions;
 
 namespace IntegrationTests.PasswordHasherTests;
 
@@ -21,7 +22,7 @@ public class VerifyPasswordTest
 
         var result = passwordHasher.VerifyPassword(password, hashedPassword);
 
-        Assert.IsTrue(result, "пароли совпадают.");
+        result.Should().BeTrue("пароли совпадают.");
     }
 
     [Test]
@@ -33,6 +34,6 @@ public class VerifyPasswordTest
 
         var result = passwordHasher.VerifyPassword(wrongPassword, hashedPassword);
 
-        Assert.IsFalse(result, "пароли не совпадают.");
+        result.Should().BeFalse("пароли не совпадают.");
     }
 }

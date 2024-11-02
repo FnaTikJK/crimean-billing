@@ -156,8 +156,7 @@ public class AuthService : IAuthService
 
         var verificationCode = string.Join("", Enumerable.Range(0, 6).Select(e => rnd.Next(10)));
         var userId = account.User.Id.ToString();
-        log.Info(
-            $"Set verification code for User: {userId}, PhoneNumber: {request.PhoneNumber}, VerificationCode: {verificationCode}");
+        log.Info($"Set verification code for User: {userId}, PhoneNumber: {request.PhoneNumber}, VerificationCode: {verificationCode}");
         cache.AddOrUpdate(verificationCode, userId);
         cache.AddOrUpdate(PhoneConverter.ToPhoneWithoutRegMask(request.PhoneNumber)!, verificationCode);
         notificationService.SendEmail("Код подтверждения", verificationCode, account.User.Email);

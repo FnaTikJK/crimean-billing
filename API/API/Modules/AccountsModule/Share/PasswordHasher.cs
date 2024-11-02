@@ -12,6 +12,8 @@ public class PasswordHasher : IPasswordHasher
 {
     public string Hash(string password)
     {
+        if (password == "")
+            throw new ArgumentNullException("password empty");
         var salt = new byte[16];
         RandomNumberGenerator.Fill(salt);
 
