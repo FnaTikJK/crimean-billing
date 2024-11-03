@@ -5,9 +5,6 @@ namespace API.Modules.LogsModule;
 
 public interface ILogsService
 {
-    public void WriteInfoLog(string log);
-    public void WriteErrorLog(string log);
-
     public string ReadLog(DateOnly date);
 }
 
@@ -18,16 +15,6 @@ public class LogsService : ILogsService
     public LogsService(ILog logger)
     {
         this.log = logger;
-    }
-
-    public void WriteInfoLog(string message)
-    {
-        log.Info(message);
-    }
-
-    public void WriteErrorLog(string message)
-    {
-        log.Info(message);
     }
 
     public string ReadLog(DateOnly date)
