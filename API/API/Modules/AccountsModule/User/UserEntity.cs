@@ -9,5 +9,6 @@ public class UserEntity : IEntity
     public Guid Id { get; set; }
     public HashSet<AccountEntity> Accounts { get; set; }
     public required string Email { get; set; }
+    public long? TelegramId { get; set; }
     public required string Fio { get; set; }
 }

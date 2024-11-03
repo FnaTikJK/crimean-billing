@@ -2,6 +2,7 @@
 using API.Infrastructure;
 using API.Modules.AccountsModule.User;
 using API.Modules.UsersController.DTO;
+using API.Modules.UsersController.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Modules.UsersController;
@@ -9,6 +10,7 @@ namespace API.Modules.UsersController;
 public interface IUsersService
 {
     Task<Result<UserDTO>> GetUser(Guid userId);
+    Task<Result<UserDTO>> PatchUserInfo(Guid userId, PatchUserRequest request);
 }
 
 public class UsersService : IUsersService
@@ -31,6 +33,17 @@ public class UsersService : IUsersService
         if (user == null)
             return Result.BadRequest<UserDTO>("Такого пользователя не существует");
 
+        return Result.Ok(UsersMapper.Map(user));
+    }
+
+    public async Task<Result<UserDTO>> PatchUserInfo(Guid userId, PatchUserRequest request)
+    {
+        var user = await users.Include(e => e.Accounts).FirstOrDefaultAsync(e => e.Id == userId);
+        if (user == null)
+            return Result.BadRequest<UserDTO>("Такого пользователя не существует");
+        
+        UsersMapper.Patch(request, user);
+        await db.SaveChangesAsync();
         return Result.Ok(UsersMapper.Map(user));
     }
 }

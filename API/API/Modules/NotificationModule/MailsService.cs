@@ -5,16 +5,16 @@ using API.Infrastructure.Config;
 
 namespace API.Modules.NotificationModule;
 
-public interface INotificationService
+public interface IMailsService
 {
     void SendEmail(string title, string message, params string[] recipients);
 }
 
-public class NotificationService : INotificationService
+public class MailsService : IMailsService
 {
     private readonly SmtpClient smtpClient;
     
-    public NotificationService(ILog log)
+    public MailsService(ILog log)
     {
         smtpClient = new SmtpClient
         {
@@ -50,5 +50,17 @@ public class NotificationService : INotificationService
             mailMessage.To.Add(recipient);
         
         smtpClient.SendAsync(mailMessage, null);
+    }
+}
+
+public class MockedMailsService : IMailsService
+{
+    public MockedMailsService(ILog log)
+    {
+        log.Info($"Mail config is empty. Notification service is mocked");
+    }
+    public void SendEmail(string title, string message, params string[] recipients)
+    {
+        // pass
     }
 }

@@ -2,6 +2,7 @@
 using API.DAL;
 using API.Modules.AccountsModule.Share;
 using API.Modules.InvoiceModule.Model;
+using API.Modules.PaymentsModule.Model;
 using API.Modules.SubscriptionsModule.Model;
 
 namespace API.Modules.AccountsModule.User;
@@ -17,4 +18,5 @@ public class AccountEntity : IEntity
     public required float Money { get; set; }
     public required AccountType AccountType { get; set; }
     public HashSet<InvoiceEntity>? Invoices { get; set; }
+    public HashSet<PaymentEntity>? Payments { get; set; }
 }

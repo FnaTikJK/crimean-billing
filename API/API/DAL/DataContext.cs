@@ -2,6 +2,7 @@ using API.Infrastructure.Config;
 using API.Modules.AccountsModule.Manager;
 using API.Modules.AccountsModule.User;
 using API.Modules.InvoiceModule.Model;
+using API.Modules.PaymentsModule.Model;
 using API.Modules.ServicesModule.Model;
 using API.Modules.SubscriptionsModule.Model;
 using API.Modules.TariffsModule.Models;
@@ -36,6 +37,17 @@ public class DataContext : DbContext
             .HasKey(e => new {e.SubscriptionId, e.ServiceTemplateId});
         builder.Entity<TariffUsageHistoryByServicesEntity>()
             .HasKey(e => new {e.TariffUsageHistoryId, e.ServiceTemplateId});
+
+        builder.Entity<PaymentEntity>()
+            .HasOne(e => e.Invoice)
+            .WithOne(e => e.Payment)
+            .HasForeignKey<InvoiceEntity>(e => e.PaymentId)
+            .IsRequired(false);
+        builder.Entity<InvoiceEntity>()
+            .HasOne(e => e.Payment)
+            .WithOne(e => e.Invoice)
+            .HasForeignKey<PaymentEntity>(e => e.InvoiceId)
+            .IsRequired(false);
     }
 
     public void RecreateDatabase()
@@ -58,4 +70,5 @@ public class DataContext : DbContext
     public DbSet<ActualTariffUsageEntity> ActualTariffUsages => Set<ActualTariffUsageEntity>();
     public DbSet<TariffUsageHistoryEntity> TariffUsageHistories => Set<TariffUsageHistoryEntity>();
     public DbSet<TariffUsageHistoryByServicesEntity> TariffUsageHistoryByServices => Set<TariffUsageHistoryByServicesEntity>();
+    public DbSet<PaymentEntity> Payments => Set<PaymentEntity>();
 }

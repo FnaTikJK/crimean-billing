@@ -110,6 +110,17 @@ public class TelegramDaemon : ITelegramDaemon
             return;
         }
 
+        if (text == "Привязать уведомления")
+        {
+            await botClient.SendTextMessageAsync(
+                chat.Id,
+                @$"Ваш Id чата: `{chat.Id}`\. Укажите его в настройках аккаунта, чтобы получать уведомления здесь",
+                parseMode: ParseMode.MarkdownV2,
+                replyMarkup: defaultKeyboard);
+            
+            return;
+        }
+
         await botClient.SendTextMessageAsync(chat.Id, @"Ничего не понял.", replyMarkup: defaultKeyboard);
     }
 
@@ -117,7 +128,8 @@ public class TelegramDaemon : ITelegramDaemon
     {
         new []
         {
-            new KeyboardButton("Get verification code") {RequestContact = true}
+            new KeyboardButton("Привязать уведомления"),
+            new KeyboardButton("Получить код верификации") {RequestContact = true},
         }
     })
     {
