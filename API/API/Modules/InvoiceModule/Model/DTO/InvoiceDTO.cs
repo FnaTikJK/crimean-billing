@@ -6,4 +6,5 @@ public class InvoiceDTO
     public required float ToPay { get; set; }
     public required DateTime CreatedAt { get; set; }
     public required DateTime? PayedAt { get; set; }
+    public required Guid AccountId { get; set; }
 }

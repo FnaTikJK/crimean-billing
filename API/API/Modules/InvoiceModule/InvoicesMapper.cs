@@ -7,12 +7,13 @@ public static class InvoicesMapper
 {
     public static InvoiceDTO Map(InvoiceEntity invoice)
     {
-        return new InvoiceDTO()
+        return new InvoiceDTO
         {
             Id = invoice.Id,
             CreatedAt = invoice.CreatedAt,
             PayedAt = invoice.PayedAt,
             ToPay = invoice.CalculateTotalPrice(),
+            AccountId = invoice.AccountId,
         };
     }
 }

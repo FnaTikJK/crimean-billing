@@ -9,7 +9,9 @@ public class InvoiceEntity : IEntity
 {
     [Key]
     public Guid Id { get; set; }
+    public Guid AccountId { get; set; }
     public AccountEntity Account { get; set; }
+    public Guid TariffId { get; set; }
     public TariffEntity Tariff { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? PayedAt { get; set; }
