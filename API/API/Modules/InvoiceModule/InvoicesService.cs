@@ -35,17 +35,18 @@ public class InvoicesService : IInvoicesService
         var query = invoices.AsNoTracking()
             .Include(e => e.Account)
             .Include(e => e.Tariff)
+            .Include(e => e.Payment)
             .Where(e => e.Account.Id == request.AccountId);
         
         if (request.IsPayed is true)
-            query = query.Where(e => e.PayedAt != null);
+            query = query.Where(e => e.Payment != null);
         else if (request.IsPayed is false)
-            query = query.Where(e => e.PayedAt == null);
+            query = query.Where(e => e.Payment == null);
 
         var totalCount = query.Count();
         return Result.Ok(new SearchInvoicesResponse
         {
-            Items = query.Skip(request.Skip).Take(request.Take).Select(InvoicesMapper.Map).ToList(),
+            Items = query.Skip(request.Skip).Take(request.Take).AsEnumerable().Select(InvoicesMapper.Map).ToList(),
             TotalCount = totalCount
         });
     }
@@ -55,18 +56,18 @@ public class InvoicesService : IInvoicesService
         var invoice = await invoices
             .Include(e => e.Account)
             .Include(e => e.Tariff)
+            .Include(e => e.Payment)
             .FirstOrDefaultAsync(e => e.Id == request.InvoiceId);
         if (invoice == null)
             return Result.BadRequest<InvoiceDTO>("Такого Invoice не существует");
 
-        if (invoice.PayedAt != null)
+        if (invoice.Payment != null)
             return Result.Ok(InvoicesMapper.Map(invoice));
 
         var payResponse = paymentsService.TryPayInvoice(invoice);
         if (!payResponse.IsSuccess)
             return Result.BadRequest<InvoiceDTO>(payResponse.Error!);
 
-        invoice.PayedAt = DateTimeProvider.Now;
         await db.SaveChangesAsync();
         return Result.Ok(InvoicesMapper.Map(invoice));
     }

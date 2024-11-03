@@ -37,7 +37,7 @@ public class InvoicesDaemon : IInvoicesDaemon
         foreach (var subscription in query)
         {
             var existedInvoice = await invoices.FirstOrDefaultAsync(e => e.Account.Id == subscription.AccountId 
-                                                                         && e.PayedAt == null);
+                                                                         && e.PaymentId == null);
             if (existedInvoice != null)
                 continue;
 

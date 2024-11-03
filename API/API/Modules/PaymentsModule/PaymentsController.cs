@@ -18,6 +18,20 @@ public class PaymentsController : ControllerBase
     }
 
     /// <summary>
+    /// История операций с деньгами.
+    /// </summary>
+    /// <remarks>
+    /// Type: {0: ополнение, 1: трата}
+    /// <br/>Сортировка по убыванию DateTime.
+    /// </remarks>
+    [HttpPost("Search")]
+    public ActionResult<SearchPaymentsResponse> Search(SearchPaymentsRequest request)
+    {
+        var response = paymentsService.Search(request);
+        return response.ActionResult;
+    }
+
+    /// <summary>
     /// Добавит пользователю сколько укажешь
     /// </summary>
     [HttpPost("Add")]

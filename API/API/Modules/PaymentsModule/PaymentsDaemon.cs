@@ -37,7 +37,7 @@ public class PaymentsDaemon : IPaymentsDaemon
             .Include(e => e.Account).ThenInclude(a => a.Subscription).ThenInclude(s => s.Tariff)
             .Include(e => e.Account).ThenInclude(a => a.Subscription).ThenInclude(s => s.PreferredChange).ThenInclude(p => p.TariffTemplate).ThenInclude(t => t.Tariffs)
             .Where(e => e.Account.Subscription!.PaymentDate == nowDate)
-            .Where(e => e.PayedAt == null);
+            .Where(e => e.PaymentId == null);
         foreach (var invoice in notPayedInvoices)
         {
             var paymentResponse = paymentsService.TryPayInvoice(invoice);
@@ -45,7 +45,6 @@ public class PaymentsDaemon : IPaymentsDaemon
             {
                 var subscription = invoice.Account.Subscription!;
                 subscription.PaymentDate = invoice.Account.Subscription!.PaymentDate.AddDays(30);
-                invoice.PayedAt = DateTimeProvider.Now;
                 if (subscription.PreferredChange != null)
                 {
                     subscription.Tariff = subscription.PreferredChange.TariffTemplate.Tariffs.FindActual();
@@ -58,6 +57,10 @@ public class PaymentsDaemon : IPaymentsDaemon
                         return Result.BadRequest<bool>(actualTariffResponse.Error!);
                     subscription.Tariff = actualTariffResponse.Value;
                 }
+            }
+            else
+            {
+                return Result.BadRequest<bool>(paymentResponse.Error!);
             }
         }
 
