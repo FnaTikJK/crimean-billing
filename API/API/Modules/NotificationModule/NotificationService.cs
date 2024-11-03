@@ -52,3 +52,15 @@ public class NotificationService : INotificationService
         smtpClient.SendAsync(mailMessage, null);
     }
 }
+
+public class MockedNotificationService : INotificationService
+{
+    public MockedNotificationService(ILog log)
+    {
+        log.Info($"Mail config is empty. Notification service is mocked");
+    }
+    public void SendEmail(string title, string message, params string[] recipients)
+    {
+        // pass
+    }
+}
