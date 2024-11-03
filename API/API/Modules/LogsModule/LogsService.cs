@@ -42,10 +42,7 @@ public class LogsService : ILogsService
             using var reader = new StreamReader(stream);
             while (reader.ReadLine() is { } line)
             {
-                if (line.Contains(formatDate))
-                {
-                    sb.AppendLine(line);
-                }
+                sb.AppendLine(line);
             }
         }
 
