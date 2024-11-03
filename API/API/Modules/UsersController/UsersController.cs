@@ -1,6 +1,7 @@
 ﻿using API.Infrastructure.Extensions;
 using API.Modules.AccountsModule.Share;
 using API.Modules.UsersController.DTO;
+using API.Modules.UsersController.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,17 @@ public class UsersController : ControllerBase
     [Authorize(Roles = nameof(AccountRole.User))]
     [HttpGet("My")]
     public Task<ActionResult<UserDTO>> GetAuthUser() => GetUser(User.GetId());
+
+    /// <summary>
+    /// Патчинг юзера. Здесь можно привязать ТГ для увед
+    /// </summary>
+    [Authorize(Roles = nameof(AccountRole.User))]
+    [HttpPatch("")]
+    public async Task<ActionResult<UserDTO>> PatchUserInfo(PatchUserRequest request)
+    {
+        var response = await usersService.PatchUserInfo(User.GetId(), request);
+        return response.ActionResult;
+    }
 
     /// <summary>
     /// Получить инфу о пользователе. Для менеджеров
