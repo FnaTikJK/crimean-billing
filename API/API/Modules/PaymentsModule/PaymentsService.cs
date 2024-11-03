@@ -14,7 +14,7 @@ public interface IPaymentsService
     Result<SearchPaymentsResponse> Search(SearchPaymentsRequest request);
     Task<Result<PaymentsResponse>> AddMoney(AddMoneyRequest request);
     Task<Result<PaymentsResponse>> SpendMoney(SpendMoneyRequest request);
-    Result<bool> TryPayInvoice(InvoiceEntity invoice);
+    Result<PaymentEntity> TryPayInvoice(InvoiceEntity invoice);
 }
 
 public class PaymentsService : IPaymentsService
@@ -100,12 +100,12 @@ public class PaymentsService : IPaymentsService
         });
     }
 
-    public Result<bool> TryPayInvoice(InvoiceEntity invoice)
+    public Result<PaymentEntity> TryPayInvoice(InvoiceEntity invoice)
     {
         var account = invoice.Account;
         var invoicePrice = invoice.CalculateTotalPrice();
         if (account.Money < invoicePrice)
-            return Result.BadRequest<bool>("Недостаточно средств на счете");
+            return Result.BadRequest<PaymentEntity>("Недостаточно средств на счете");
 
         account.Money -= invoicePrice;
         var payment = new PaymentEntity
@@ -118,6 +118,6 @@ public class PaymentsService : IPaymentsService
         };
         invoice.Payment = payment;
         db.Add(payment);
-        return Result.Ok(true);
+        return Result.Ok(payment);
     }
 }

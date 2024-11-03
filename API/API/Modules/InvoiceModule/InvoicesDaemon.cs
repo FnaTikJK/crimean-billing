@@ -1,6 +1,7 @@
 ﻿using API.DAL;
 using API.Infrastructure;
 using API.Modules.InvoiceModule.Model;
+using API.Modules.NotificationModule;
 using API.Modules.SubscriptionsModule.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,14 +16,16 @@ public class InvoicesDaemon : IInvoicesDaemon
 {
     private readonly DataContext db;
     private readonly ILog log;
+    private readonly INotificationsService notificationsService;
 
     private readonly DbSet<SubscriptionEntity> subscriptions;
     private readonly DbSet<InvoiceEntity> invoices;
 
-    public InvoicesDaemon(DataContext db, ILog log)
+    public InvoicesDaemon(DataContext db, ILog log, INotificationsService notificationsService)
     {
         this.db = db;
         this.log = log;
+        this.notificationsService = notificationsService;
         subscriptions = db.Subscriptions;
         invoices = db.Invoices;
     }
@@ -31,7 +34,7 @@ public class InvoicesDaemon : IInvoicesDaemon
     {
         var paymentDate = DateTimeProvider.NowDate.AddDays(3);
         var query = subscriptions
-            .Include(e => e.Account)
+            .Include(e => e.Account).ThenInclude(a => a.User)
             .Include(e => e.Tariff)
             .Where(e => e.PaymentDate == paymentDate);
         foreach (var subscription in query)
@@ -48,6 +51,7 @@ public class InvoicesDaemon : IInvoicesDaemon
                 CreatedAt = DateTimeProvider.Now,
             };
             await invoices.AddAsync(newInvoice);
+            await notificationsService.SendInvoiceCreatedNotification(newInvoice);
         }
 
         await db.SaveChangesAsync();

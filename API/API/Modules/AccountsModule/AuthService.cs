@@ -31,7 +31,7 @@ public class AuthService : IAuthService
     private readonly DataContext db;
     private readonly IPasswordHasher passwordHasher;
     private readonly ILog log;
-    private readonly INotificationService notificationService;
+    private readonly IMailsService mailsService;
 
     private readonly DbSet<UserEntity> users;
     private readonly DbSet<AccountEntity> accounts;
@@ -44,13 +44,13 @@ public class AuthService : IAuthService
         DataContext db, 
         IPasswordHasher passwordHasher, 
         ILog log,
-        INotificationService notificationService)
+        IMailsService mailsService)
     {
         this.cache = cache;
         this.db = db;
         this.passwordHasher = passwordHasher;
         this.log = log;
-        this.notificationService = notificationService;
+        this.mailsService = mailsService;
         
         users = db.Users;
         accounts = db.Accounts;
@@ -161,7 +161,7 @@ public class AuthService : IAuthService
         log.Info($"Set verification code for User: {userId}, PhoneNumber: {request.PhoneNumber}, VerificationCode: {verificationCode}");
         cache.AddOrUpdate(verificationCode, userId);
         cache.AddOrUpdate(PhoneConverter.ToPhoneWithoutRegMask(request.PhoneNumber)!, verificationCode);
-        notificationService.SendEmail("Код подтверждения", verificationCode, account.User.Email);
+        mailsService.SendEmail("Код подтверждения", verificationCode, account.User.Email);
         return Result.NoContent<bool>();
     }
 
