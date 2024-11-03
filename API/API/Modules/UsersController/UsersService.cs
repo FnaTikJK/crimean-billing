@@ -38,7 +38,7 @@ public class UsersService : IUsersService
 
     public async Task<Result<UserDTO>> PatchUserInfo(Guid userId, PatchUserRequest request)
     {
-        var user = await users.FirstOrDefaultAsync(e => e.Id == userId);
+        var user = await users.Include(e => e.Accounts).FirstOrDefaultAsync(e => e.Id == userId);
         if (user == null)
             return Result.BadRequest<UserDTO>("Такого пользователя не существует");
         
