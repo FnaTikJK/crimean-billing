@@ -15,5 +15,8 @@ export default class ChangeTariffComponent  {
 
   #subscriptionS = inject(SubscriptionService);
 
-  protected tariffToChangeID = computed(() => this.#subscriptionS.subscriptionState().entity?.tariff.templateId);
+  protected tariffToChangeID = computed(() => {
+    const subscription = this.#subscriptionS.subscriptionState().entity;
+    return subscription?.preferredTariff?.templateId ?? subscription?.tariff?.templateId
+  });
 }

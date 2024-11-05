@@ -2,11 +2,12 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { EntityState } from '../../shared/help-entities';
 import { HttpService } from '@angular-monorepo/infrastructure';
 import { ISubscriptionsResponseDTO } from '../DTO/response/ISubscriptionsResponseDTO';
-import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { ISubscription } from '../models/ISubscription';
 import { ISubscribeRequestDTO } from '../DTO/request/ISubscribeRequestDTO';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { SubscriptionMapper } from '../mappers/subscription.mapper';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class SubscriptionService {
 
   #httpS = inject(HttpService);
   #appSettingsS = inject(AppSettingsService);
+  #subscriptionMapper = inject(SubscriptionMapper);
 
   #subscriptionState = signal<EntityState<ISubscription>>({ entity: null, loaded: false });
   subscriptionState = this.#subscriptionState.asReadonly();
@@ -26,6 +28,7 @@ export class SubscriptionService {
   changeSubscription$(subscribeRequest: ISubscribeRequestDTO) {
     return this.#httpS.post<ISubscriptionsResponseDTO>('Subscriptions/Subscribe', subscribeRequest)
       .pipe(
+        map((res) => this.#subscriptionMapper.fromDTO(res)),
         tap(res => {
           this.#subscriptionState.update(state => (
             {...state, entity: {...state.entity as ISubscription, tariff: res.tariff, preferredTariff: res.preferredTariff}}))
@@ -35,6 +38,7 @@ export class SubscriptionService {
   private getAccountSubscription$(accountID: string) {
     return this.#httpS.get<ISubscriptionsResponseDTO | null>(`Subscriptions?AccountId=${accountID}`)
       .pipe(
+        map((res) => res ? this.#subscriptionMapper.fromDTO(res) : res),
         catchError(() => of(null))
       );
   }

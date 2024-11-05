@@ -1,10 +1,24 @@
 
 <section class="wrapper">
-  <h2 class="title">Тариф {{"«" + subscription().tariff.name + "»"}}</h2>
-  <p>В этом месяце — {{ subscription().tariff.price + " ₽"}}</p>
-  @if(subscription().preferredTariff) {
-    <p>В следующем месяце сменится на {{ subscription()!.preferredTariff!.name }}</p>
-  }
+  <section class="titleSection">
+    <h2 class="title">Тариф {{"«" + subscription().tariff.name + "»"}}</h2>
+    <p>В этом месяце — {{ subscription().tariff.price + " ₽"}}</p>
+    @if (subscription().actualTariff) {
+      <p>В следующем месяце будет {{ subscription()!.actualTariff!.price + " ₽" }}</p>
+    }
+    @if(subscription().preferredTariff) {
+      <p>В следующем месяце сменится на {{ subscription()!.preferredTariff!.name + " (" + subscription()!.preferredTariff!.price + " ₽)" }}</p>
+    }
+  </section>
+
+  <section class="serviceAmountSection">
+    <p class="serviceAmountTitle">Остатки пакетов</p>
+    <div class="serviceWrapper">
+      @for (service of subscription().tariff.services; track service.templateId) {
+        <app-service-left class="serviceItem" [service]="service" [paymentDate]="subscription().paymentDate"></app-service-left>
+      }
+    </div>
+  </section>
 
   <section class="carousel">
     <a class="carouselLink" [routerLink]="'change-tariff'">

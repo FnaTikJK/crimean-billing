@@ -13,7 +13,7 @@ export class UnitNamePipe implements PipeTransform {
       case UnitType.Gb:
         return 'Гб.';
       case UnitType.Mb:
-        return 'Мб';
+        return 'Мб.';
     }
   }
 }

@@ -7,4 +7,5 @@ export interface IServiceAmountDTO {
   serviceType: ServiceType;
   unitType: UnitType;
   amount?: number;
+  spent?: number;
 }

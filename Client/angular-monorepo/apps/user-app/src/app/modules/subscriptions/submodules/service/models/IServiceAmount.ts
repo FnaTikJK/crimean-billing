@@ -7,4 +7,5 @@ export interface IServiceAmount {
   serviceType: ServiceType;
   unitType: UnitType;
   amount?: number;
+  spent?: number;
 }

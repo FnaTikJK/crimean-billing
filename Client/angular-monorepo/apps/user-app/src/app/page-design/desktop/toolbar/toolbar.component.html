@@ -1,12 +1,8 @@
 <mat-toolbar>
 
-  @if(title() !== 'Главная' && isMobile()) {
+  @if(title() !== 'Главная') {
     <h2 class="routeTitle">{{title()}}</h2>
   } @else {
-    @if(!isMobile()) {
-      <a class="toolbarTitle" [routerLink]="['/main']">Crimean Billing</a>
-    }
-    
 
     <mat-form-field class="formField" [subscriptSizing]="'dynamic'">
       <mat-label>Лицевой счёт</mat-label>
@@ -16,22 +12,6 @@
         }
       </mat-select>
     </mat-form-field>
-
-    @if(!isMobile()) {
-      <button class="menuTriggerBtn" [matMenuTriggerFor]="menu">
-        <mat-icon class="dropDownIcon">account_circle</mat-icon>
-        <mat-icon class="dropDownIcon">arrow_drop_down</mat-icon>
-      </button>
-    }
   }
 
 </mat-toolbar>
-
-<mat-menu #menu="matMenu">
-  <ng-template matMenuContent>
-    <button [routerLink]="['profile']" mat-menu-item>
-      <mat-icon>account_circle</mat-icon>
-      <span>Профиль</span>
-    </button>
-  </ng-template>
-</mat-menu>

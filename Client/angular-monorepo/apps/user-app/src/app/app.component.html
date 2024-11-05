@@ -7,12 +7,12 @@
   }
 
   <section class="routeContent" [ngClass]="{
-    mobileAuthorized: isMobile() && isAuthorized()
+    mobileAuthorized: isAuthorized()
   }">
     <router-outlet></router-outlet>
   </section>
 
-  @if (isAuthorized() && isMobile()) {
+  @if (isAuthorized()) {
     <footer class="footer">
       <app-footer-mobile></app-footer-mobile>
     </footer>

@@ -3,7 +3,7 @@ import {
   Component,
   computed,
   ElementRef,
-  inject,
+  inject, Input,
   input,
   OnInit,
   signal,

@@ -1,0 +1,23 @@
+
+.serviceLeftText {
+  font-weight: 500;
+  .unitName {
+    font-weight: 400;
+  }
+}
+
+.daysLeft {
+  font-size: 0.7rem;
+  margin: 0;
+}
+
+:host ::ng-deep {
+  .mdc-linear-progress__bar-inner {
+    border-top-width: 8px;
+    border-color: rgb(0, 151, 253);
+    border-radius: 16px;
+  }
+  .mat-mdc-progress-bar, .mdc-linear-progress__buffer, .mdc-linear-progress__bar {
+    height: 8px;
+  }
+}

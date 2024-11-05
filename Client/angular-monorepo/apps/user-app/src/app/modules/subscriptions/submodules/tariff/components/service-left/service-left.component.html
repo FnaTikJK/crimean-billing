@@ -1,0 +1,5 @@
+<div *ngLet="service()!.amount! - service()!.spent! as serviceLeft">
+  <p class="serviceLeftText">{{ serviceLeft }} <span class="unitName">{{ service().unitType | unitName }}</span></p>
+  <mat-progress-bar mode="determinate" [value]="(serviceLeft / service().amount!) * 100"></mat-progress-bar>
+  <p class="daysLeft">На {{daysLeft()}} дней</p>
+</div>
