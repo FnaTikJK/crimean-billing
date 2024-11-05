@@ -1,7 +1,11 @@
 <div class="wrapper">
   <p class="slideToggleText"><mat-slide-toggle [formControl]="onlyNotPaidInvoicesControl" labelPosition="before">Показать только неоплаченные</mat-slide-toggle></p>
     <section class="invoicesWrapper" #invoicesList>
-      @if (!currentInvoices().length){
+      @if(loading() && !currentInvoices().length) {
+        <div class="loadingWrapper">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else if (!currentInvoices().length){
         <p>Нет результатов</p>
       } @else {
         @for (item of currentInvoices(); track item.id)  {
@@ -10,6 +14,11 @@
           } @else {
             <ng-container *ngTemplateOutlet="invoiceToPay; context: { $implicit: item }"></ng-container>
           }
+        }
+        @if (loading()) {
+          <div class="loadingNewItemsWrapper">
+            <mat-spinner diameter="20"></mat-spinner>
+          </div>
         }
       }
     </section>
@@ -29,7 +38,7 @@
 
     <div class="itemPaymentWrapper">
       <p class="paymentPrice"> -{{invoice.toPay}} ₽</p>
-      <p class="secondaryText"> {{ invoice.payedAt | date: 'dd.MM' }} </p>
+      <p class="date"> {{ invoice.payedAt | date: 'dd.MM' }} </p>
     </div>
   </section>
 </ng-template>

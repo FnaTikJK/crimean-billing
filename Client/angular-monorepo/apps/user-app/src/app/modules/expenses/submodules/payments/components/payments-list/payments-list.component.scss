@@ -1,0 +1,22 @@
+.wrapper {
+  height: 100%;
+}
+
+.paymentsWrapper {
+  height: calc(100% - 44px); //44px - высота toggl-а
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;;
+}
+
+:host ::ng-deep {
+  .paymentPrice {
+    &.deposit {
+      color: green;
+    }
+    &.withdrawal {
+      color: red;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 $primaryItemText: #1D2023;
 $secondaryItemText: #626c77;
+$dateText: $secondaryItemText;
 
 
 .tabGroup {
@@ -7,6 +8,22 @@ $secondaryItemText: #626c77;
 }
 
 :host ::ng-deep {
+
+  .loadingInitialItemsWrapper {
+    height: calc(100vh);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .loadingNewItemsWrapper {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
   .mat-mdc-tab-body-wrapper {
     padding: 1rem;
     height: calc(100% - 49px); //49px - высота header-а табов
@@ -32,6 +49,7 @@ $secondaryItemText: #626c77;
     }
 
     .itemTitleWrapper {
+      max-width: calc(100% - 48px - 71px - 1.6rem); //48px - иконка; 71px - сумма + кнопка; 1.6rem отступы
       flex-grow: 1;
       .primaryText {
         color: $primaryItemText;
@@ -62,6 +80,11 @@ $secondaryItemText: #626c77;
 
       .paymentPrice, .secondaryText {
         margin-bottom: 0;
+      }
+
+      .date {
+        color: $dateText;
+        font-size: 0.8rem;
       }
     }
   }

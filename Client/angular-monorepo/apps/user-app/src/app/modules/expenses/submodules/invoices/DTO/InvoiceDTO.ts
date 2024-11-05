@@ -4,4 +4,5 @@ export interface IInvoiceDTO {
   toPay: number;
   createdAt: string;
   payedAt?: string;
+  accountId: string;
 }
