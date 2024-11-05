@@ -5,9 +5,9 @@ import { MatInput } from '@angular/material/input';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { AccountService } from '../../../profile/submodules/account/services/account.service';
 import { tap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PaymentsService } from '../../../expenses/submodules/payments/services/payments.service';
 
 @Component({
   selector: 'app-add-money-bottom-sheet',
@@ -19,7 +19,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class AddMoneyBottomSheetComponent {
 
-  #accountS = inject(AccountService);
+  #paymentS = inject(PaymentsService);
   #matSnackbar = inject(MatSnackBar);
   #matBottomSheetRef = inject(MatBottomSheetRef);
 
@@ -31,7 +31,7 @@ export class AddMoneyBottomSheetComponent {
   });
 
   protected submitForm() {
-    this.#accountS.addMoney$({ accountId: this.#config.accountID, toAdd: this.addMoneyControl.value })
+    this.#paymentS.addMoney$({ accountId: this.#config.accountID, toAdd: this.addMoneyControl.value })
       .pipe(
         tap(() => {
           this.#matBottomSheetRef.dismiss(true);

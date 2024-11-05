@@ -1,0 +1,64 @@
+<div class="wrapper">
+  <p class="slideToggleText">
+    <mat-slide-toggle [formControl]="onlyWithdrawalsControl" labelPosition="before">Показать только списания</mat-slide-toggle></p>
+  <section class="paymentsWrapper" #paymentsList>
+    @if(loading() && !currentPayments().length) {
+      <div class="loadingInitialItemsWrapper">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else if (!currentPayments().length){
+      <p>Нет результатов</p>
+    } @else {
+      @for (item of currentPayments(); track item.id)  {
+        @if (item.type === PaymentType.Deposit) {
+          <ng-container *ngTemplateOutlet="depositTemplate; context: { $implicit: item }"></ng-container>
+        } @else {
+          <ng-container *ngTemplateOutlet="withdrawalTemplate; context: { $implicit: item }"></ng-container>
+        }
+      }
+      @if (loading()) {
+        <div class="loadingNewItemsWrapper">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+      }
+    }
+  </section>
+</div>
+
+<ng-template #depositTemplate let-payment>
+  <section class="itemWrapper">
+
+    <div class="itemIconWrapper">
+      <mat-icon class="itemIcon">add</mat-icon>
+    </div>
+
+    <div class="itemTitleWrapper">
+      <p class="primaryText">Пополнение баланса</p>
+      <p class="secondaryText">Пополнение счёта</p>
+    </div>
+
+    <div class="itemPaymentWrapper">
+      <p class="paymentPrice deposit"> {{ payment.money }} ₽</p>
+      <p class="date"> {{ payment.dateTime | date: 'dd.MM.yyyy' }} </p>
+    </div>
+  </section>
+</ng-template>
+
+<ng-template #withdrawalTemplate let-payment>
+  <section class="itemWrapper">
+
+    <div class="itemIconWrapper">
+      <mat-icon class="itemIcon">remove</mat-icon>
+    </div>
+
+    <div class="itemTitleWrapper">
+      <p class="primaryText">Плата по тарифу {{ subscription()?.tariff?.name }}</p>
+      <p class="secondaryText">Абонентская плата</p>
+    </div>
+
+    <div class="itemPaymentWrapper">
+      <p class="paymentPrice withdrawal"> -{{payment.money}} ₽</p>
+      <p class="date"> {{ payment.dateTime | date: 'dd.MM.yyyy' }} </p>
+    </div>
+  </section>
+</ng-template>
