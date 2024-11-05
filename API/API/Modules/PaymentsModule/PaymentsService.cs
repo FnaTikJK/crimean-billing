@@ -38,14 +38,17 @@ public class PaymentsService : IPaymentsService
         var query = payments.AsNoTracking()
             .Include(e => e.Account)
             .Include(e => e.Invoice)
-            .Where(e => e.AccountId == request.AccountId)
-            .OrderByDescending(e => e.DateTime);
+            .Where(e => e.AccountId == request.AccountId);
 
+        if (request.PaymentType != null)
+            query = query.Where(e => e.Type == request.PaymentType);
+        
+        query = query.OrderByDescending(e => e.DateTime);
         var totalCount = query.Count();
         return Result.Ok(new SearchPaymentsResponse
         {
             TotalCount = totalCount,
-            Items = query.AsEnumerable().Select(PaymentsMapper.Map).ToList(),
+            Items = query.Skip(request.Skip).Take(request.Take).AsEnumerable().Select(PaymentsMapper.Map).ToList(),
         });
     }
 
