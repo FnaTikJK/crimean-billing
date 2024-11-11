@@ -33,12 +33,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(CorsPolicyName,
                           policy =>
                           {
-                              policy.WithOrigins(
-                      "https://lk.crimean-billing.work.gd",
-                      "https://arm.crimean-billing.work.gd",
-                      "https://www.crimean-billing.work.gd",
-                      "^https://(.*\\.)?crimean-billing\\.work\\.gd$" // Regex для всех поддоменов
-                    ).AllowAnyHeader()
+                              policy.WithOrigins(CorsOrigins)
+                              .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
                              // policy.WithOrigins(CorsOrigins)
