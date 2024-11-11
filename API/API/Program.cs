@@ -33,10 +33,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy(CorsPolicyName,
                           policy =>
                           {
-                              policy.WithOrigins(CorsOrigins)
+                              policy.WithOrigins("https://*.crimean-billing.work.gd")
+                                                .SetIsOriginAllowedToAllowWildcardSubdomains()
                                                   .AllowAnyHeader()
                                                   .AllowAnyMethod()
                                                   .AllowCredentials();
+                             // policy.WithOrigins(CorsOrigins)
                           });
 });
 
