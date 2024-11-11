@@ -91,7 +91,7 @@ ConfigReader.Init(app.Environment.IsDevelopment());
 
 app.UseHttpsRedirection();
 
-app.UseCors(CorsPolicyName)
+app.UseCors(CorsPolicyName);
 
 // app.UseCors(builder => builder.WithOrigins("https://*.crimean-billing.work.gd")
 //                                                 .SetIsOriginAllowedToAllowWildcardSubdomains()
