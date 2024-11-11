@@ -1,10 +1,12 @@
 import { effect, EffectRef, inject, Injectable, signal } from '@angular/core';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, map, of, tap } from 'rxjs';
 import { HttpService } from '@angular-monorepo/infrastructure';
 import { EntityState } from '../../shared/help-entities';
 import { AccountService } from '../submodules/account/services/account.service';
 import { IAccount } from '../submodules/account/models/IAccount';
 import { IProfile } from '../models/IProfile';
+import { IUserDTO } from '../DTO/IUserDTO';
+import { IPatchUserRequestDTO } from '../DTO/request/IPatchUserRequestDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +32,18 @@ export class ProfileService {
   }
 
   getProfile$() {
-    return this.#httpS.get<IProfile>('Users/My');
+    return this.#httpS.get<IUserDTO>('Users/My')
+      .pipe(
+        map((userDTO) => userDTO as IProfile)
+      );
+  }
+
+  patchProfile$(pathUserRequest: IPatchUserRequestDTO) {
+    return this.#httpS.patch<IUserDTO>('Users', pathUserRequest)
+      .pipe(
+        map((userDTO) => userDTO as IProfile),
+        tap((updatedProfile) => this.setProfile(updatedProfile))
+      );
   }
 
   setupProfile$() {

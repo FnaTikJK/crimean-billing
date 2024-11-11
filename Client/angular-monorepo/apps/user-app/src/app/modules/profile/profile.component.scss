@@ -1,3 +1,12 @@
+$wrapperContentWith: 80%;
+
+.loadingWrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .wrapper {
   height: 100%;
   display: flex;
@@ -6,14 +15,29 @@
   justify-content: center;
 }
 
-.form {
-  width: 80%;
+.form, .btnWrapper {
+  width: $wrapperContentWith;
+}
+
+.btnWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
 }
 
 .formField {
   width: 100%;
+  margin-bottom: 0.5rem;
 }
 
 .logoutBtn {
   color: red !important;
+}
+
+.mat-mdc-form-field-hint {
+  color: gray;
+}
+
+.tgIcon {
+  transform: rotate(-30deg);
 }

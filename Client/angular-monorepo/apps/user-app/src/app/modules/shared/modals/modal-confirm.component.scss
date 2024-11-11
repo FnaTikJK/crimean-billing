@@ -1,0 +1,27 @@
+
+.confirmMsg {
+  text-indent: 0.5rem;
+}
+
+.btnSection {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.yesOption, .noOption {
+  border-radius: 4px;
+  border: none;
+  flex-grow: 1;
+  padding: 8px;
+  font-size: 14px;
+  font-family: 'Roboto';
+}
+
+.yesOption {
+  background: rgb(29, 85, 176);
+  color: white;
+}
+
+.noOption {
+  border: 1px solid rgb(77, 77, 77);
+}

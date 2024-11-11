@@ -1,16 +1,64 @@
 
-<div class="wrapper">
-  <form class="form" [formGroup]="profileFormGroup">
-    <mat-form-field class="formField">
-      <mat-label>ФИО</mat-label>
-      <input [formControlName]="'fio'" matInput>
-    </mat-form-field>
+@if(loading()) {
+  <div class="loadingWrapper">
+    <mat-spinner diameter="60"></mat-spinner>
+  </div>
+} @else {
+  <div class="wrapper">
+    <div class="btnWrapper">
+      @if(currentMode() === 'view') {
+        <button mat-icon-button (click)="changeMode('edit')"
+                [matTooltip]="'Изменить'"
+                [matTooltipPosition]="'above'"
+        ><mat-icon>edit</mat-icon></button>
+      } @else {
+        <button mat-icon-button (click)="changeMode('view')"
+                [matTooltip]="'Выйти из режима редактирования'"
+                [matTooltipPosition]="'above'"
+        ><mat-icon>exit_to_app</mat-icon></button>
+      }
+    </div>
+    <form class="form" [formGroup]="profileFormGroup" id="form">
+      <mat-form-field class="formField">
+        <mat-label>ФИО</mat-label>
+        <mat-icon  [fontSet]="'material-symbols-outlined'" matIconPrefix>account_circle</mat-icon>
+        <input [formControlName]="'fio'" matInput>
+        @if (currentMode() === 'edit') {
+          <mat-hint>Формат: Фамилия Имя (Отчество)</mat-hint>
+        }
+        @if(profileFormGroup.get('fio')!.hasError('required')) {
+          <mat-error>Обязательное поле</mat-error>
+        } @else if(profileFormGroup.get('fio')!.hasError('pattern')) {
+          <mat-error>Некорректный формат</mat-error>
+        }
+      </mat-form-field>
 
-    <mat-form-field class="formField">
-      <mat-label>Почта</mat-label>
-      <input [formControlName]="'email'" matInput>
-    </mat-form-field>
-  </form>
+      <mat-form-field class="formField">
+        <mat-label>Идентификатор Telegram</mat-label>
+        <mat-icon class="tgIcon" [fontSet]="'material-symbols-outlined'" matIconPrefix>send</mat-icon>
+        <input [formControlName]="'telegramId'" matInput>
+        @if(profileFormGroup.get('telegramId')!.hasError('pattern')) {
+          <mat-error>Только цифры</mat-error>
+        }
+      </mat-form-field>
 
-  <button class="logoutBtn" mat-button (click)="logout()">Выйти</button>
-</div>
+      <mat-form-field class="formField">
+        <mat-label>Почта</mat-label>
+        <mat-icon [fontSet]="'material-symbols-outlined'" matIconPrefix>mail</mat-icon>
+        <input [formControlName]="'email'" matInput>
+        @if (currentMode() === 'edit') {
+          <mat-hint>Формат: {{'email@example.com'}}</mat-hint>
+        }
+        @if(profileFormGroup.get('email')!.hasError('required')) {
+          <mat-error>Обязательное поле</mat-error>
+        } @else if(profileFormGroup.get('email')!.hasError('email')) {
+          <mat-error>Некорректный формат</mat-error>
+        }
+      </mat-form-field>
+    </form>
+
+    <button mat-button form="form" [disabled]="saveBtnDisabled()" (click)="submitChanges()">Сохранить изменения</button>
+    <button class="logoutBtn" mat-button (click)="logout()">Выйти</button>
+  </div>
+}
+
