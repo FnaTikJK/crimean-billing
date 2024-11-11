@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var CorsPolicyName = "_crimean-billing";
 var CorsOrigins = new string[] {
-        "http://lk.crimean-billing.work.gd" ,
+        //"http://lk.crimean-billing.work.gd" ,
         "https://lk.crimean-billing.work.gd" ,
-        "http://arm.crimean-billing.work.gd" ,
+        //"http://arm.crimean-billing.work.gd" ,
         "https://arm.crimean-billing.work.gd",
-        "http://crimean-billing.work.gd" ,
+        //"http://crimean-billing.work.gd" ,
         "https://crimean-billing.work.gd" ,
-        "http://www.crimean-billing.work.gd" ,
+        //"http://www.crimean-billing.work.gd" ,
         "https://www.crimean-billing.work.gd"
     };
 
