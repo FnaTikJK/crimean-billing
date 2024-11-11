@@ -33,10 +33,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy(CorsPolicyName,
                           policy =>
                           {
-                              policy.WithOrigins("https://*.crimean-billing.work.gd")
-                                                .SetIsOriginAllowedToAllowWildcardSubdomains()
-                                                  .AllowAnyHeader()
-                                                  .AllowAnyMethod();
+                              policy.WithOrigins(
+                      "https://lk.crimean-billing.work.gd",
+                      "https://arm.crimean-billing.work.gd",
+                      "https://www.crimean-billing.work.gd",
+                      "^https://(.*\\.)?crimean-billing\\.work\\.gd$" // Regex для всех поддоменов
+                    ).AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                              // policy.WithOrigins(CorsOrigins)
                           });
 });
@@ -91,10 +95,12 @@ ConfigReader.Init(app.Environment.IsDevelopment());
 
 app.UseHttpsRedirection();
 
-app.UseCors(builder => builder.WithOrigins("https://*.crimean-billing.work.gd")
-                                                .SetIsOriginAllowedToAllowWildcardSubdomains()
-                                                  .AllowAnyHeader()
-                                                  .AllowAnyMethod());
+app.UseCors(CorsPolicyName)
+
+// app.UseCors(builder => builder.WithOrigins("https://*.crimean-billing.work.gd")
+//                                                 .SetIsOriginAllowedToAllowWildcardSubdomains()
+//                                                   .AllowAnyHeader()
+//                                                   .AllowAnyMethod());
 // app.UseCors(builder => builder.AllowAnyOrigin()
 //                    .AllowAnyMethod()
 //                    .AllowAnyHeader());
