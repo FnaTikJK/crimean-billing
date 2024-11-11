@@ -10,7 +10,7 @@ RUN npx ngcc --properties es2023 browser module main --first-only --create-ivy-e
 
 COPY . .
 
-RUN npx nx build user-app
+RUN npx nx build user-app --base-href /user/
 
 
 FROM nginx:stable
