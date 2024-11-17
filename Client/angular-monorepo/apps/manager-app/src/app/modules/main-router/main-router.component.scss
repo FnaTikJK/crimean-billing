@@ -1,0 +1,29 @@
+.sidenav {
+  min-height: 100%;
+  width: min-content;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    button {
+      width: 100%;
+      margin-inline: 5px;
+      text-align: start;
+    }
+  }
+}
+
+:host {
+  flex-grow: 1;
+  padding-inline: 20px;
+}
+
+.container {
+  position: relative;
+}

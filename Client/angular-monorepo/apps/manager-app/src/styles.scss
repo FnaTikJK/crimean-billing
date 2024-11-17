@@ -1,4 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import "@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
+@import "../../../node_modules/@siemens/ngx-datatable/index.css";
+@import "../../../node_modules/@siemens/ngx-datatable/themes/material.css";
+@import "../../../node_modules/@siemens/ngx-datatable/assets/icons.css";
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+.number-range-panel  {
+      max-width: unset !important;
+      overflow-y: hidden !important;
+      padding: 0 10px;
+}

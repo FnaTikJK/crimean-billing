@@ -1,0 +1,119 @@
+<div class="filters" #container>
+  <mat-grid-list cols="5" rowHeight="5:1" gutterSize="15px">
+    @for (field of filterFields; track $index) {
+    <mat-grid-tile>
+      <div class="filter-group">
+        <label for="{{ field.name }}">{{ field.name }}</label>
+
+        @if (field.type === 'select') {
+        <mat-form-field>
+          <mat-select
+            [(value)]="filters[field.field]"
+            (selectionChange)="onSelectChange(field.field, $event)"
+          >
+            @for (option of field.options; track $index) {
+            <mat-option [value]="option.value">
+              {{ option.name }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        } @if (field.type === 'date') {
+        <mat-form-field>
+          <input
+            matInput
+            [owlDateTime]="dt1"
+            [owlDateTimeTrigger]="dt1"
+            placeholder="Дата"
+            [selectMode]="'single'"
+            (dateTimeChange)="onDateChange(field.field, $event)"
+          />
+        </mat-form-field>
+        <owl-date-time
+          #dt1
+          [pickerType]="'both'"
+          [pickerMode]="'popup'"
+          (confirmSelectedChange)="onDateChange(field.field, $event)"
+        ></owl-date-time>
+        } @if (field.type === 'dateRange') {
+        <mat-form-field>
+          <input
+            matInput
+            [owlDateTime]="dt2"
+            [owlDateTimeTrigger]="dt2"
+            placeholder="Дата"
+            [selectMode]="'range'"
+            (dateTimeChange)="onDateRangeChange(field.field, $event)"
+          />
+        </mat-form-field>
+        <owl-date-time
+          #dt2
+          [pickerType]="'both'"
+          [pickerMode]="'popup'"
+          (confirmSelectedChange)="onDateRangeChange(field.field, $event)"
+        ></owl-date-time>
+        } @if (field.type === 'number') {
+        <mat-form-field>
+          <mat-label>{{ field.name }}</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="filters[field.field]"
+            (input)="onInputChange(field.field, $event, true)"
+          />
+        </mat-form-field>
+        } @if (field.type === 'text') {
+        <mat-form-field>
+          <input
+            matInput
+            type="text"
+            [(ngModel)]="filters[field.field]"
+            (input)="onInputChange(field.field, $event)"
+          />
+        </mat-form-field>
+        } @if (field.type === 'number-range') {
+        <mat-form-field>
+          <input
+            matInput
+            [matMenuTriggerFor]="numberRangeMenu"
+            [placeholder]="
+              (filters[field.field].from || '') +
+              ' - ' +
+              (filters[field.field].to || '')
+            "
+          />
+        </mat-form-field>
+        <mat-menu
+          #numberRangeMenu
+          backdropClass="number-range-panel-backdrop"
+          class="number-range-panel"
+        >
+          <div
+            (click)="$event.stopPropagation()"
+            class="number-range-container"
+          >
+            <mat-form-field>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="filters[field.field].from"
+                (input)="onInputChange(field.field + '.from', $event, true)"
+              />
+            </mat-form-field>
+            -
+            <mat-form-field>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="filters[field.field].to"
+                (input)="onInputChange(field.field + '.to', $event, true)"
+              />
+            </mat-form-field>
+          </div>
+        </mat-menu>
+        }
+      </div>
+    </mat-grid-tile>
+    }
+  </mat-grid-list>
+</div>
