@@ -1,5 +1,12 @@
 <mat-toolbar class="toolbar">
   <span class="toolbarTitle" [routerLink]="['/main']">Crimean Billing</span>
+  <div class="routes">
+    <ul>
+      @for (route of routesNames; track $index) {
+        <button mat-button [routerLink]="['/main/'+route]" routerLinkActive="active">{{routeNamesVisuals[route]}}</button>
+      }
+    </ul>
+  </div>
   <mat-divider class="divider" [vertical]="true" [inset]="true"></mat-divider>
   <button class="menuTriggerBtn" [matMenuTriggerFor]="menu">
     <mat-icon class="dropDownIcon">account_circle</mat-icon>

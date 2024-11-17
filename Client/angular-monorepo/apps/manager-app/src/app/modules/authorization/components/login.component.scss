@@ -10,6 +10,7 @@ $formItemsWidth: 60%;
 .wrapper {
   height: 100%;
   display: flex;
+  min-height: 100vh;
 }
 
 .wrapper > section {

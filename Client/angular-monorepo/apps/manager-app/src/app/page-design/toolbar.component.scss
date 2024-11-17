@@ -2,11 +2,21 @@
   height: 48px;
 }
 
+$activeColor: #109cf1;
+
 .toolbarTitle {
   flex-grow: 1;
   cursor: pointer;
   &:hover {
-    color: #109cf1;
+    color: $activeColor;
+  }
+}
+
+.routes {
+  flex-grow: 2;
+
+  .active {
+    color: $activeColor;
   }
 }
 

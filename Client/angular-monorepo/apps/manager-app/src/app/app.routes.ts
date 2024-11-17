@@ -12,8 +12,8 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'main',
-    loadComponent: () => import('./modules/main/main.component'),
-    loadChildren: () => import('./modules/main/main.routes'),
+    loadComponent: () => import('./modules/main-router/main-router.component'),
+    loadChildren: () => import('./modules/main-router/main-router.routes'),
     canActivate: [ managerAuthorizedCanActivateFn ]
   },
   {

@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://www.crimean-billing.work.gd/api",
+    "target": "http://localhost:80/api",
     "secure": false
   }
 }

@@ -15,6 +15,10 @@
     "@angular/platform-browser": "~18.2.0",
     "@angular/platform-browser-dynamic": "~18.2.0",
     "@angular/router": "~18.2.0",
+    "@danielmoncada/angular-datetime-picker": "^18.1.0",
+    "@siemens/ngx-datatable": "^22.4.1",
+    "@types/lodash": "^4.17.13",
+    "lodash": "^4.17.21",
     "ngx-mask": "^18.0.0",
     "rxjs": "~7.8.0",
     "zone.js": "~0.14.3"

@@ -1,0 +1,23 @@
+.filters {
+      border-radius: 12px;
+      background-color: #efefef;
+      padding: 30px;
+}
+
+.filter-group {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mat-mdc-form-field {
+      transform: translateY(10px);
+}
+
+.number-range-container {
+  display: flex;
+  align-items: center;
+  gap: 10px ;
+}
