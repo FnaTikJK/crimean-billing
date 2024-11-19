@@ -5,6 +5,6 @@ namespace API.Modules.PaymentsModule.DTO;
 
 public class SearchPaymentsRequest : SearchRequestWithoutIds
 {
-    public Guid AccountId { get; set; }
+    public Guid? AccountId { get; set; }
     public PaymentType? PaymentType { get; set; }
 }

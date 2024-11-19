@@ -6,7 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatFabButton } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
 import { AuthorizationService } from '../modules/authorization/services/authorization.service';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterModule, RouterLinkActive } from '@angular/router';
 import { tap } from 'rxjs';
 
 
@@ -16,7 +16,8 @@ const NAVIGATOR_ROUTES_VISUALS = {
   'invoices': 'Счета',
   'payments': 'Оплаты',
   'abonents': 'Абоненты',
-  'accounts': 'Лицевые счета'
+  'accounts': 'Лицевые счета',
+  'tariffs': 'Тарифы',
 }
 
 const ROUTE_NAMES = [
@@ -25,6 +26,7 @@ const ROUTE_NAMES = [
   'payments',
   'invoices',
   'services',
+  'tariffs',
   'managers',
 ]
 
@@ -43,7 +45,8 @@ const ROUTE_NAMES = [
     MatDivider,
     RouterLink,
     MatButton,
-    RouterLinkActive
+    RouterLinkActive,
+    RouterModule
   ],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
