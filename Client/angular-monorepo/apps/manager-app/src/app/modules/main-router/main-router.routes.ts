@@ -10,7 +10,9 @@ managersRoutes.forEach(route => route.path = `managers/${route.path}`)
 import paymentsRoutes from './modules/payments/payments.routes';
 paymentsRoutes.forEach(route => route.path = `payments/${route.path}`)
 import invoicesRoutes from './modules/invoices/invoices.routes';
-invoicesRoutes.forEach(route => route.path = `services/${route.path}`)
+invoicesRoutes.forEach(route => route.path = `invoices/${route.path}`)
+import tariffsRoutes from './modules/tariffs/tariffs.routes';
+tariffsRoutes.forEach(route => route.path = `tariffs/${route.path}`)
 
 
 
@@ -56,4 +58,9 @@ export default [
     loadChildren: () => import('./modules/invoices/invoices.routes'),
   },
   ...invoicesRoutes,
+  {
+    path: 'tariffs',
+    loadComponent: () => import('./modules/tariffs/tariffs.component')
+  },
+  ...tariffsRoutes,
 ] satisfies Route[]
