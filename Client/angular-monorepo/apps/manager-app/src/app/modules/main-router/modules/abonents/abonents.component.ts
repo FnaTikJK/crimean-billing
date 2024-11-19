@@ -1,26 +1,75 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import ListFilterComponent, { FilterField } from '../../../shared/components/list-filter/list-filter.component';
+import { Router, RouterModule } from '@angular/router';
+import ListFilterComponent, { FilterField } from "../../../shared/components/list-filter/list-filter.component";
+import { ACCOUNT_TYPES } from '../accounts/models/AccountType.enum';
+import { NgxDatatableModule, TableColumn } from '@siemens/ngx-datatable'
+import BaseListWithFiltersComponent from '../../../shared/BaseListWithFilters.component';
+import { MatButtonModule } from '@angular/material/button';
+import { AbonentsService } from './services/abonents.service';
 
 @Component({
   selector: 'app-abonents',
   standalone: true,
-  imports: [CommonModule, RouterModule, ListFilterComponent],
+  imports: [CommonModule, RouterModule, ListFilterComponent, NgxDatatableModule, MatButtonModule],
   templateUrl: './abonents.component.html',
   styleUrl: './abonents.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class AbonentsComponent {
-  listFilterConfig: FilterField[] = [
-    { field: 'ff', name: 'name', type: 'text' },
-    { field: 'ff2', name: 'name2', type: 'number' },
-    { field: 'ff3', name: 'name3', type: 'date' },
-    { field: 'ff4', name: 'name4', type: 'dateRange' },
-    { field: 'ff5', name: 'name5', type: 'select', options: [ {name:'asd',value:'asd2'}] },
+export default class ServicesComponent extends BaseListWithFiltersComponent {
+  router = inject(Router)
+  override service = inject(AbonentsService)
+
+  override filterFields: FilterField[] = [
+    {
+      field: 'phoneNumber',
+      name: 'Номер телефона',
+      type: 'text',
+    },
+    {
+      field: 'number',
+      name: 'ЛС',
+      type: 'text',
+    },
+    {
+      field: 'accountType',
+      name: 'Тип ЛС',
+      type: 'select',
+      options: ACCOUNT_TYPES,
+    },
+    {
+      field: 'money',
+      name: 'Сумма',
+      type: 'number-range',
+    },
   ]
 
-  log(...args: any[]) {
-    console.error('filterChange', ...args)
+  override columns: TableColumn[] = [
+    {
+      prop: 'number',
+      name: 'ЛС',
+      sortable: false,
+    },
+    {
+      prop: 'user.fio',
+      name: 'ФИО',
+      sortable: false,
+    },
+    {
+      prop: 'accountType',
+      name: 'Тип ЛС',
+      sortable: false,
+      pipe: { transform(val: any) { return ACCOUNT_TYPES.find(({ value }) => value === val)?.name } }
+    },
+    {
+      prop: 'money',
+      name: 'сумма',
+      sortable: true,
+    },
+  ]
+
+  redirectOnItemPage(ev: any) {
+    if (ev.type !== 'click') return
+    this.router.navigate([`/main/accounts/${ev.row.id}`])
   }
 }
