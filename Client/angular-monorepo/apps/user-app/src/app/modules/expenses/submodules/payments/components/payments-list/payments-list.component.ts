@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { SubscriptionService } from '../../../../../subscriptions/services/subscription.service';
 import { AppSettingsService } from '../../../../../shared/services/app-settings.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { filter, fromEvent, Subscription, switchMap, tap } from 'rxjs';
+import { filter, fromEvent, map, Subscription, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IPaymentPayerOwn } from '../../models/IPaymentPayerOwn';
 import { ISearchPaymentsRequestDTO } from '../../DTO/request/ISearchPaymentsRequestDTO';
@@ -46,7 +46,7 @@ export class PaymentsListComponent implements OnInit {
   protected loading = signal(true);
 
 
-  protected allCurrentPaymentsCount?: number;
+  protected allPaymentsCount?: number;
 
   #scrollPaymentsSubscription?: Subscription;
 
@@ -61,7 +61,7 @@ export class PaymentsListComponent implements OnInit {
       .pipe(
         tap(() => {
           this.currentPayments.set([]);
-          this.allCurrentPaymentsCount = undefined;
+          this.allPaymentsCount = undefined;
         }),
         switchMap((v) =>  this.requestNewPayments$()),
         takeUntilDestroyed(this.#destroyRef)
@@ -80,7 +80,7 @@ export class PaymentsListComponent implements OnInit {
       .pipe(
         filter(() => {
           if (this.loading()) { return false; }
-          else if (this.currentPayments().length === this.allCurrentPaymentsCount) {
+          else if (this.currentPayments().length === this.allPaymentsCount) {
             this.#scrollPaymentsSubscription?.unsubscribe();
             return false;
           }
@@ -103,9 +103,12 @@ export class PaymentsListComponent implements OnInit {
 
     return this.#paymentsS.getPayments$(searchOptions)
       .pipe(
+        tap(searchResponse => {
+          if (!this.allPaymentsCount) { this.allPaymentsCount = searchResponse.totalCount; }
+        }),
+        map(res => res.items as IPaymentPayerOwn[]),
         tap((newPayments) => {
           this.currentPayments.update(currentPayments => [...currentPayments, ...newPayments]);
-          this.allCurrentPaymentsCount = (this.allCurrentPaymentsCount ?? 0) + newPayments.length;
           this.loading.set(false);
         })
       );

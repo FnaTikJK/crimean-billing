@@ -18,10 +18,7 @@ export class InvoiceService {
   #accountS = inject(AccountService);
 
   getInvoices$(searchOptions: ISearchInvoicesRequestDTO) {
-    return this.#httpS.post<ISearchInvoicesResponseDTO>('Invoices/Search', searchOptions)
-      .pipe(
-        map(res => res.items as IInvoice[])
-      );
+    return this.#httpS.post<ISearchInvoicesResponseDTO>('Invoices/Search', searchOptions);
   }
 
   payForInvoice$(payInvoiceRequest: IPayInvoiceRequestDTO, accountId: string) {

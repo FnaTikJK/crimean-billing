@@ -19,10 +19,7 @@ export class PaymentsService {
   #accountS = inject(AccountService);
 
   getPayments$(searchOptions: ISearchPaymentsRequestDTO) {
-    return this.#httpS.post<ISearchPaymentsResponseDTO>('Payments/Search', searchOptions)
-      .pipe(
-        map(res => res.items as IPaymentPayerOwn[])
-      );
+    return this.#httpS.post<ISearchPaymentsResponseDTO>('Payments/Search', searchOptions);
   }
 
   addMoney$(addMoneyData: IAddMoneyRequestDTO) {

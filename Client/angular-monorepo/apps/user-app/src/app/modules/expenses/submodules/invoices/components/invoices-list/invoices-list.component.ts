@@ -12,7 +12,7 @@ import { InvoiceService } from '../../services/invoice.service';
 import { SubscriptionService } from '../../../../../subscriptions/services/subscription.service';
 import { AppSettingsService } from '../../../../../shared/services/app-settings.service';
 import { IInvoice } from '../../models/Invoice';
-import { filter, fromEvent, Subscription, switchMap, tap } from 'rxjs';
+import { filter, fromEvent, map, Subscription, switchMap, tap } from 'rxjs';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
@@ -26,6 +26,7 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import {
   AddMoneyBottomSheetComponent
 } from '../../../../../main/components/add-money-bottom-sheet/add-money-bottom-sheet.component';
+import { IPaymentPayerOwn } from '../../../payments/models/IPaymentPayerOwn';
 
 @Component({
   selector: 'app-invoices-list',
@@ -53,7 +54,7 @@ export class InvoicesListComponent implements OnInit {
   protected loading = signal(true);
 
 
-  protected allCurrentInvoicesCount?: number;
+  protected allInvoicesCount?: number;
 
   #scrollInvoicesSubscription?: Subscription;
 
@@ -105,7 +106,7 @@ export class InvoicesListComponent implements OnInit {
       .pipe(
         tap(() => {
           this.currentInvoices.set([]);
-          this.allCurrentInvoicesCount = undefined;
+          this.allInvoicesCount = undefined;
         }),
         switchMap((v) =>  this.requestNewInvoices$()),
         takeUntilDestroyed(this.#destroyRef)
@@ -124,7 +125,7 @@ export class InvoicesListComponent implements OnInit {
       .pipe(
         filter(() => {
           if (this.loading()) { return false; }
-          else if (this.currentInvoices().length === this.allCurrentInvoicesCount) {
+          else if (this.currentInvoices().length === this.allInvoicesCount) {
             this.#scrollInvoicesSubscription?.unsubscribe();
             return false;
           }
@@ -147,9 +148,12 @@ export class InvoicesListComponent implements OnInit {
 
     return this.#invoiceS.getInvoices$(searchOptions)
       .pipe(
+        tap(searchResponse => {
+          if (!this.allInvoicesCount) { this.allInvoicesCount = searchResponse.totalCount; }
+        }),
+        map(res => res.items as IInvoice[]),
         tap((newInvoices) => {
           this.currentInvoices.update(currentInvoices => [...currentInvoices, ...newInvoices]);
-          this.allCurrentInvoicesCount = (this.allCurrentInvoicesCount ?? 0) + newInvoices.length;
           this.loading.set(false);
         })
       );
