@@ -1,0 +1,25 @@
+<div class="container">
+  <app-list-filter #appListFilter
+                   [filterFields]="filterFields"
+                   (filterChange)="changeFilter($event)"
+  >
+  </app-list-filter>
+
+  <ngx-datatable #table
+                 class="material"
+                 [columns]="columns"
+                 [rows]="items"
+                 [loadingIndicator]="isLoading"
+                 [ghostLoadingIndicator]="isLoading"
+                 [scrollbarV]="true"
+                 [rowHeight]="50"
+                 [columnMode]="'force'"
+                 (sort)="onColumnSort($event)"
+                 (activate)="redirectOnItemPage($event)"
+  >
+  </ngx-datatable>
+</div>
+
+<ng-template #dateTemplate let-timestamp="value">
+  {{ timestamp | date: 'dd.MM.yyyy hh:mm' }}
+</ng-template>
