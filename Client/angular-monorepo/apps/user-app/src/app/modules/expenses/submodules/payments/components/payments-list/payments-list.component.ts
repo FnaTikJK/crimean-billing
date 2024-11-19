@@ -97,7 +97,7 @@ export class PaymentsListComponent implements OnInit {
     const searchOptions: ISearchPaymentsRequestDTO = {
       skip,
       take: 30,
-      type: this.onlyWithdrawalsControl.value ? PaymentType.Withdrawal : undefined,
+      paymentType: this.onlyWithdrawalsControl.value ? PaymentType.Withdrawal : undefined,
       accountId: this.#appSettingsS.appSettingsState().entity!.accountSelected!
     }
 

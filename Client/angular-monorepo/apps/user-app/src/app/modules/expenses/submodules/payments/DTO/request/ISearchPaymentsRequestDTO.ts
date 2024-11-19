@@ -3,6 +3,6 @@ import { PaymentType } from '../../models/PaymentType';
 export interface ISearchPaymentsRequestDTO {
   skip?: number;
   take?: number;
-  type?: PaymentType;
+  paymentType?: PaymentType;
   accountId: string;
 }
