@@ -6,7 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatFabButton } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
 import { AuthorizationService } from '../modules/authorization/services/authorization.service';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { tap } from 'rxjs';
 
 
@@ -43,6 +43,7 @@ const ROUTE_NAMES = [
     MatDivider,
     RouterLink,
     MatButton,
+    RouterLinkActive
   ],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',

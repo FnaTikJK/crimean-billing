@@ -10,12 +10,11 @@ function getProtocol () {
 })
 export class HttpService {
 
-  private httpClient = inject(HttpClient);
 
+  private httpClient = inject(HttpClient);
   private origin = location.origin;
-  LOCAL_DOMAIN = 'localhost:8080'
-  PROD_DOMAIN = 'crimean-billing.work.gd'
-  BACKEND_URL = `${getProtocol()}://${isDevMode() ? this.LOCAL_DOMAIN : this.PROD_DOMAIN}/api/`
+
+  BACKEND_URL =  isDevMode() ? this.origin + '/api/' : `${getProtocol()}://www.crimean-billing.work.gd/api/`;
 
   public get<T>(method: string) {
     return this.httpClient.get<T>(`${this.BACKEND_URL}${method}`, { withCredentials: true });
