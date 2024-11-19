@@ -2,7 +2,9 @@
   <app-list-filter #appListFilter
     [filterFields]="filterFields"
     (filterChange)="changeFilter($event)"
-  ></app-list-filter>
+  >
+  <button mat-button [routerLink]="'./create'" style="margin-bottom: -15px;">Создать</button>
+</app-list-filter>
 
   <ngx-datatable #table
     class="material"

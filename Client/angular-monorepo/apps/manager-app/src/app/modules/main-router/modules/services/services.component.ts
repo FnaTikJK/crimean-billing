@@ -9,11 +9,12 @@ import { UNIT_TYPES } from './models/UnitType.enum';
 import { NgxDatatableModule, TableColumn } from '@siemens/ngx-datatable'
 import BaseListWithFiltersComponent from '../../../shared/BaseListWithFilters.component';
 import { SearchServiceRequestOrderBy } from './models/DTO/SearchServiceRequestOrderBy.model';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [CommonModule, RouterModule, ListFilterComponent, NgxDatatableModule],
+  imports: [CommonModule, RouterModule, ListFilterComponent, NgxDatatableModule, MatButtonModule],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

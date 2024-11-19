@@ -3,5 +3,5 @@
 
 .idea
 
-crimean-billing.work.gd.crt
-crimean-billing.work.gd.key
+*.crt
+*.key
