@@ -38,7 +38,11 @@ public class PaymentsService : IPaymentsService
         var query = payments.AsNoTracking()
             .Include(e => e.Account)
             .Include(e => e.Invoice)
-            .Where(e => e.AccountId == request.AccountId);
+            .AsQueryable();
+
+        if (request.AccountId != null) {
+            query = query.Where(e => e.AccountId == request.AccountId);
+        }
 
         if (request.PaymentType != null)
             query = query.Where(e => e.Type == request.PaymentType);
