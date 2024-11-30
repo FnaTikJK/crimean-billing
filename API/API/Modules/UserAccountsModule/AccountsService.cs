@@ -32,6 +32,8 @@ public class AccountsService : IAccountsService
             .Include(e => e.User)
             .AsNoTracking();
 
+        if (request.Ids != null)
+            query = query.Where(e => request.Ids.Contains(e.Id));
         if (request.UserId != null)
             query = query.Where(e => e.User.Id == request.UserId);
         if (request.AccountType != null)
