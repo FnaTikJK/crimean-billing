@@ -1,5 +1,7 @@
-﻿using API.DAL;
+﻿using System.Linq.Expressions;
+using API.DAL;
 using API.Infrastructure;
+using API.Infrastructure.BaseApiDTOs;
 using API.Modules.AccountsModule.User;
 using API.Modules.InvoiceModule;
 using API.Modules.InvoiceModule.Model;
@@ -40,14 +42,31 @@ public class PaymentsService : IPaymentsService
             .Include(e => e.Invoice)
             .AsQueryable();
 
-        if (request.AccountId != null) {
+        if (request.AccountId != null) 
             query = query.Where(e => e.AccountId == request.AccountId);
-        }
-
         if (request.PaymentType != null)
             query = query.Where(e => e.Type == request.PaymentType);
+        if (request.Money != null)
+            query = query.Where(request.MoneyFit());
+        if (request.DateTime != null)
+            query = query.Where(request.DateTimeFit());
+        if (request.Ordering != null)
+        {
+            Expression<Func<PaymentEntity, DateTime>> byDateTime = payment => payment.DateTime;
+            Expression<Func<PaymentEntity, float>> byMoney = payment => payment.Money;
+            query = request.OrderDirection == OrderDirection.Asc
+                ? request.Ordering == SearchPaymentsOrdering.Money
+                    ? query.OrderBy(byMoney)
+                    : query.OrderBy(byDateTime)
+                : request.Ordering == SearchPaymentsOrdering.Money
+                    ? query.OrderByDescending(byMoney)
+                    : query.OrderByDescending(byDateTime);
+        }
+        else
+        {
+            query = query.OrderByDescending(e => e.DateTime);
+        }
         
-        query = query.OrderByDescending(e => e.DateTime);
         var totalCount = query.Count();
         return Result.Ok(new SearchPaymentsResponse
         {
