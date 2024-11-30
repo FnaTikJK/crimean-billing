@@ -52,4 +52,18 @@ public class UsersController : ControllerBase
         var response = await usersService.GetUser(userId);
         return response.ActionResult;
     }
+    
+    /// <summary>
+    /// Поиск по пользователям. Для менеджеров
+    /// </summary>
+    /// <remarks>
+    /// Authorized на Manager.
+    /// </remarks>
+    [Authorize(Roles = nameof(AccountRole.Manager))]
+    [HttpPost("Search")]
+    public ActionResult<SearchUsersResponse> Search([FromBody] SearchUsersRequest request)
+    {
+        var response = usersService.Search(request);
+        return response.ActionResult;
+    }
 }
