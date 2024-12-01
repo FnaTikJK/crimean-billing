@@ -128,6 +128,9 @@ public class PaymentsService : IPaymentsService
 
     public Result<PaymentEntity> TryPayInvoice(InvoiceEntity invoice)
     {
+        if (invoice.Payment != null)
+            return Result.Ok(invoice.Payment);
+        
         var account = invoice.Account;
         var invoicePrice = invoice.CalculateTotalPrice();
         if (account.Money < invoicePrice)

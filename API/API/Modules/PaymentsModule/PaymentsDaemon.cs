@@ -36,13 +36,13 @@ public class PaymentsDaemon : IPaymentsDaemon
     public async Task<Result<bool>> TryPayInvoices()
     {
         var nowDate = DateTimeProvider.NowDate;
-        var notPayedInvoices = invoices
+        var invoicesToPay = invoices
             .Include(e => e.Account).ThenInclude(a => a.Subscription).ThenInclude(s => s.Tariff)
             .Include(e => e.Account).ThenInclude(a => a.Subscription).ThenInclude(s => s.PreferredChange).ThenInclude(p => p.TariffTemplate).ThenInclude(t => t.Tariffs)
             .Include(e => e.Account).ThenInclude(a => a.User)
-            .Where(e => e.Account.Subscription!.PaymentDate == nowDate)
-            .Where(e => e.PaymentId == null);
-        foreach (var invoice in notPayedInvoices)
+            .Include(e => e.Payment)
+            .Where(e => e.Account.Subscription!.PaymentDate == nowDate);
+        foreach (var invoice in invoicesToPay)
         {
             var paymentResponse = paymentsService.TryPayInvoice(invoice);
             if (paymentResponse.IsSuccess)
