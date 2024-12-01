@@ -22,6 +22,8 @@ public static class ServicesMapper
             Services = service != null 
                 ? new HashSet<ServiceEntity> {service} 
                 : null,
+            CreatedAt = DateTimeProvider.Now,
+            UpdatedAt = DateTimeProvider.Now,
         };
     }
 
@@ -49,6 +51,8 @@ public static class ServicesMapper
             IsTariffService = template.IsTariffService,
             Price = actualService?.Price,
             Amount = actualService?.Amount,
+            CreatedAt = template.CreatedAt,
+            UpdatedAt = template.UpdatedAt,
         };
 
     public static ServiceDTO Map(ServiceTemplateEntity template)
@@ -67,6 +71,8 @@ public static class ServicesMapper
             IsTariffService = template.IsTariffService,
             Price = actualService?.Price,
             Amount = actualService?.Amount,
+            CreatedAt = template.CreatedAt,
+            UpdatedAt = template.UpdatedAt,
         };
     }
 
@@ -86,6 +92,8 @@ public static class ServicesMapper
             target.UnitType = request.UnitType.Value;
         if (request.IsTariffService != null)
             target.IsTariffService = request.IsTariffService.Value;
+
+        target.UpdatedAt = DateTimeProvider.Now;
     }
 
     public static ServiceEntity MapService(PatchServiceRequest request, ServiceEntity? previousService)

@@ -14,6 +14,8 @@ public class ServiceTemplateEntity : IEntity
     public required string Name { get; set; }
     public required string Code { get; set; }
     public required string Description { get; set; }
+    public required DateTime CreatedAt { get; set; }
+    public required DateTime UpdatedAt { get; set; }
     public AccountType AccountType { get; set; }
     public ServiceType ServiceType { get; set; }
     public UnitType UnitType { get; set; }

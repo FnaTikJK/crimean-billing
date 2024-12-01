@@ -88,6 +88,10 @@ public class ServicesService : IServicesService
             query = query.Where(e => request.Price.Fit(e.Price));
         if (request.Amount != null)
             query = query.Where(e => request.Amount.Fit(e.Amount));
+        if (request.CreatedAt != null)
+            query = query.Where(request.CreatedAtFit());
+        if (request.UpdatedAt != null)
+            query = query.Where(request.UpdatedAtFit());
 
         if (request.OrderBy != null)
             query = OrderSearch(query, request.OrderBy.Value, request.OrderDirection);
@@ -134,6 +138,14 @@ public class ServicesService : IServicesService
             return orderDirection is OrderDirection.Asc
                 ? query.OrderBy(e => e.Amount)
                 : query.OrderByDescending(e => e.Amount);
+        if (orderBy == SearchServiceRequestOrderBy.CreatedAt)
+            return orderDirection is OrderDirection.Asc
+                ? query.OrderBy(e => e.CreatedAt)
+                : query.OrderByDescending(e => e.CreatedAt);
+        if (orderBy == SearchServiceRequestOrderBy.UpdatedAt)
+            return orderDirection is OrderDirection.Asc
+                ? query.OrderBy(e => e.UpdatedAt)
+                : query.OrderByDescending(e => e.UpdatedAt);
 
         throw new NotImplementedException("not implemented order by");
     }

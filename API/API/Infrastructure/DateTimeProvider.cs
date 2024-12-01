@@ -18,4 +18,9 @@ public static class DateTimeProvider
 
     private static DateTime initTime = DateTime.UtcNow;
     private static readonly Stopwatch sw = new();
+
+    static DateTimeProvider()
+    {
+        sw.Start();
+    }
 }

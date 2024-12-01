@@ -50,7 +50,7 @@ public class ServicesController : ControllerBase
     /// Поиск по Services
     /// </summary>
     /// <remarks>
-    /// OrderBy: {Code,Price,Amount}
+    /// OrderBy: {Code,Price,Amount,CreatedAt,UpdatedAt}
     /// <br/> OrderDirection: {Desc, Asc}. 
     /// </remarks>
     [AllowAnonymous]

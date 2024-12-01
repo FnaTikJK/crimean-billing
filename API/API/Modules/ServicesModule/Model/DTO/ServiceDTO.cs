@@ -10,6 +10,8 @@ public class ServiceDTO
     public required string Name { get; set; }
     public bool IsTariffService { get; set; }
     public required string Description { get; set; }
+    public required DateTime CreatedAt { get; set; }
+    public required DateTime UpdatedAt { get; set; }
     public AccountType AccountType { get; set; }
     public ServiceType ServiceType { get; set; }
     public UnitType UnitType { get; set; }
