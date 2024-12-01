@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using API.DAL;
 using API.Modules.AccountsModule.User;
 using API.Modules.PaymentsModule.Model;
@@ -17,4 +18,12 @@ public class InvoiceEntity : IEntity
     public DateTime CreatedAt { get; set; }
     public Guid? PaymentId { get; set; }
     public PaymentEntity? Payment { get; set; }
+}
+
+public static class InvoiceEntityExtensions
+{
+    public static DateTime? GetPayedAt(this InvoiceEntity invoice)
+    {
+        return invoice.Payment?.DateTime;
+    }
 }

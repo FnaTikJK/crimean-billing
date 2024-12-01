@@ -12,7 +12,7 @@ public static class InvoicesMapper
         {
             Id = invoice.Id,
             CreatedAt = invoice.CreatedAt,
-            PayedAt = invoice.Payment?.DateTime,
+            PayedAt = invoice.GetPayedAt(),
             ToPay = invoice.CalculateTotalPrice(),
             AccountId = invoice.AccountId,
         };
