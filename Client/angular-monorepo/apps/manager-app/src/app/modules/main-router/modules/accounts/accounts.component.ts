@@ -63,7 +63,7 @@ export default class ServicesComponent extends BaseListWithFiltersComponent {
     },
     {
       prop: 'money',
-      name: 'сумма',
+      name: 'Сумма',
       sortable: true,
     },
   ]

@@ -16,7 +16,8 @@ var CorsOrigins = new string[] {
         //"http://crimean-billing.work.gd" ,
         "https://crimean-billing.work.gd" ,
         //"http://www.crimean-billing.work.gd" ,
-        "https://www.crimean-billing.work.gd"
+        "https://www.crimean-billing.work.gd",
+        "http://localhost:4200",
     };
 
 var builder = WebApplication.CreateBuilder(args);

@@ -29,6 +29,11 @@ export default class PaymentsComponent extends BaseListWithFiltersComponent impl
       name: 'Тип операции',
       type: 'select',
       options: PAYMENT_TYPES
+    },
+    {
+      field: 'dateTime',
+      name: 'Дата',
+      type: 'dateRange',
     }
   ]
 

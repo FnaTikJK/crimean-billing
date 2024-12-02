@@ -1,0 +1,40 @@
+<div>
+  <div>
+    <p>{{ (abonent$ | async).fio }}</p>
+  </div>
+
+  <mat-tab-group mat-align-tabs="start">
+    <mat-tab label="Информация об абоненте">
+      <div class="abonent-info">
+        <a type="email" [href]="(abonent$ | async).email">{{
+          (abonent$ | async).email
+        }}</a>
+        <a type="phone" [href]="(abonent$ | async).phoneNumber">{{
+          (abonent$ | async).phoneNumber || '-'
+        }}</a>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Лицевые счета">
+      <div class="content">
+        <ngx-datatable
+          [rows]="(abonent$ | async).accounts"
+          [columns]="accountColumns">
+        </ngx-datatable>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Платежи">
+      <div class="content">
+        <ngx-datatable
+          [rows]="payments$ | async"
+          [columns]="paymentColumns"
+        ></ngx-datatable>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<ng-template #dateTemplate let-timestamp="value">
+  {{ timestamp | date: 'dd.MM.yyyy hh:mm' }}
+</ng-template>

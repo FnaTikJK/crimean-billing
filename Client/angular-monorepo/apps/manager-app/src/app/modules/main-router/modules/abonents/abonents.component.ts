@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import ListFilterComponent, { FilterField } from "../../../shared/components/list-filter/list-filter.component";
-import { ACCOUNT_TYPES } from '../accounts/models/AccountType.enum';
+
 import { NgxDatatableModule, TableColumn } from '@siemens/ngx-datatable'
 import BaseListWithFiltersComponent from '../../../shared/BaseListWithFilters.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,49 +27,37 @@ export default class ServicesComponent extends BaseListWithFiltersComponent {
       type: 'text',
     },
     {
-      field: 'number',
-      name: 'ЛС',
+      field: 'email',
+      name: 'Email',
       type: 'text',
     },
     {
-      field: 'accountType',
-      name: 'Тип ЛС',
-      type: 'select',
-      options: ACCOUNT_TYPES,
-    },
-    {
-      field: 'money',
-      name: 'Сумма',
-      type: 'number-range',
+      field: 'fio',
+      name: 'ФИО',
+      type: 'text',
     },
   ]
 
   override columns: TableColumn[] = [
     {
-      prop: 'number',
-      name: 'ЛС',
-      sortable: false,
-    },
-    {
-      prop: 'user.fio',
+      prop: 'fio',
       name: 'ФИО',
       sortable: false,
     },
     {
-      prop: 'accountType',
-      name: 'Тип ЛС',
+      prop: 'email',
+      name: 'Email',
       sortable: false,
-      pipe: { transform(val: any) { return ACCOUNT_TYPES.find(({ value }) => value === val)?.name } }
     },
     {
-      prop: 'money',
-      name: 'сумма',
-      sortable: true,
+      prop: 'phoneNumber',
+      name: 'Номер телефона',
+      sortable: false,
     },
   ]
 
   redirectOnItemPage(ev: any) {
     if (ev.type !== 'click') return
-    this.router.navigate([`/main/accounts/${ev.row.id}`])
+    this.router.navigate([`/main/abonents/${ev.row.userId}`])
   }
 }
