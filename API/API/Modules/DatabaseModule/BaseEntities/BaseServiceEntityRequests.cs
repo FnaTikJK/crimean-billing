@@ -83,6 +83,23 @@ public static class BaseServiceEntityRequests
         },
     };
 
+    public static CreateServiceRequest[] CreateRandomServiceRequest =
+    {
+        new CreateServiceRequest()
+        {
+            Code = new Random().Next(0, 9999).ToString(),
+            AccountType = AccountType.Sim,
+            Name = "Сервис созданный автоматикой номер: " + new Random().Next(0, 9999),
+            Description = "Описание",
+            ServiceType = ServiceType.Internet,
+            IsTariffService = true,
+            UnitType = UnitType.Mb,
+
+            Price = null,
+            Amount = null,
+        }
+    };
+
     public static Func<Dictionary<string, ServiceDTO>, PatchServiceRequest>[] PatchRequests = {
         (serviceByCode) => new PatchServiceRequest()
             {

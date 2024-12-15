@@ -36,6 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Modules\DatabaseModule\BaseEntities\CreateRandomFields\" />
       <Folder Include="Modules\UsersController\Model\" />
     </ItemGroup>
 

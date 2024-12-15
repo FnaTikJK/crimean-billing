@@ -1,4 +1,5 @@
 using API.Infrastructure.Config;
+using API.Modules.DatabaseModule.RandomFillingData;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Modules.DatabaseModule;
@@ -8,19 +9,28 @@ namespace API.Modules.DatabaseModule;
 public class DatabaseController : ControllerBase
 {
     private readonly IDatabaseService databaseService;
+    private readonly IDatabaseServiceRandom databaseServiceRandom;
 
-    public DatabaseController(IDatabaseService databaseService)
+    public DatabaseController(IDatabaseService databaseService, IDatabaseServiceRandom databaseServiceRandom)
     {
         this.databaseService = databaseService;
+        this.databaseServiceRandom = databaseServiceRandom;
     }
 
     /// <summary>
     /// Пересоздаёт БД
     /// </summary>
+    // [HttpPost]
+    // public async Task<ActionResult> RecreateDatabase([FromQuery] bool withAutoFilling = true)
+    // {
+    //     var response =  await databaseService.RecreateDatabase(withAutoFilling);
+    //     return response.ActionResult;
+    // }
+    
     [HttpPost]
-    public async Task<ActionResult> RecreateDatabase([FromQuery] bool withAutoFilling = true)
+    public async Task<ActionResult> RecreateRandomDatabase([FromQuery] bool withAutoFilling = true)
     {
-        var response =  await databaseService.RecreateDatabase(withAutoFilling);
+        var response =  await databaseServiceRandom.RecreateRandomDatabase(withAutoFilling);
         return response.ActionResult;
     }
 
