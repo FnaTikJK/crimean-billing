@@ -36,11 +36,13 @@ public class InvoicesDaemon : IInvoicesDaemon
         var query = subscriptions
             .Include(e => e.Account).ThenInclude(a => a.User)
             .Include(e => e.Tariff)
+            .Include(e => e.ServiceUsages)!.ThenInclude(e => e.Service)
             .Where(e => e.PaymentDate == paymentDate);
         foreach (var subscription in query)
         {
-            var existedInvoice = await invoices.FirstOrDefaultAsync(e => e.Account.Id == subscription.AccountId 
-                                                                         && e.PaymentId == null);
+            var existedInvoice = await invoices
+                .Include(e => e.Payment)
+                .FirstOrDefaultAsync(e => e.Account.Id == subscription.AccountId && e.Payment == null);
             if (existedInvoice != null)
                 continue;
 
@@ -48,6 +50,7 @@ public class InvoicesDaemon : IInvoicesDaemon
             {
                 Account = subscription.Account,
                 Tariff = subscription.Tariff,
+                ServiceUsages = subscription.ServiceUsages,
                 CreatedAt = DateTimeProvider.Now,
             };
             await invoices.AddAsync(newInvoice);

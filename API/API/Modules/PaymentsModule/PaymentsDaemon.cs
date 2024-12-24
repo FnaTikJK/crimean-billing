@@ -36,13 +36,16 @@ public class PaymentsDaemon : IPaymentsDaemon
     public async Task<Result<bool>> TryPayInvoices()
     {
         var nowDate = DateTimeProvider.NowDate;
-        var invoicesToPay = invoices
+        var actualCreationDate = DateOnly.FromDateTime(DateTimeProvider.Now.AddDays(-3));
+        var actualInvoices = invoices
             .Include(e => e.Account).ThenInclude(a => a.Subscription).ThenInclude(s => s.Tariff)
+            .Include(e => e.Account).ThenInclude(a => a.Subscription).ThenInclude(s => s.ServiceUsages).ThenInclude(su => su.Service)
             .Include(e => e.Account).ThenInclude(a => a.Subscription).ThenInclude(s => s.PreferredChange).ThenInclude(p => p.TariffTemplate).ThenInclude(t => t.Tariffs)
             .Include(e => e.Account).ThenInclude(a => a.User)
             .Include(e => e.Payment)
-            .Where(e => e.Account.Subscription!.PaymentDate == nowDate);
-        foreach (var invoice in invoicesToPay)
+            .Where(e => e.Account.Subscription!.PaymentDate == nowDate)
+            .Where(e => DateOnly.FromDateTime(e.CreatedAt) == actualCreationDate);
+        foreach (var invoice in actualInvoices)
         {
             var paymentResponse = paymentsService.TryPayInvoice(invoice);
             if (paymentResponse.IsSuccess)
@@ -63,6 +66,7 @@ public class PaymentsDaemon : IPaymentsDaemon
                     subscription.Tariff = actualTariffResponse.Value;
                 }
 
+                subscription.ServiceUsages = null;
                 await notificationsService.SendInvoiceSuccessPaymentNotification(invoice,
                     DateOnly.FromDateTime(subscription.PaymentDate), payment.Money);
             }

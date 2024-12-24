@@ -82,6 +82,7 @@ public class InvoicesService : IInvoicesService
         var invoice = await invoices
             .Include(e => e.Account)
             .Include(e => e.Tariff)
+            .Include(e => e.ServiceUsages)!.ThenInclude(e => e.Service)
             .Include(e => e.Payment)
             .FirstOrDefaultAsync(e => e.Id == request.InvoiceId);
         if (invoice == null)
