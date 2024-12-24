@@ -26,23 +26,24 @@ public static class BaseTariffEntityRequests
         }
     };
 
-    public static Func<AccountType, Dictionary<string, ServiceDTO>, CreateTariffRequest>[] CreateRandomTariffSimRequest =
-    {
-        (accountType, s) => new CreateTariffRequest()
+    public static Func<AccountType, Dictionary<string, ServiceDTO>, CreateTariffRequest>[]
+        CreateRandomTariffSimRequest =
         {
-            Code = "default" + Guid.NewGuid(),
-            Name = "Tariff Number = " + new Random().Next(0, 5000),
-            Description = "desc",
-            Price = new Random().Next(0, 5000),
-            AccountType = accountType,
-            ServicesAmounts = new[]
+            (accountType, s) => new CreateTariffRequest()
             {
-                new CreateTariffServiceAmountsRequest()
+                Code = "тариф созданный автоматикой номер: " + Guid.NewGuid(),
+                Name = "Tariff Number = " + new Random().Next(0, 350),
+                Description = "desc",
+                Price = new Random().Next(0, 1000),
+                AccountType = accountType,
+                ServicesAmounts = new[]
                 {
-                    Amount = new Random().Next(30, 100),
-                    ServiceTemplateId = s["withManyEdits"].TemplateId,
+                    new CreateTariffServiceAmountsRequest()
+                    {
+                        Amount = 100,
+                        ServiceTemplateId = s[""].TemplateId,
+                    }
                 }
             }
-        }
-    };
+        };
 }

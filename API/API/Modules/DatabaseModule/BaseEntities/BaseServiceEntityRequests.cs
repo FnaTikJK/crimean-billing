@@ -93,10 +93,19 @@ public static class BaseServiceEntityRequests
             Description = "Описание",
             ServiceType = ServiceType.Internet,
             IsTariffService = true,
+            Price = 300,
+            Amount = 40,
             UnitType = UnitType.Mb,
+        }
+    };
 
-            Price = null,
-            Amount = null,
+    public static Func<Dictionary<string, ServiceDTO>, PatchServiceRequest>[] PatchRequest =
+    {
+        (serviceByCode) => new PatchServiceRequest()
+        {
+            TemplateId = serviceByCode[""].TemplateId,
+            Price = 550,
+            Amount = 50,
         }
     };
 

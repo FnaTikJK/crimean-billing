@@ -3,21 +3,25 @@ using API.Infrastructure;
 using API.Modules.AccountsModule;
 using API.Modules.AccountsModule.Manager.DTO;
 using API.Modules.AccountsModule.Share;
-using API.Modules.AccountsModule.User.DTO;
+using API.Modules.AdminModule;
 using API.Modules.DatabaseModule.BaseEntities;
 using API.Modules.DatabaseModule.RandomFillingData.Extensions;
+using API.Modules.InvoiceModule;
 using API.Modules.ServicesModule;
 using API.Modules.ServicesModule.Model.DTO;
 using API.Modules.SubscriptionsModule;
 using API.Modules.SubscriptionsModule.DTO;
 using API.Modules.TariffsModule;
 using API.Modules.TariffsModule.Models.DTO;
+using API.Modules.PaymentsModule;
+using API.Modules.PaymentsModule.DTO;
+using API.Modules.TariffsModule.DTO;
 
 namespace API.Modules.DatabaseModule.RandomFillingData;
 
 public interface IDatabaseServiceRandom
 {
-    Task<Result<bool>> RecreateRandomDatabase(bool withAutoFilling);
+    Task<Result<bool>> RecreateRandomDatabase(Guid withAutoFilling);
 }
 
 public class DatabaseServiceRandomFilling : IDatabaseServiceRandom
@@ -27,95 +31,125 @@ public class DatabaseServiceRandomFilling : IDatabaseServiceRandom
     private readonly IServicesService servicesService;
     private readonly ITariffsService tariffsService;
     private readonly ISubscriptionsService subscriptionsService;
+    private readonly IPaymentsService paymentsService;
+    private readonly IAdminService adminService;
+    private readonly IInvoicesDaemon invoicesDaemon;
+    private readonly IPaymentsDaemon paymentsDaemon;
+    private static string codeService;
+    private static Guid subId;
+    private static Dictionary<string, ServiceDTO> service;
 
     public DatabaseServiceRandomFilling(
         DataContext dataContext,
         IAuthService authService,
         IServicesService servicesService,
         ITariffsService tariffsService,
-        ISubscriptionsService subscriptionsService)
+        ISubscriptionsService subscriptionsService,
+        IPaymentsService paymentsService,
+        IAdminService invoicesDaemon, IInvoicesDaemon invoicesDaemon1, IPaymentsDaemon paymentsDaemon)
     {
         this.dataContext = dataContext;
         this.authService = authService;
         this.servicesService = servicesService;
         this.tariffsService = tariffsService;
         this.subscriptionsService = subscriptionsService;
+        this.paymentsService = paymentsService;
+        this.adminService = invoicesDaemon;
+        this.invoicesDaemon = invoicesDaemon1;
+        this.paymentsDaemon = paymentsDaemon;
     }
-    
-    public async Task<Result<bool>> RecreateRandomDatabase(bool withAutoFilling)
+
+    public async Task<Result<bool>> RecreateRandomDatabase(Guid accountId)
     {
-        dataContext.RecreateDatabase();
-        var ex = new DatabaseServiceRandomExtensions();
-        var accountsByUser = new List<Dictionary<Guid, List<Guid>>>();
-        var tariffsByCode = new List<Dictionary<string, TariffDTO>>();
-        var servicesByCode = await AddServices();
-
-        if (withAutoFilling)
+        var date = DateTimeProvider.Now;
+        var addMoneyRequest = new AddMoneyRequest()
         {
-            var managerIds = await AddManagers();
-            for (int i = 0; i < 10; i++)
-            {
-                var userAccounts = await AddUsers(
-                    ex.GenerateEmail(),
-                    ex.GenerateFullName(),
-                    ex.GeneratePhoneNumber(),
-                    ex.GenerateNumber(),
-                    ex.GetRandomEnumValue<AccountType>()
-                );
-                accountsByUser.Add(userAccounts);
-            }
+            AccountId = accountId,
+            ToAdd = 50000
+        };
 
-            for (int i = 0; i < 10; i++)
+        await paymentsService.AddMoney(addMoneyRequest);
+        var servicesByCode = await AddServices();
+        service = servicesByCode;
+        var tariffCode = await AddTariffs(servicesByCode);
+        await AddSubscriptionsForAccount(accountId, tariffCode);
+
+        for (int i = 0; i < 3; i++)
+        {
+            await subscriptionsService.SpendTariff(new()
             {
-                var tariffIndex = i % 5;
-                var tariffCode = await AddTariffs(servicesByCode);
-                tariffsByCode.Add(tariffCode);
-                await AddSubscriptions(accountsByUser[i], tariffsByCode[tariffIndex]);
-            }
+                SubscriptionId = subId,
+                ServicesSpends = new List<SpendServiceTemplateRequest>
+                {
+                    new()
+                    {
+                        ServiceTemplateId = service[$"{codeService}"].TemplateId,
+                        ToSpend = 1
+                    }
+                }
+            });
+            await CreateAndPayInvoice(date);
         }
 
-        Console.WriteLine(accountsByUser[0].Values);
+        tariffCode = await AddTariffs(servicesByCode);
+        await AddSubscriptionsForAccount(accountId, tariffCode);
+
+        // for (int i = 0; i < 5; i++)
+        // {
+        //     await subscriptionsService.SpendTariff(new()
+        //     {
+        //         SubscriptionId = subId,
+        //         ServicesSpends = new List<SpendServiceTemplateRequest>
+        //         {
+        //             new()
+        //             {
+        //                 ServiceTemplateId = service[$"{codeService}"].TemplateId,
+        //                 ToSpend = 1
+        //             }
+        //         }
+        //     });
+        //     await CreateAndPayInvoice(date);
+        // }
+        //
+        // tariffCode = await AddTariffs(servicesByCode);
+        // await AddSubscriptionsForAccount(accountId, tariffCode);
+        //
+        // for (int i = 0; i < 5; i++)
+        // {
+        //     await subscriptionsService.SpendTariff(new()
+        //     {
+        //         SubscriptionId = subId,
+        //         ServicesSpends = new List<SpendServiceTemplateRequest>
+        //         {
+        //             new()
+        //             {
+        //                 ServiceTemplateId = service[$"{codeService}"].TemplateId,
+        //                 ToSpend = 1
+        //             }
+        //         }
+        //     });
+        //     await CreateAndPayInvoice(date);
+        // }
+
         return Result.NoContent<bool>();
     }
 
-    private async Task<List<Guid>> AddManagers()
+    private async Task CreateAndPayInvoice(DateTime date)
     {
-        var  response = await authService.RegisterManager(new RegisterManagerRequest()
-        {
-            Login = "string",
-            Password = "string",
-            Fio = "Менеджер Заполнен ПриСозданииБД"
-        });
-        return new() {response.Value.UserId};
+        adminService.MockDateTime(date.AddMonths(1));
+        adminService.MockDateTime(date.AddDays(-3));
+        await invoicesDaemon.CreateInvoices();
+        adminService.MockDateTime(date.AddDays(3));
+        await paymentsDaemon.TryPayInvoices();
     }
 
-    private async Task<Dictionary<Guid, List<Guid>>> AddUsers(string email, string fio, string phoneNumber, string number, AccountType accountType )
+    private Task<Dictionary<string, ServiceDTO>> AddServices()
     {
-        var user = await authService.RegisterUser(new RegisterUserRequest()
-        {
-            Email = email,
-            Fio = fio
-        });
-        var account = await authService.RegisterAccount(new RegisterAccountRequest
-        {
-            UserId = user.Value.UserId,
-            Number = number,
-            AccountType = accountType,
-            PhoneNumber = phoneNumber,
-        });
-
-        return new Dictionary<Guid, List<Guid>>()
-        {
-            {user.Value.UserId, new List<Guid> {account.Value.AccountId}}
-        };
-    }
-
-    private async Task<Dictionary<string, ServiceDTO>> AddServices()
-    {
-        var servicesByCode = BaseServiceEntityRequests.CreateRequests
+        var servicesByCode = BaseServiceEntityRequests.CreateRandomServiceRequest
             .Select(async (e, i) =>
             {
                 var response = await servicesService.CreateService(e);
+                codeService = response.Value.Code;
                 return response.IsSuccess
                     ? response.Value
                     : throw new Exception(response.Error);
@@ -123,25 +157,18 @@ public class DatabaseServiceRandomFilling : IDatabaseServiceRandom
             .Select(e => e.Result)
             .ToDictionary(e => e.Code, e => e);
 
-        foreach (var patchReqs in BaseServiceEntityRequests.PatchRequests)
-        {
-            var response = await servicesService.PatchService(patchReqs(servicesByCode));
-            if (!response.IsSuccess)
-                throw new Exception(response.Error);
-
-            servicesByCode[response.Value.Code] = response.Value;
-        }
-
-        return servicesByCode;
+        Console.WriteLine(servicesByCode);
+        return Task.FromResult(servicesByCode);
     }
 
-    private async Task<Dictionary<string, TariffDTO>> AddTariffs(Dictionary<string, ServiceDTO> servicesByCode)
+    private Task<Dictionary<string, TariffDTO>> AddTariffs(Dictionary<string, ServiceDTO> servicesByCode)
     {
-        var tariffsByCode = BaseTariffEntityRequests.CreateRandomTariffSimRequest
+        var tariffsByCode = CreateRandomTariffSimRequest
             .Select(async createFunc =>
             {
                 var ex = new DatabaseServiceRandomExtensions();
-                var response = await tariffsService.CreateTariff(createFunc(ex.GetRandomEnumValue<AccountType>(), servicesByCode));
+                var response =
+                    await tariffsService.CreateTariff(createFunc(ex.GetRandomEnumValue<AccountType>(), servicesByCode));
                 return response.IsSuccess
                     ? response.Value
                     : throw new Exception(response.Error);
@@ -149,15 +176,52 @@ public class DatabaseServiceRandomFilling : IDatabaseServiceRandom
             .Select(e => e.Result)
             .ToDictionary(e => e.Code, e => e);
 
-        return tariffsByCode;
+        return Task.FromResult(tariffsByCode);
     }
 
-    private async Task AddSubscriptions(Dictionary<Guid, List<Guid>> accountsByUser, Dictionary<string, TariffDTO> tariffsByCode)
+    private async Task AddSubscriptionsForAccount(Guid accountId,
+        Dictionary<string, TariffDTO> tariffsByCode)
     {
         var sub = await subscriptionsService.Subscribe(new SubscribeRequest()
         {
-            AccountId = accountsByUser.First().Value.First(),
+            AccountId = accountId,
             TariffTemplateId = tariffsByCode.First().Value.TemplateId,
         });
+
+        subId = sub.Value.Id;
     }
+
+    private static Func<AccountType, Dictionary<string, ServiceDTO>, CreateTariffRequest>[]
+        CreateRandomTariffSimRequest =
+        {
+            (accountType, s) => new CreateTariffRequest()
+            {
+                Code = "тариф созданный автоматикой номер: " + Guid.NewGuid(),
+                Name = "Tariff Number = " + new Random().Next(0, 350),
+                Description = "desc",
+                Price = new Random().Next(0, 1000),
+                AccountType = accountType,
+                ServicesAmounts = new[]
+                {
+                    new CreateTariffServiceAmountsRequest()
+                    {
+                        Amount = 100,
+                        ServiceTemplateId = s[$"{codeService}"].TemplateId,
+                    }
+                }
+            }
+        };
+
+    // private SpendSubscriptionRequest spendSubscriptionRequest = new()
+    // {
+    //     SubscriptionId = subId,
+    //     ServicesSpends = new List<SpendServiceTemplateRequest>
+    //     {
+    //         new()
+    //         {
+    //             ServiceTemplateId = service[$"{codeService}"].TemplateId,
+    //             ToSpend = 1
+    //         }
+    //     }
+    // };
 }

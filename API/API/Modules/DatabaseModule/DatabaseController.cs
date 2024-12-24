@@ -20,17 +20,20 @@ public class DatabaseController : ControllerBase
     /// <summary>
     /// Пересоздаёт БД
     /// </summary>
-    // [HttpPost]
-    // public async Task<ActionResult> RecreateDatabase([FromQuery] bool withAutoFilling = true)
-    // {
-    //     var response =  await databaseService.RecreateDatabase(withAutoFilling);
-    //     return response.ActionResult;
-    // }
-    
     [HttpPost]
-    public async Task<ActionResult> RecreateRandomDatabase([FromQuery] bool withAutoFilling = true)
+    public async Task<ActionResult> RecreateDatabase([FromQuery] bool withAutoFilling = true)
     {
-        var response =  await databaseServiceRandom.RecreateRandomDatabase(withAutoFilling);
+        var response =  await databaseService.RecreateDatabase(withAutoFilling);
+        return response.ActionResult;
+    }
+    
+    /// <summary>
+    /// Заполняет бд рандомными данными
+    /// </summary>
+    [HttpPost("RandomDatabase")]
+    public async Task<ActionResult> RandomDatabase([FromQuery] Guid accountId)
+    {
+        var response =  await databaseServiceRandom.RecreateRandomDatabase(accountId);
         return response.ActionResult;
     }
 

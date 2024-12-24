@@ -6,7 +6,7 @@ public class DatabaseModule : IModule
 {
     public void RegisterModule(IServiceCollection services)
     {
-        //services.AddScoped<IDatabaseService, DatabaseService>();
+        services.AddScoped<IDatabaseService, DatabaseService>();
         services.AddScoped<IDatabaseServiceRandom, DatabaseServiceRandomFilling>();
     }
 }
