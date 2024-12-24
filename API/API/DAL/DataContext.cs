@@ -5,6 +5,7 @@ using API.Modules.InvoiceModule.Model;
 using API.Modules.PaymentsModule.Model;
 using API.Modules.ServicesModule.Model;
 using API.Modules.SubscriptionsModule.Model;
+using API.Modules.SubscriptionsModule.ServiceUsage.Model;
 using API.Modules.TariffsModule.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,4 +72,5 @@ public class DataContext : DbContext
     public DbSet<TariffUsageHistoryEntity> TariffUsageHistories => Set<TariffUsageHistoryEntity>();
     public DbSet<TariffUsageHistoryByServicesEntity> TariffUsageHistoryByServices => Set<TariffUsageHistoryByServicesEntity>();
     public DbSet<PaymentEntity> Payments => Set<PaymentEntity>();
+    public DbSet<ServiceUsageEntity> ServiceUsages => Set<ServiceUsageEntity>();
 }

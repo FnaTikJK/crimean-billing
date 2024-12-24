@@ -139,6 +139,7 @@ public class SubscriptionsService : ISubscriptionsService
             .Include(e => e.Tariff).ThenInclude(t => t.ServicesAmounts).ThenInclude(s => s.ServiceTemplate)
             .Include(e => e.PreferredChange).ThenInclude(p => p.TariffTemplate).ThenInclude(tm => tm.Tariffs).ThenInclude(t => t.ServicesAmounts).ThenInclude(s => s.ServiceTemplate)
             .Include(e => e.ActualTariffUsage)
+            .Include(e => e.ServiceUsages).ThenInclude(e => e.Service).ThenInclude(e => e.Template)
             .AsQueryable();
         if (asNoTracking)
             query = query.AsNoTracking();

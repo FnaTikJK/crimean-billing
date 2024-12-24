@@ -1,5 +1,7 @@
 ﻿using API.Modules.SubscriptionsModule.Model;
 using API.Modules.SubscriptionsModule.Model.DTO;
+using API.Modules.SubscriptionsModule.ServiceUsage;
+using API.Modules.SubscriptionsModule.ServiceUsage.Model.DTO;
 using API.Modules.TariffsModule.Extensions;
 using API.Modules.TariffsModule.Models;
 using API.Modules.TariffsModule.Models.DTO;
@@ -15,6 +17,7 @@ public static class SubscriptionsMapper
             Id = subscription.Id,
             PaymentDate = DateOnly.FromDateTime(subscription.PaymentDate),
             Tariff = Map(subscription.Tariff, subscription.ActualTariffUsage)!,
+            ServiceUsages = subscription.ServiceUsages?.Select(ServiceUsageMapper.Map),
             PreferredTariff = Map(subscription.PreferredChange?.TariffTemplate),
             ActualTariff = Map(subscription.Tariff),
         };

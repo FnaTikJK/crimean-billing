@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using API.DAL;
 using API.Modules.AccountsModule.User;
+using API.Modules.SubscriptionsModule.ServiceUsage.Model;
 using API.Modules.TariffsModule.Models;
 
 namespace API.Modules.SubscriptionsModule.Model;
@@ -20,4 +21,6 @@ public class SubscriptionEntity : IEntity
     public HashSet<TariffUsageHistoryEntity>? UsageHistories { get; set; } 
 
     public SubscriptionsPreferredChangesEntity? PreferredChange { get; set; }
+
+    public HashSet<ServiceUsageEntity>? ServiceUsages { get; set; }
 }

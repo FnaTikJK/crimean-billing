@@ -3,6 +3,9 @@ using API.Modules.AccountsModule.Share;
 using API.Modules.AdminModule.DTO;
 using API.Modules.SubscriptionsModule.DTO;
 using API.Modules.SubscriptionsModule.Model.DTO;
+using API.Modules.SubscriptionsModule.ServiceUsage;
+using API.Modules.SubscriptionsModule.ServiceUsage.DTO;
+using API.Modules.SubscriptionsModule.ServiceUsage.Model.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +17,12 @@ namespace API.Modules.SubscriptionsModule;
 public class SubscriptionsController : ControllerBase
 {
     private readonly ISubscriptionsService subscriptionsService;
+    private readonly IServiceUsageService serviceUsageService;
 
-    public SubscriptionsController(ISubscriptionsService subscriptionsService)
+    public SubscriptionsController(ISubscriptionsService subscriptionsService, IServiceUsageService serviceUsageService)
     {
         this.subscriptionsService = subscriptionsService;
+        this.serviceUsageService = serviceUsageService;
     }
 
     /// <summary>
@@ -54,6 +59,26 @@ public class SubscriptionsController : ControllerBase
     public async Task<ActionResult> SpendTariff(SpendSubscriptionRequest request)
     {
         var response = await subscriptionsService.SpendTariff(request);
+        return response.ActionResult;
+    }
+
+    /// <summary>
+    /// Добавляет в подписку доп. услугу. Сбрасывается в PaymentDate
+    /// </summary>
+    [HttpPost("Services")]
+    public async Task<ActionResult<ServiceUsageDTO>> AddService([FromBody] AddServiceRequest request)
+    {
+        var response = await serviceUsageService.AddService(request);
+        return response.ActionResult;
+    }
+
+    /// <summary>
+    /// Тратит доп. услугу
+    /// </summary>
+    [HttpPost("Services/Spend")]
+    public async Task<ActionResult<ServiceUsageDTO>> SpendService([FromBody] SpendServiceRequest request)
+    {
+        var response = await serviceUsageService.SpendService(request);
         return response.ActionResult;
     }
 }
