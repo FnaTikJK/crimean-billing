@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { UnitNamePipe } from '../../../../../shared/pipes/unit-name.pipe';
 import { MatButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import { serviceTypeToIconName } from '../../../../../shared/entities/ServiceTypeToIcon';
 
 @Component({
   selector: 'app-used-services',
@@ -19,4 +20,5 @@ export default class UsedServicesComponent {
   private subscriptionS = inject(SubscriptionService);
 
   protected usedServices = this.subscriptionS.subscriptionState().entity?.serviceUsages;
+  protected readonly serviceTypeToIconName = serviceTypeToIconName;
 }

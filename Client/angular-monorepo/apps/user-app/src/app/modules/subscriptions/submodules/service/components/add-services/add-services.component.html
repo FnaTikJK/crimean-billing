@@ -8,8 +8,8 @@
     } @else {
       <mat-selection-list class="servicesSelectionList" [formControl]="newSelectedServicesControl">
         @for (service of currentServices(); track service.id) {
-          <mat-list-option class="serviceOption" [value]="service.templateId">
-            <mat-expansion-panel>
+          <mat-list-option class="serviceOption" [value]="service.id">
+            <mat-expansion-panel (click)="$event.stopPropagation()">
               <mat-expansion-panel-header>
                 <mat-panel-title class="serviceTitle">
                   <mat-icon class="serviceIcon">{{serviceTypeToIconName[service.serviceType]}}</mat-icon>
@@ -36,5 +36,8 @@
       }
     }
   </section>
-  <button [disabled]="!newSelectedServicesControl.value.length" class="addNewServiceBtn" mat-flat-button>Подключить новые услуги</button>
+  <button class="addNewServiceBtn"
+    [disabled]="!newSelectedServicesControl.value.length" mat-flat-button
+    (click)="openConfirmModal()"
+  >Подключить новые услуги за {{currentAddCost() + "₽"}}</button>
 </div>

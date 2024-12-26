@@ -4,12 +4,12 @@
     @for (service of usedServices; track service.id) {
       <section class="serviceWrapper">
         <div class="serviceIconWrapper">
-          <mat-icon class="serviceIcon">sim_card</mat-icon>
+          <mat-icon class="serviceIcon">{{serviceTypeToIconName[service.serviceType]}}</mat-icon>
         </div>
         <p class="serviceName">{{service.serviceName}}</p>
         <div>
           <p class="serviceLeft">{{service.amount - service.spent + "/" + service.amount + " " + (service.serviceUnitType | unitName)}}</p>
-          <p class="servicePrice"> 100₽/мес.</p>
+          <p class="servicePrice"> {{ service.price + "₽/мес." }}</p>
         </div>
       </section>
     }
