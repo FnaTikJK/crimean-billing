@@ -24,13 +24,14 @@
 
 .carousel {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   overflow: auto;
 }
 
 .carouselLink {
   text-decoration: none;
   color: unset;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .carouselItem {
@@ -40,13 +41,18 @@
   padding: 0.3rem;
   border-radius: 10%;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     cursor: pointer;
   }
 }
 
-.serviceAmountSection {
+.serviceAmountAndServiceUsage {
+  //display: flex;
+}
+
+.serviceAmountSection, .serviceUsagesSection {
   padding: 1rem;
   background: white;
   border: rgba(188, 195, 208, .5);
@@ -54,10 +60,36 @@
   margin-bottom: 1rem;
 }
 
-.serviceAmountTitle {
+.serviceUsagesSection {
+  width: 130px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.serviceAmountTitle, .serviceUsagesTitle {
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 2rem;
+}
+
+.serviceUsagesTitle {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.matBadgeHolder {
+  position: absolute;
+  right: -0.1rem;
+}
+
+.servicesUsagesIconWrapper {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  background-color: rgba(219, 219, 219, 0.4);
+  border-radius: 30%;
+  justify-content: center;
 }
 
 .serviceWrapper {

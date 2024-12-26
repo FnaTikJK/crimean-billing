@@ -1,0 +1,21 @@
+
+<div class="wrapper">
+  <section class="servicesList">
+    @for (service of usedServices; track service.id) {
+      <section class="serviceWrapper">
+        <div class="serviceIconWrapper">
+          <mat-icon class="serviceIcon">sim_card</mat-icon>
+        </div>
+        <p class="serviceName">{{service.serviceName}}</p>
+        <div>
+          <p class="serviceLeft">{{service.amount - service.spent + "/" + service.amount + " " + (service.serviceUnitType | unitName)}}</p>
+          <p class="servicePrice"> 100₽/мес.</p>
+        </div>
+      </section>
+    }
+  </section>
+
+  <button class="addNewServiceBtn" [routerLink]="['../add-services']" mat-flat-button>Подключить новую услугу</button>
+</div>
+
+

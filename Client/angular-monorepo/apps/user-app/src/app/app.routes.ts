@@ -39,5 +39,10 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('./modules/authorization/components/login/login.component'),
     canActivate: [ userUnauthorizedCanActivateFn ],
     title: 'Авторизация',
+  },
+
+  {
+    path: '**',
+    redirectTo: 'main'
   }
 ];

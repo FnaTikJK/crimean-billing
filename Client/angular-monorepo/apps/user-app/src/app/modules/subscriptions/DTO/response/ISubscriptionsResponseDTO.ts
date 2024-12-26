@@ -1,4 +1,5 @@
 import { ITariffSubscriptionDTO } from '../ITariffSubscriptionDTO';
+import { IServiceUsageDTO } from '../../submodules/service/DTO/IServiceUsageDTO';
 
 export interface ISubscriptionsResponseDTO {
   id: string;
@@ -6,4 +7,5 @@ export interface ISubscriptionsResponseDTO {
   tariff: ITariffSubscriptionDTO;
   actualTariff?: ITariffSubscriptionDTO;
   preferredTariff?: ITariffSubscriptionDTO;
+  serviceUsages: IServiceUsageDTO[];
 }
