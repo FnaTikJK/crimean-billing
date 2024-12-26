@@ -11,20 +11,38 @@
     }
   </section>
 
-  <section class="serviceAmountSection">
-    <p class="serviceAmountTitle">Остатки пакетов</p>
-    <div class="serviceWrapper">
-      @for (service of subscription().tariff.services; track service.templateId) {
-        <app-service-left class="serviceItem" [service]="service" [paymentDate]="subscription().paymentDate"></app-service-left>
-      }
-    </div>
+  <section class="serviceAmountAndServiceUsage">
+    <section class="serviceAmountSection">
+      <p class="serviceAmountTitle">Остатки пакетов</p>
+      <div class="serviceWrapper">
+        @for (service of subscription().tariff.services; track service.templateId) {
+          <app-service-left class="serviceItem" [service]="service" [paymentDate]="subscription().paymentDate"></app-service-left>
+        }
+      </div>
+    </section>
+
+    @if (subscription().serviceUsages.length) {
+      <section class="serviceUsagesSection" matRipple [routerLink]="'used-services'">
+        <p class="serviceUsagesTitle">Подключенные услуги и сервисы<span class="matBadgeHolder" [matBadge]="subscription().serviceUsages.length"></span></p>
+        <div class="servicesUsagesIconWrapper">
+          <mat-icon>more_horiz</mat-icon>
+        </div>
+      </section>
+    }
   </section>
+
 
   <section class="carousel">
     <a class="carouselLink" [routerLink]="'change-tariff'">
       <div matRipple class="carouselItem">
         <mat-icon>autorenew</mat-icon>
         <p>Сменить тариф</p>
+      </div>
+    </a>
+    <a class="carouselLink" [routerLink]="'add-services'">
+      <div matRipple class="carouselItem">
+        <mat-icon>add_circle</mat-icon>
+        <p>Добавить услугу</p>
       </div>
     </a>
   </section>

@@ -6,11 +6,12 @@ import { MatRipple } from '@angular/material/core';
 import {RouterLink } from '@angular/router';
 import { ISubscription } from '../../../../models/ISubscription';
 import { ServiceLeftComponent } from '../service-left/service-left.component';
+import { MatBadge } from '@angular/material/badge';
 
 @Component({
   selector: 'app-selected-tariff',
   standalone: true,
-  imports: [CommonModule, MatIcon, MatRipple, RouterLink, ServiceLeftComponent],
+  imports: [CommonModule, MatIcon, MatRipple, RouterLink, ServiceLeftComponent, MatBadge],
   templateUrl: './selected-tariff.component.html',
   styleUrl: './selected-tariff.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

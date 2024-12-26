@@ -2,12 +2,13 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { EntityState } from '../../shared/help-entities';
 import { HttpService } from '@angular-monorepo/infrastructure';
 import { ISubscriptionsResponseDTO } from '../DTO/response/ISubscriptionsResponseDTO';
-import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { ISubscription } from '../models/ISubscription';
 import { ISubscribeRequestDTO } from '../DTO/request/ISubscribeRequestDTO';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { SubscriptionMapper } from '../mappers/subscription.mapper';
+import { IServiceUsageDTO } from '../submodules/service/DTO/IServiceUsageDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -35,11 +36,29 @@ export class SubscriptionService {
         })
       );
   }
+
   private getAccountSubscription$(accountID: string) {
     return this.#httpS.get<ISubscriptionsResponseDTO | null>(`Subscriptions?AccountId=${accountID}`)
       .pipe(
         map((res) => res ? this.#subscriptionMapper.fromDTO(res) : res),
         catchError(() => of(null))
+      );
+  }
+
+  public addServicesToSubscription$(servicesIDs: string[]) {
+    const currentAccount = this.#appSettingsS.appSettingsState().entity!.accountSelected;
+    const addReqs = servicesIDs
+      .map(serviceID => this.#httpS.post<IServiceUsageDTO>('Subscriptions/Services', {
+        accountId: currentAccount,
+        serviceId: serviceID
+      }));
+    return forkJoin(addReqs)
+      .pipe(
+        tap(newServices => {
+          const currentEntityState = this.subscriptionState().entity as ISubscription;
+          const updatedSubscriptionEntity: ISubscription = {...currentEntityState, serviceUsages: [...currentEntityState.serviceUsages, ...newServices]}
+          this.#subscriptionState.update(subscription => ({...subscription, entity: updatedSubscriptionEntity }))
+        })
       );
   }
 

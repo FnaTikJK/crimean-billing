@@ -5,10 +5,8 @@ import { tap } from 'rxjs';
 import { HttpService } from '@angular-monorepo/infrastructure';
 import { AccountService } from '../../../../profile/submodules/account/services/account.service';
 import { ISpendMoneyRequest } from '../DTO/request/ISpendMoneyRequest';
-import { map } from 'rxjs/operators';
 import { ISearchPaymentsRequestDTO } from '../DTO/request/ISearchPaymentsRequestDTO';
 import { ISearchPaymentsResponseDTO } from '../DTO/response/ISearchPaymentsResponseDTO';
-import { IPaymentPayerOwn } from '../models/IPaymentPayerOwn';
 
 @Injectable({
   providedIn: 'root'

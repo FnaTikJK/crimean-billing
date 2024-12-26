@@ -30,6 +30,20 @@ export default [
     title: 'Сравнение тарифов',
     loadComponent: () => import('./submodules/tariff/components/compare-tariff/compare-tariff.component'),
     canActivate: [userWithSubscriptionCanActivateFn]
+  },
+
+  {
+    path: 'used-services',
+    title: 'Подключённые услуги',
+    loadComponent: () => import('./submodules/service/components/used-services/used-services.component'),
+    canActivate: [userWithSubscriptionCanActivateFn]
+  },
+
+  {
+    path: 'add-services',
+    title: 'Подключить услугу',
+    loadComponent: () => import('./submodules/service/components/add-services/add-services.component'),
+    canActivate: [userWithSubscriptionCanActivateFn]
   }
 ] satisfies Route[];
 

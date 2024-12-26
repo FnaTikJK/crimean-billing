@@ -1,0 +1,43 @@
+
+<div class="wrapper">
+  <section class="servicesSection" #servicesList>
+    @if(loading() && !currentServices().length) {
+      <div class="loadingInitialItemsWrapper">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else {
+      <mat-selection-list class="servicesSelectionList" [formControl]="newSelectedServicesControl">
+        @for (service of currentServices(); track service.id) {
+          <mat-list-option class="serviceOption" [value]="service.id">
+            <mat-expansion-panel (click)="$event.stopPropagation()">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="serviceTitle">
+                  <mat-icon class="serviceIcon">{{serviceTypeToIconName[service.serviceType]}}</mat-icon>
+                  <span class="serviceName">{{ service.name + " (" + (service.price ?? 0) + "₽/мес.)" }}</span>
+                </mat-panel-title>
+                <mat-panel-description class="serviceAmount">
+                  {{ (service.amount ?? 0) + " " + (service.unitType | unitName) }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <section class="serviceDescriptionWrapper">
+                <p class="serviceDescription"><span class="serviceDescriptionFieldName">Цена:</span> {{(service.price ?? 0) + "₽/мес."}}</p>
+                <p class="serviceDescription"><span class="serviceDescriptionFieldName">Описание:</span> {{service.description}}</p>
+              </section>
+            </mat-expansion-panel>
+          </mat-list-option>
+        } @empty {
+          <p>Нет результатов</p>
+        }
+      </mat-selection-list>
+      @if (loading()) {
+          <div class="loadingNewItemsWrapper">
+            <mat-spinner diameter="20"></mat-spinner>
+          </div>
+      }
+    }
+  </section>
+  <button class="addNewServiceBtn"
+    [disabled]="!newSelectedServicesControl.value.length" mat-flat-button
+    (click)="openConfirmModal()"
+  >Подключить новые услуги за {{currentAddCost() + "₽"}}</button>
+</div>
