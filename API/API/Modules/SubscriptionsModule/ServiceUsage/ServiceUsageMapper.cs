@@ -14,6 +14,9 @@ public static class ServiceUsageMapper
             Amount = entity.Service.Amount,
             ServiceId = entity.ServiceId,
             ServiceName = entity.Service.Template.Name,
+            Price = entity.Service.Price,
+            ServiceType = entity.Service.Template.ServiceType,
             ServiceUnitType = entity.Service.Template.UnitType,
+            ServiceTemplateId = entity.Service.Template.Id,
         };
 }

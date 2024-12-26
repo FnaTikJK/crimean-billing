@@ -10,5 +10,8 @@ public class ServiceUsageDTO
     public required float? Amount { get; set; }
     public required Guid ServiceId { get; set; }
     public required string ServiceName { get; set; }
+    public required float Price { get; set; }
+    public required ServiceType ServiceType { get; set; }
     public required UnitType ServiceUnitType { get; set; }
+    public required Guid ServiceTemplateId { get; set; }
 }

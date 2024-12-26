@@ -37,6 +37,8 @@ public class ServiceUsageService : IServiceUsageService
             .FirstOrDefaultAsync(e => e.Id == request.ServiceId);
         if (service == null)
             return Result.NotFound<ServiceUsageDTO>("Такого Service не существует");
+        if (service.Template.IsTariffService)
+            return Result.BadRequest<ServiceUsageDTO>("Сервис только для Tariff");
 
         var subscription = await subscriptions
             .Include(e => e.ServiceUsages)
