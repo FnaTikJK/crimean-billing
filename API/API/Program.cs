@@ -92,15 +92,15 @@ ConfigReader.Init(app.Environment.IsDevelopment());
 
 app.UseHttpsRedirection();
 
-app.UseCors(CorsPolicyName);
+// app.UseCors(CorsPolicyName);
 
 // app.UseCors(builder => builder.WithOrigins("https://*.crimean-billing.work.gd")
 //                                                 .SetIsOriginAllowedToAllowWildcardSubdomains()
 //                                                   .AllowAnyHeader()
 //                                                   .AllowAnyMethod());
-// app.UseCors(builder => builder.AllowAnyOrigin()
-//                    .AllowAnyMethod()
-//                    .AllowAnyHeader());
+app.UseCors(builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
 
 app.UseAuthentication();
 app.UseAuthorization();
