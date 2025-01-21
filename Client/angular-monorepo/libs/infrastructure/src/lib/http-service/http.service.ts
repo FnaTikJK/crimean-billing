@@ -11,7 +11,7 @@ function getProtocol () {
 })
 export class HttpService {
 
-  
+
   private httpClient = inject(HttpClient);
   private origin = location.origin;
 

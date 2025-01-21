@@ -1,0 +1,15 @@
+<div class="container">
+  <h1>Добавьте нового менеджера</h1>
+  <form [formGroup]="form" class="form" (ngSubmit)="create$()">
+    @for (control of controls; track $index) {
+      <mat-form-field>
+        <mat-label>{{ control.translation }}</mat-label>
+        <input [formControl]="control.control" [type]="control.inputType ?? ''" matInput>
+        @if (control.control.invalid) {
+          <mat-error>Поле обязательно</mat-error>
+        }
+      </mat-form-field>
+    }
+    <button [disabled]="form.invalid" type="submit" mat-button>Создать</button>
+  </form>
+</div>

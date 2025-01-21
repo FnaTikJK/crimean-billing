@@ -1,5 +1,8 @@
 import { Route } from '@angular/router';
 
 export default [
-
-] as Route[]
+  {
+    path: 'create',
+    loadComponent: () => import('./modules/create/managers-create.component'),
+  },
+] satisfies Route[]
