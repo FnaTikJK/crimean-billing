@@ -1,6 +1,7 @@
 import { inject, Injectable, isDevMode } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +11,7 @@ export class HttpService {
   private httpClient = inject(HttpClient);
   private origin = location.origin;
 
-  BACKEND_URL =  isDevMode() ? this.origin + '/api/' : `https://crimean-billing.work.gd/api/`;
+  BACKEND_URL =  isDevMode() ? this.origin + '/api/' : `http://84.201.171.14.gd/api/`;
 
   public get<T>(method: string) {
     return this.httpClient.get<T>(`${this.BACKEND_URL}${method}`, { withCredentials: true });
