@@ -10,7 +10,7 @@ export class HttpService {
   private httpClient = inject(HttpClient);
   private origin = location.origin;
 
-  BACKEND_URL =  isDevMode() ? this.origin + '/api/' : `https://crimean-billing.work.gd/`;
+  BACKEND_URL =  isDevMode() ? this.origin + '/api/' : `https://crimean-billing.work.gd/api/`;
 
   public get<T>(method: string) {
     return this.httpClient.get<T>(`${this.BACKEND_URL}${method}`, { withCredentials: true });
