@@ -37,6 +37,7 @@ public class InvoicesService : IInvoicesService
             .Include(e => e.Account)
             .Include(e => e.Tariff)
             .Include(e => e.Payment)
+            .Include(e => e.ServiceUsages)!.ThenInclude(s => s.Service)
             .AsNoTracking();
 
         if (request.AccountId != null)
