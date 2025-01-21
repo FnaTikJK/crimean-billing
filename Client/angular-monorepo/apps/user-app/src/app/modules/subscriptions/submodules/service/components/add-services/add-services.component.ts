@@ -97,6 +97,7 @@ export default class AddServicesComponent implements OnInit {
   }
 
   private reload$() {
+    this.newSelectedServicesControl.setValue([]);
     this.currentServices.set([]);
     return this.requestNewServices$();
   }

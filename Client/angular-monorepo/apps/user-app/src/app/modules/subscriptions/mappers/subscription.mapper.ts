@@ -13,6 +13,7 @@ export class SubscriptionMapper {
     const offset = new Date().getTimezoneOffset();
     return {
       ...subscriptionDTO,
+      serviceUsages: subscriptionDTO.serviceUsages ?? [],
       paymentDate: new Date(+new Date(+year, +month - 1, +day) + offset).toISOString()
     };
   }

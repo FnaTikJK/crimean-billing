@@ -64,7 +64,7 @@
         },
         "development": {
           "buildTarget": "user-app:build:development",
-          "proxyConfig": "apps/manager-app/proxy.conf.json"
+          "proxyConfig": "apps/user-app/proxy.conf.json"
         }
       },
       "defaultConfiguration": "development"

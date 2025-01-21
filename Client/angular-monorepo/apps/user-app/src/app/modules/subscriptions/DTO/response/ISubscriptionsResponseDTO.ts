@@ -7,5 +7,5 @@ export interface ISubscriptionsResponseDTO {
   tariff: ITariffSubscriptionDTO;
   actualTariff?: ITariffSubscriptionDTO;
   preferredTariff?: ITariffSubscriptionDTO;
-  serviceUsages: IServiceUsageDTO[];
+  serviceUsages?: IServiceUsageDTO[];
 }

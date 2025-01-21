@@ -32,7 +32,7 @@ export class SubscriptionService {
         map((res) => this.#subscriptionMapper.fromDTO(res)),
         tap(res => {
           this.#subscriptionState.update(state => (
-            {...state, entity: {...state.entity as ISubscription, tariff: res.tariff, preferredTariff: res.preferredTariff}}))
+            {...state, entity: {...state.entity as ISubscription, ...res}}))
         })
       );
   }
