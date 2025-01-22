@@ -1,0 +1,42 @@
+<div class="container">
+  <h1>Добавьте нового абонента</h1>
+  <form [formGroup]="form" class="form" (ngSubmit)="create$()">
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput [formControl]="form.controls.email" />
+      @if (form.controls.email.invalid) {
+      <mat-error>Поле обязательно</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Имя</mat-label>
+      <input matInput [formControl]="form.controls.firstName" />
+      @if (form.controls.firstName.invalid) {
+      <mat-error>Поле обязательно</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Фамилия</mat-label>
+      <input matInput [formControl]="form.controls.secondName" />
+      @if (form.controls.secondName.invalid) {
+      <mat-error>Поле обязательно</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Отчество</mat-label>
+      <input matInput [formControl]="form.controls.thirdName" />
+      @if (form.controls.thirdName.invalid) {
+      <mat-error>Поле обязательно</mat-error>
+      }
+    </mat-form-field>
+
+    @if (globalError) {
+      <mat-error>{{globalError}}</mat-error>
+    }
+    <button [disabled]="form.invalid" (click)="create$()" mat-button>Создать</button>
+  </form>
+</div>

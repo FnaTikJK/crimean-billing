@@ -4,6 +4,8 @@ import { get } from "lodash";
 import { map } from "rxjs";
 import { SearchResponse } from "../../../../shared/models/SearchResponse.model";
 import { User } from "../models/User.model";
+import { RegisterUserRequest } from "../models/RegisterUserRequest.model";
+import { RegisterUserResponse } from "../models/RegisterUserResponse.model";
 
 @Injectable({ providedIn: 'root' })
 export class AbonentsService {
@@ -23,5 +25,9 @@ export class AbonentsService {
         return result
       })
     )
+  }
+
+  register$(params: RegisterUserRequest) {
+    return this.httpS.post<RegisterUserResponse>('Auth/Users/Register', params)
   }
 }
