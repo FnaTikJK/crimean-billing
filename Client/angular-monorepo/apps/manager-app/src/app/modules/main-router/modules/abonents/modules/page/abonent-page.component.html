@@ -1,25 +1,31 @@
-<div>
-  <div>
-    <p>{{ (abonent$ | async).fio }}</p>
+<div *ngLet="abonent$ | async as abonent" class="container">
+  <div class="header">
+    <p class="clipboard" (click)="copyToClipboard(abonent?.userId ?? '')">ID: {{ abonent?.userId }}</p>
+    <p>{{ abonent?.fio }}</p>
   </div>
 
   <mat-tab-group mat-align-tabs="start">
     <mat-tab label="Информация об абоненте">
       <div class="abonent-info">
-        <a type="email" [href]="(abonent$ | async).email">{{
-          (abonent$ | async).email
+        <p>Email: <a type="email" [href]="abonent?.email">{{
+          abonent?.email
         }}</a>
-        <a type="phone" [href]="(abonent$ | async).phoneNumber">{{
-          (abonent$ | async).phoneNumber || '-'
+        </p>
+        <p>Номер телефона:
+        <a type="phone" [href]="abonent?.phoneNumber">{{
+          abonent?.phoneNumber || '-'
         }}</a>
+        </p>
+        <p>Telegram: {{ abonent?.telegramId ? 'подключен' : 'не подключен' }}</p>
       </div>
     </mat-tab>
 
     <mat-tab label="Лицевые счета">
       <div class="content">
         <ngx-datatable
-          [rows]="(abonent$ | async).accounts"
-          [columns]="accountColumns">
+          [rows]="abonent?.accounts ?? []"
+          [columns]="accountColumns"
+          [columnMode]="'force'">
         </ngx-datatable>
       </div>
     </mat-tab>
@@ -29,6 +35,7 @@
         <ngx-datatable
           [rows]="payments$ | async"
           [columns]="paymentColumns"
+          [columnMode]="'force'"
         ></ngx-datatable>
       </div>
     </mat-tab>
@@ -37,4 +44,8 @@
 
 <ng-template #dateTemplate let-timestamp="value">
   {{ timestamp | date: 'dd.MM.yyyy hh:mm' }}
+</ng-template>
+
+<ng-template #accountsLinkTemplate let-id="value">
+  <a href="#" (click)="$event.preventDefault(); router.navigate(['..', 'accounts', id])">{{ id }}</a>
 </ng-template>

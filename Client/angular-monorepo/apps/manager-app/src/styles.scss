@@ -20,3 +20,12 @@ ul, li {
       overflow-y: hidden !important;
       padding: 0 10px;
 }
+
+.clipboard {
+  &:hover {
+    filter: opacity(.7);
+  }
+  &:active {
+    filter: opacity(.5);
+  }
+}
