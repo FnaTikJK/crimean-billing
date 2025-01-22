@@ -20,3 +20,10 @@
   >
   </ngx-datatable>
 </div>
+
+<ng-template #accountsLinkTemplate let-item="row">
+  <a href="#"
+   (click)="navigate($event, item)">
+   {{ item?.user?.fio }}
+  </a>
+</ng-template>

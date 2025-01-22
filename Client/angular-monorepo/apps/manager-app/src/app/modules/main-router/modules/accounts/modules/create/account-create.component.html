@@ -1,0 +1,63 @@
+<div class="container">
+  <h1>Добавьте новый лицевой счет</h1>
+  <form [formGroup]="form" class="form" (ngSubmit)="create$()">
+
+    <ng-select
+      formControlName="userId"
+      [bindLabel]="'fio'"
+      [bindValue]="'userId'"
+      [appendTo]="'body'"
+      [items]="abonents$ | async"
+      (scroll)="onScroll($event)"
+      [typeahead]="abonentsInput$"
+      placeholder="Абонент"
+      [fixedPlaceholder]="false"
+      >
+      </ng-select>
+
+    <mat-form-field>
+      <mat-label>Тип</mat-label>
+      <mat-select [formControl]="form.controls.accountType">
+        @for (option of ACCOUNT_TYPES; track $index) {
+        <mat-option [value]="option.value">{{ option.name }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.accountType.invalid) {
+      <mat-error>Поле обязательно</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Номер телефона</mat-label>
+      <input type="tel" matInput [formControl]="form.controls.phoneNumber">
+      @if (form.controls.phoneNumber.invalid) {
+      <mat-error>Поле обязательно</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Номер лицевого счета</mat-label>
+      <input matInput [formControl]="form.controls.number">
+      @if (form.controls.number.invalid) {
+      <mat-error>Поле обязательно</mat-error>
+      }
+    </mat-form-field>
+
+
+
+    <!-- @for (control of controls; track $index) {
+    <mat-form-field>
+      <mat-label>{{ control.translation }}</mat-label>
+      <input
+        [formControl]="control.control"
+        [type]="control.inputType ?? ''"
+        matInput
+      />
+      @if (control.control.invalid) {
+      <mat-error>Поле обязательно</mat-error>
+      }
+    </mat-form-field>
+    } -->
+    <button [disabled]="form.invalid" type="submit" mat-button>Создать</button>
+  </form>
+</div>

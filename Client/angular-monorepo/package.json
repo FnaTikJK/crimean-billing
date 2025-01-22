@@ -16,6 +16,7 @@
     "@angular/platform-browser-dynamic": "~18.2.0",
     "@angular/router": "~18.2.0",
     "@danielmoncada/angular-datetime-picker": "^18.1.0",
+    "@ng-select/ng-select": "^13.9.1",
     "@siemens/ngx-datatable": "^22.4.1",
     "@types/lodash": "^4.17.13",
     "lodash": "^4.17.21",

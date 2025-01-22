@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import ListFilterComponent, { FilterField } from "../../../shared/components/list-filter/list-filter.component";
@@ -17,6 +17,7 @@ import { AccountsService } from './services/accounts.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ServicesComponent extends BaseListWithFiltersComponent {
+  abonentsLinkTemplate = viewChild('accountsLinkTemplate')
   router = inject(Router)
   override service = inject(AccountsService)
 
@@ -44,32 +45,45 @@ export default class ServicesComponent extends BaseListWithFiltersComponent {
     },
   ]
 
-  override columns: TableColumn[] = [
-    {
-      prop: 'number',
-      name: 'ЛС',
-      sortable: false,
-    },
-    {
-      prop: 'user.fio',
-      name: 'ФИО',
-      sortable: false,
-    },
-    {
-      prop: 'accountType',
-      name: 'Тип ЛС',
-      sortable: false,
-      pipe: { transform(val: any) { return ACCOUNT_TYPES.find(({ value }) => value === val)?.name } }
-    },
-    {
-      prop: 'money',
-      name: 'Сумма',
-      sortable: true,
-    },
-  ]
+  override columns: TableColumn[] = []
 
   redirectOnItemPage(ev: any) {
     if (ev.type !== 'click') return
     this.router.navigate([`/main/accounts/${ev.row.id}`])
+  }
+
+  navigate(ev: any, item: any) {
+    console.error(item)
+    ev.preventDefault()
+    ev.stopPropagation()
+    this.router.navigate(['main', 'abonents', item?.user?.userId])
+  }
+
+  override ngAfterViewInit(): void {
+    this.columns = [
+      {
+        prop: 'number',
+        name: 'ЛС',
+        sortable: false,
+      },
+      {
+        prop: 'user',
+        name: 'ФИО',
+        sortable: false,
+        cellTemplate: this.abonentsLinkTemplate()
+      },
+      {
+        prop: 'accountType',
+        name: 'Тип ЛС',
+        sortable: false,
+        pipe: { transform(val: any) { return ACCOUNT_TYPES.find(({ value }) => value === val)?.name } }
+      },
+      {
+        prop: 'money',
+        name: 'Сумма',
+        sortable: true,
+      },
+    ]
+    super.ngAfterViewInit()
   }
 }
