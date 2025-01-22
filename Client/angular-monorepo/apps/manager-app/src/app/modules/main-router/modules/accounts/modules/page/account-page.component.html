@@ -33,6 +33,7 @@
     <mat-tab label="Платежи">
       <div class="content">
         <ngx-datatable
+          class="material"
           [rows]="payments$ | async"
           [columns]="paymentColumns"
           [columnMode]="'force'"

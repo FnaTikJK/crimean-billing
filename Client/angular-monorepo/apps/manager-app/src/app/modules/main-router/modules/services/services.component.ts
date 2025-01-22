@@ -113,9 +113,9 @@ export default class ServicesComponent extends BaseListWithFiltersComponent {
   }
 
   redirectOnItemPage(ev: any) {
-    if (ev.type !== 'click') return
-    console.log(['services', ev.id])
-    console.log(ev)
-    this.router.navigate([`/main/services/${ev.row.id}`])
+    // if (ev.type !== 'click') return
+    // console.log(['services', ev.id])
+    // console.log(ev)
+    // this.router.navigate([`/main/services/${ev.row.id}`])
   }
 }
