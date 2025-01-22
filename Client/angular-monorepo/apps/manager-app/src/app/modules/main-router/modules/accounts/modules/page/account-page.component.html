@@ -1,0 +1,51 @@
+<div *ngLet="account$ | async as account" class="container">
+  <div class="header">
+    <p class="clipboard" (click)="copyToClipboard(account?.user?.userId ?? '')">ID: {{ account?.user?.userId }}</p>
+    <p>{{ account?.user?.fio }}</p>
+  </div>
+
+  <mat-tab-group mat-align-tabs="start">
+    <mat-tab label="Информация о лицевом счете">
+      <div class="abonent-info">
+        <p>Номер: <a type="email" [href]="account?.number">{{
+          account?.number
+        }}</a>
+        </p>
+        <p>Тип:
+        {{
+          account?.accountTypeName
+        }}
+        </p>
+        <p>Номер телефона:
+        <a type="phone" [href]="account?.phoneNumber">{{
+          account?.phoneNumber
+        }}</a>
+        </p>
+        <p>Баланс:
+          {{ account?.money }}
+        </p>
+        <p>Абонент:
+          <a href="#" (click)="$event.preventDefault(); router.navigate(['main', 'abonents', account?.user?.userId])">{{ account?.user?.fio }}</a>
+        </p>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Платежи">
+      <div class="content">
+        <ngx-datatable
+          [rows]="payments$ | async"
+          [columns]="paymentColumns"
+          [columnMode]="'force'"
+        ></ngx-datatable>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<ng-template #dateTemplate let-timestamp="value">
+  {{ timestamp | date: 'dd.MM.yyyy hh:mm' }}
+</ng-template>
+
+<ng-template #accountsLinkTemplate let-id="value">
+  <a href="#" (click)="$event.preventDefault(); router.navigate(['..', 'accounts', id])">{{ id }}</a>
+</ng-template>

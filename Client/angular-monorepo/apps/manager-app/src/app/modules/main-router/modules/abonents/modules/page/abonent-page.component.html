@@ -47,5 +47,5 @@
 </ng-template>
 
 <ng-template #accountsLinkTemplate let-id="value">
-  <a href="#" (click)="$event.preventDefault(); router.navigate(['..', 'accounts', id])">{{ id }}</a>
+  <a href="#" (click)="$event.preventDefault(); router.navigate(['main', 'accounts', id])">{{ id }}</a>
 </ng-template>
