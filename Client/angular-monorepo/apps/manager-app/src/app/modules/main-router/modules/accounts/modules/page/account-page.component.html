@@ -1,15 +1,15 @@
 <div *ngLet="account$ | async as account" class="container">
   <div class="header">
-    <p class="clipboard" (click)="copyToClipboard(account?.user?.userId ?? '')">ID: {{ account?.user?.userId }}</p>
-    <p>{{ account?.user?.fio }}</p>
+    <p class="clipboard" (click)="copyToClipboard(account?.id ?? '')">ID: {{ account?.id }}</p>
+    <p>{{ account?.number }}</p>
   </div>
 
   <mat-tab-group mat-align-tabs="start">
     <mat-tab label="Информация о лицевом счете">
       <div class="abonent-info">
-        <p>Номер: <a type="email" [href]="account?.number">{{
+        <p>Номер: {{
           account?.number
-        }}</a>
+        }}
         </p>
         <p>Тип:
         {{
