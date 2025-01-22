@@ -1,7 +1,6 @@
 <div class="container">
   <h1>Добавьте новый лицевой счет</h1>
   <form [formGroup]="form" class="form" (ngSubmit)="create$()">
-
     <ng-select
       formControlName="userId"
       [bindLabel]="'fio'"
@@ -12,8 +11,8 @@
       [typeahead]="abonentsInput$"
       placeholder="Абонент"
       [fixedPlaceholder]="false"
-      >
-      </ng-select>
+    >
+    </ng-select>
 
     <mat-form-field>
       <mat-label>Тип</mat-label>
@@ -29,21 +28,28 @@
 
     <mat-form-field>
       <mat-label>Номер телефона</mat-label>
-      <input type="tel" matInput [formControl]="form.controls.phoneNumber">
-      @if (form.controls.phoneNumber.invalid) {
+      <span matTextPrefix>8 &nbsp;</span>
+      <input
+        type="tel"
+        matInput
+        [formControl]="form.controls.phoneNumber"
+        [mask]="'(000) 000-00-00'"
+        [showMaskTyped]="true"
+      />
+      @if (form.controls.phoneNumber.hasError('mask')) {
+      <mat-error> Некорректный формат номера </mat-error>
+      } @else if (form.controls.phoneNumber.invalid) {
       <mat-error>Поле обязательно</mat-error>
       }
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Номер лицевого счета</mat-label>
-      <input matInput [formControl]="form.controls.number">
+      <input matInput [formControl]="form.controls.number" />
       @if (form.controls.number.invalid) {
       <mat-error>Поле обязательно</mat-error>
       }
     </mat-form-field>
-
-
 
     <!-- @for (control of controls; track $index) {
     <mat-form-field>

@@ -5,6 +5,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient } from '@angular/common/http';
 import { CustomErrorHandlerService } from '@angular-monorepo/infrastructure';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { provideEnvironmentNgxMask } from 'ngx-mask';
 
 const providers: Provider[] = [
   { provide: ErrorHandler, useClass: CustomErrorHandlerService }
@@ -16,6 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideNativeDateAdapter(),
     provideAnimationsAsync(),
+    provideEnvironmentNgxMask(),
     ...providers
   ],
 };

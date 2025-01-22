@@ -13,6 +13,7 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { AbonentsService } from "../../../abonents/services/abonents.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RegisterAccountRequest } from "../../models/DTO/RegisterAccountRequest.model";
+import { NgxMaskDirective } from "ngx-mask";
 
 function generateRandomString(length) {
   const characters =
@@ -36,7 +37,7 @@ function generateRandomString(length) {
   templateUrl: './account-create.component.html',
   styleUrls: ['./account-create.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, NgSelectModule],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, NgSelectModule, NgxMaskDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class ManagersCreateComponent {
@@ -79,7 +80,7 @@ export default class ManagersCreateComponent {
     this.accountsS.register$({
       accountType,
       number,
-      phoneNumber,
+      phoneNumber: '8' + phoneNumber,
       userId,
      })
     .subscribe(() => {
